@@ -14,16 +14,16 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
     private static final String ID_COLUMN = "id";
     private static final String BOOK_COPY_STATUS_COLUMN = "book_copy_status";
     private static final String REGISTRATION_DATE_COLUMN = "registration_date";
-    private static final String PRICE_COLUMN = "price";
+    private static final String IMAGE_PATH_COLUMN = "image_path";
     private static final String PRICE_PER_DAY_COLUMN = "price_per_day";
     private static final String BOOK_ID_COLUMN = "book_id";
 
     private static final String SELECT_BY_ID_QUERY = "SELECT * FROM book_copies WHERE id=?";
     private static final String SELECT_ALL_QUERY = "SELECT * FROM book_copies";
     private static final String INSERT_QUERY =
-            "INSERT INTO book_copies (book_copy_status, registration_date, price, price_per_day, book_id) VALUES (?,?,?,?,?)";
+            "INSERT INTO book_copies (book_copy_status, registration_date, image_path, price_per_day, book_id) VALUES (?,?,?,?,?)";
     private static final String UPDATE_QUERY =
-            "UPDATE book_copies SET book_copy_status=?, registration_date=?, price=?, price_per_day=?, book_id=? WHERE id=?";
+            "UPDATE book_copies SET book_copy_status=?, registration_date=?, image_path=?, price_per_day=?, book_id=? WHERE id=?";
     private static final String DELETE_QUERY = "DELETE FROM book_copies WHERE id=?";
 
     private static final String DELETE_ORDER_BOOK_COPY_LINKS_QUERY = "DELETE FROM order_book_copy_links WHERE book_copy_id=?";
@@ -64,7 +64,7 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
                 .id(resultSet.getLong(ID_COLUMN))
                 .status(resultSet.getString(BOOK_COPY_STATUS_COLUMN))
                 .registrationDate(resultSet.getDate(REGISTRATION_DATE_COLUMN).toLocalDate())
-                .price(resultSet.getInt(PRICE_COLUMN))
+                .imagePath(resultSet.getString(IMAGE_PATH_COLUMN))
                 .pricePerDay(resultSet.getInt(PRICE_PER_DAY_COLUMN))
                 .bookId(resultSet.getLong(BOOK_ID_COLUMN))
                 .build();
@@ -74,7 +74,7 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
     protected void settingPreparedStatement(PreparedStatement preparedStatement, BookCopy bookCopy) throws SQLException {
         preparedStatement.setString(1, bookCopy.getStatus());
         preparedStatement.setDate(2, Date.valueOf(bookCopy.getRegistrationDate()));
-        preparedStatement.setInt(3, bookCopy.getPrice());
+        preparedStatement.setString(3, bookCopy.getImagePath());
         preparedStatement.setInt(4, bookCopy.getPricePerDay());
         preparedStatement.setLong(5, bookCopy.getBookId());
     }
