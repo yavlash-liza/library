@@ -30,12 +30,12 @@ VALUES  ('War and peace', '1365', 'image path'),
    ('The old man and the sea', '153', 'image path'),
     ('Eugene Onegin', '462', 'image path');
 
-INSERT INTO book_copies (book_copy_status, registration_date, price, price_per_day, book_id)
-VALUES  ('AVAILABLE', '2019-03-01', '1365', '150', 1),
- ('AVAILABLE', '2020-06-01', '1638', '210', 2),
-  ('AVAILABLE', '2021-08-04', '2496', '225', 2),
-   ('AVAILABLE', '2017-10-10', '937', '128', 5),
-    ('AVAILABLE', '2020-06-02', '1007', '311', 3);
+INSERT INTO book_copies (book_copy_status, registration_date, image_path, price_per_day, book_id)
+VALUES  ('AVAILABLE', '2019-03-01', 'image path', '150', 1),
+ ('AVAILABLE', '2020-06-01', 'image path', '210', 2),
+  ('AVAILABLE', '2021-08-04', 'image path', '225', 2),
+   ('AVAILABLE', '2017-10-10', 'image path', '128', 5),
+    ('AVAILABLE', '2020-06-02', 'image path', '311', 3);
 
 INSERT INTO order_book_copy_links (order_id, book_copy_id)
 VALUES  (1, 3),
