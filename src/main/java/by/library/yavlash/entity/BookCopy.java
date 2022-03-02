@@ -19,7 +19,7 @@ public class BookCopy extends BaseEntity {
     private Long id;
     private String status;
     private LocalDate registrationDate;
-    private int price;
+    private String imagePath;
     private int pricePerDay;
     private Long bookId;
 }
