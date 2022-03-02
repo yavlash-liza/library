@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS book_copies (
   id BIGINT NOT NULL AUTO_INCREMENT,
   book_copy_status ENUM ('ORDERED', 'AVAILABLE') NOT NULL,
   registration_date DATE NOT NULL,
-  price INT NOT NULL,
+  image_path VARCHAR(512) NOT NULL,
   price_per_day INT NOT NULL,
   book_id BIGINT NOT NULL,
   PRIMARY KEY (id),
