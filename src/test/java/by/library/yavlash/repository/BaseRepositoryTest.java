@@ -162,11 +162,11 @@ public abstract class BaseRepositoryTest {
 
     private void fillBookCopies() {
         bookCopies = new ArrayList<>() {{
-            add(BookCopy.builder().id(1L).status("AVAILABLE").registrationDate(LocalDate.of(2019, 3, 1)).price(1365).pricePerDay(150).bookId(1L).build());
-            add(BookCopy.builder().id(2L).status("AVAILABLE").registrationDate(LocalDate.of(2020, 6, 1)).price(1638).pricePerDay(210).bookId(2L).build());
-            add(BookCopy.builder().id(3L).status("AVAILABLE").registrationDate(LocalDate.of(2021, 8, 4)).price(2496).pricePerDay(225).bookId(2L).build());
-            add(BookCopy.builder().id(4L).status("AVAILABLE").registrationDate(LocalDate.of(2017, 10, 10)).price(937).pricePerDay(128).bookId(5L).build());
-            add(BookCopy.builder().id(5L).status("AVAILABLE").registrationDate(LocalDate.of(2020, 6, 2)).price(1007).pricePerDay(311).bookId(3L).build());
+            add(BookCopy.builder().id(1L).status("AVAILABLE").registrationDate(LocalDate.of(2019, 3, 1)).imagePath("image path").pricePerDay(150).bookId(1L).build());
+            add(BookCopy.builder().id(2L).status("AVAILABLE").registrationDate(LocalDate.of(2020, 6, 1)).imagePath("image path").pricePerDay(210).bookId(2L).build());
+            add(BookCopy.builder().id(3L).status("AVAILABLE").registrationDate(LocalDate.of(2021, 8, 4)).imagePath("image path").pricePerDay(225).bookId(2L).build());
+            add(BookCopy.builder().id(4L).status("AVAILABLE").registrationDate(LocalDate.of(2017, 10, 10)).imagePath("image path").pricePerDay(128).bookId(5L).build());
+            add(BookCopy.builder().id(5L).status("AVAILABLE").registrationDate(LocalDate.of(2020, 6, 2)).imagePath("image path").pricePerDay(311).bookId(3L).build());
         }};
     }
 
