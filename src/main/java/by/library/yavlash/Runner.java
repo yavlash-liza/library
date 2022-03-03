@@ -1,37 +1,20 @@
 package by.library.yavlash;
 
-import by.library.yavlash.entity.Genre;
-import by.library.yavlash.repository.impl.*;
+import by.library.yavlash.entity.Author;
 import by.library.yavlash.service.FlywayService;
-import org.h2.jdbcx.JdbcConnectionPool;
-
-import javax.sql.DataSource;
+import by.library.yavlash.util.HibernateUtil;
+import org.hibernate.Session;
 
 import static by.library.yavlash.service.Property.*;
 
 public class Runner {
-    public static void main(String[] args) throws Exception {
-        DataSource dataSource = JdbcConnectionPool.create(H2_URL, H2_USER, H2_PASSWORD);
+    public static void main(String[] args) {
         FlywayService flywayService = new FlywayService(H2_URL, H2_USER, H2_PASSWORD, MIGRATION_LOCATION);
         flywayService.migrate();
 
-
-
-//        BookRepository bookRepository = new BookRepositoryImpl(dataSource);
-        GenreRepositoryImpl genreRepository = new GenreRepositoryImpl(dataSource);
-//        UserRepository userRepository = new UserRepositoryImpl(dataSource);
-//        AuthorRepositoryImpl authorRepository = new AuthorRepositoryImpl(dataSource);
-//        OrderRepository orderRepository = new OrderRepositoryImpl(dataSource);
-//        BookCopyRepository bookCopyRepository = new BookCopyRepositoryImpl(dataSource);
-//        BookDamageRepository bookDamageRepository = new BookDamageRepositoryImpl(dataSource);
-//        RoleRepository roleRepository = new RoleRepositoryImpl(dataSource);
-//
-//        System.out.println(bookDamageRepository.findAll());
-//        bookRepository.delete(2L);
-//        System.out.println(bookDamageRepository.findAll());
-//        System.out.println(bookCopyRepository.findAll());
-        System.out.println(genreRepository.findAll());
-        genreRepository.add(Genre.builder().genreName("tale").build());
-        System.out.println(genreRepository.findAll());
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Author author = session.get(Author.class, 2L);
+            System.out.println(author);
+        }
     }
 }
