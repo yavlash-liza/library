@@ -26,6 +26,8 @@ public class Genre extends BaseEntity {
     @Column(name = "genre_name", length = 64)
     private String genreName;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "genres")
-    private Set<Book> books;
+    private Set<Book> books = new HashSet<>();
 }

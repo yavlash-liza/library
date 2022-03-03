@@ -7,7 +7,12 @@ import lombok.experimental.SuperBuilder;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 
 @Data
 @NoArgsConstructor
@@ -18,21 +23,27 @@ import javax.persistence.*;
 @Entity
 @Table(name = "book_damage")
 public class BookDamage extends BaseEntity {
-    @Column(name = "image_path", length = 512)
+    @Column(name = "image_path")
     private String imagePath;
 
-    @Column(name = "damage_description", length = 5000)
+    @Column(name = "damage_description")
     private String damageDescription;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_copy_id")
     private BookCopy bookCopy;
 }

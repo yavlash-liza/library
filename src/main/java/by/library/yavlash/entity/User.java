@@ -7,10 +7,16 @@ import lombok.experimental.SuperBuilder;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
+import javax.persistence.JoinTable;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.validation.constraints.Email;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,38 +30,40 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {
-    @Column(name = "first_name", length = 64)
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "last_name", length = 64)
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "passport_number", length = 128)
+    @Column(name = "passport")
     private String passportNumber;
 
     @Email
-    @Column(name = "email", length = 128) //todo надо ли такя большая цифра?
+    @Column(name = "email")
     private String email;
 
-    @Column(name = "address", length = 128)
+    @Column(name = "address")
     private String address;
 
-    @Column(name = "birth_date", columnDefinition = "DATETIME")
+    @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    @OneToMany(fetch = FetchType.LAZY,
-            mappedBy = "user",
-            cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<Order> orders;
 
-    @OneToMany(fetch = FetchType.LAZY,
-            mappedBy = "user",
-            cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<BookDamage> bookDamages;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToMany
     @JoinTable(name = "user_role_links",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 }

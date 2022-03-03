@@ -20,6 +20,13 @@
         <property name="hibernate.connection.characterEncoding">utf8</property>
 
         <mapping class="by.library.yavlash.entity.Author"/>
+        <mapping class="by.library.yavlash.entity.Book"/>
+        <mapping class="by.library.yavlash.entity.BookDamage"/>
+        <mapping class="by.library.yavlash.entity.BookCopy"/>
+        <mapping class="by.library.yavlash.entity.Genre"/>
+        <mapping class="by.library.yavlash.entity.Order"/>
+        <mapping class="by.library.yavlash.entity.Role"/>
+        <mapping class="by.library.yavlash.entity.User"/>
 
     </session-factory>
 </hibernate-configuration>

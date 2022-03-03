@@ -7,9 +7,15 @@ import lombok.experimental.SuperBuilder;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,10 +29,10 @@ import java.util.Set;
 @Entity
 @Table(name = "book_copies")
 public class BookCopy extends BaseEntity {
-    @Column(name = "status", length = 512)
+    @Column(name = "book_copy_status")
     private String status;
 
-    @Column(name = "registration_date", columnDefinition = "DATETIME")
+    @Column(name = "registration_date")
     private LocalDate registrationDate;
 
     @Column(name = "price")
@@ -35,15 +41,19 @@ public class BookCopy extends BaseEntity {
     @Column(name = "price_per_day")
     private int pricePerDay;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "bookCopies")
-    private Set<Order> orders;
+    private Set<Order> orders = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY,
-            mappedBy = "bookCopy",
-            cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bookCopy")
     private List<BookDamage> bookDamages;
 }

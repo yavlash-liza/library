@@ -1,6 +1,6 @@
 package by.library.yavlash;
 
-import by.library.yavlash.entity.Author;
+import by.library.yavlash.entity.*;
 import by.library.yavlash.service.FlywayService;
 import by.library.yavlash.util.HibernateUtil;
 import org.hibernate.Session;
@@ -13,8 +13,8 @@ public class Runner {
         flywayService.migrate();
 
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Author author = session.get(Author.class, 2L);
-            System.out.println(author);
+            User entity = session.get(User.class, 2L);
+            System.out.println(entity);
         }
     }
 }
