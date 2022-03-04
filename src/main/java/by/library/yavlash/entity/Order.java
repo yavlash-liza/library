@@ -18,7 +18,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -30,7 +29,6 @@ import java.util.Set;
 @Entity
 @Table(name = "orders")
 public class Order extends BaseEntity {
-    //    @Enumerated(EnumType.STRING) //todo
     @Column(name = "order_status")
     private String orderStatus;
 
@@ -52,7 +50,7 @@ public class Order extends BaseEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
-    private List<BookDamage> bookDamages;
+    private Set<BookDamage> bookDamages = new HashSet<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

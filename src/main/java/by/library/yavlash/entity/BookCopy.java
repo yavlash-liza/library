@@ -17,7 +17,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -55,5 +54,6 @@ public class BookCopy extends BaseEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "bookCopy")
-    private List<BookDamage> bookDamages;
+    private Set<BookDamage> bookDamages = new HashSet<>();
+    ;
 }

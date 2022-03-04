@@ -15,10 +15,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.JoinTable;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.validation.constraints.Email;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -39,7 +37,6 @@ public class User extends BaseEntity {
     @Column(name = "passport")
     private String passportNumber;
 
-    @Email
     @Column(name = "email")
     private String email;
 
@@ -52,18 +49,20 @@ public class User extends BaseEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private List<Order> orders;
+    private Set<Order> orders = new HashSet<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private List<BookDamage> bookDamages;
+    private Set<BookDamage> bookDamages = new HashSet<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany
-    @JoinTable(name = "user_role_links",
+    @JoinTable(
+            name = "user_role_links",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private Set<Role> roles = new HashSet<>();
 }

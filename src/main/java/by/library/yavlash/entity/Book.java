@@ -16,7 +16,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -40,7 +39,7 @@ public class Book extends BaseEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
-    private List<BookCopy> bookCopies;
+    private Set<BookCopy> bookCopies = new HashSet<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
