@@ -4,7 +4,6 @@
         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-
         <property name="connection.url">jdbc:h2:mem:library;DB_CLOSE_DELAY=-1</property>
         <property name="connection.driver_class">org.h2.Driver</property>
         <property name="connection.username">sa</property>
@@ -15,6 +14,13 @@
         <property name="hibernate.connection.characterEncoding">utf8</property>
 
         <mapping class="by.library.yavlash.entity.Author"/>
+        <mapping class="by.library.yavlash.entity.Book"/>
+        <mapping class="by.library.yavlash.entity.BookDamage"/>
+        <mapping class="by.library.yavlash.entity.BookCopy"/>
+        <mapping class="by.library.yavlash.entity.Genre"/>
+        <mapping class="by.library.yavlash.entity.Order"/>
+        <mapping class="by.library.yavlash.entity.Role"/>
+        <mapping class="by.library.yavlash.entity.User"/>
 
     </session-factory>
 </hibernate-configuration>
