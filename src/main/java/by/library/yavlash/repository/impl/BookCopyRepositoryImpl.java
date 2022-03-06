@@ -1,102 +1,96 @@
 package by.library.yavlash.repository.impl;
 
 import by.library.yavlash.entity.BookCopy;
+import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.BookCopyRepository;
+import by.library.yavlash.util.HibernateUtil;
+import org.hibernate.Query;
+import org.hibernate.Session;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Date;
+import java.util.List;
 
-public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> implements BookCopyRepository {
+public class BookCopyRepositoryImpl implements BookCopyRepository {
     private static final String ID_COLUMN = "id";
-    private static final String BOOK_COPY_STATUS_COLUMN = "book_copy_status";
-    private static final String REGISTRATION_DATE_COLUMN = "registration_date";
-    private static final String IMAGE_PATH_COLUMN = "image_path";
-    private static final String PRICE_PER_DAY_COLUMN = "price_per_day";
-    private static final String BOOK_ID_COLUMN = "book_id";
+    private static final String BOOK_COPY_STATUS_COLUMN = "status";
+    private static final String REGISTRATION_DATE_COLUMN = "registrationDate";
+    private static final String IMAGE_PATH_COLUMN = "imagePath";
+    private static final String PRICE_PER_DAY_COLUMN = "pricePerDay";
+    private static final String BOOK_COPY_ID_COLUMN = "bookCopyId";
 
-    private static final String SELECT_BY_ID_QUERY = "SELECT * FROM book_copies WHERE id=?";
-    private static final String SELECT_ALL_QUERY = "SELECT * FROM book_copies";
-    private static final String INSERT_QUERY =
-            "INSERT INTO book_copies (book_copy_status, registration_date, image_path, price_per_day, book_id) VALUES (?,?,?,?,?)";
-    private static final String UPDATE_QUERY =
-            "UPDATE book_copies SET book_copy_status=?, registration_date=?, image_path=?, price_per_day=?, book_id=? WHERE id=?";
-    private static final String DELETE_QUERY = "DELETE FROM book_copies WHERE id=?";
+    private static final String SELECT_ALL_QUERY = "from BookCopy";
+    private static final String UPDATE_QUERY = " update BookCopy set status=:status, registrationDate=:registrationDate, " +
+            " imagePath=:imagePath, pricePerDay=:pricePerDay where id=:id";
 
-    private static final String DELETE_ORDER_BOOK_COPY_LINKS_QUERY = "DELETE FROM order_book_copy_links WHERE book_copy_id=?";
-    private static final String DELETE_BOOK_DAMAGE_QUERY = "DELETE FROM book_damage WHERE book_copy_id=?";
-
-    public BookCopyRepositoryImpl(DataSource dataSource) {
-        super(dataSource);
-    }
+    private static final String DELETE_BOOK_DAMAGE_QUERY = "delete BookDamage bd where bd.bookCopy.id=:bookCopyId";
 
     @Override
-    protected String getSelectByIdQuery() {
-        return SELECT_BY_ID_QUERY;
-    }
-
-    @Override
-    protected String getSelectAllQuery() {
-        return SELECT_ALL_QUERY;
-    }
-
-    @Override
-    protected String getInsertQuery() {
-        return INSERT_QUERY;
-    }
-
-    @Override
-    protected String getUpdateQuery() {
-        return UPDATE_QUERY;
-    }
-
-    @Override
-    protected String getDeleteQuery() {
-        return DELETE_QUERY;
-    }
-
-    @Override
-    protected BookCopy construct(ResultSet resultSet) throws SQLException {
-        return BookCopy.builder()
-                .id(resultSet.getLong(ID_COLUMN))
-                .status(resultSet.getString(BOOK_COPY_STATUS_COLUMN))
-                .registrationDate(resultSet.getDate(REGISTRATION_DATE_COLUMN).toLocalDate())
-                .imagePath(resultSet.getString(IMAGE_PATH_COLUMN))
-                .pricePerDay(resultSet.getInt(PRICE_PER_DAY_COLUMN))
-                .bookId(resultSet.getLong(BOOK_ID_COLUMN))
-                .build();
-    }
-
-    @Override
-    protected void settingPreparedStatement(PreparedStatement preparedStatement, BookCopy bookCopy) throws SQLException {
-        preparedStatement.setString(1, bookCopy.getStatus());
-        preparedStatement.setDate(2, Date.valueOf(bookCopy.getRegistrationDate()));
-        preparedStatement.setString(3, bookCopy.getImagePath());
-        preparedStatement.setInt(4, bookCopy.getPricePerDay());
-        preparedStatement.setLong(5, bookCopy.getBookId());
-    }
-
-    @Override
-    protected void deleteLinks(Connection connection, Long id) throws SQLException {
-        deleteOrderBookCopyLinks(connection, id);
-        deleteBookDamage(connection, id);
-    }
-
-    private void deleteOrderBookCopyLinks(Connection connection, Long bookCopyId) throws SQLException {
-        deleteBookCopyLinks(connection, bookCopyId, DELETE_ORDER_BOOK_COPY_LINKS_QUERY);
-    }
-
-    private void deleteBookCopyLinks(Connection connection, Long id, String query) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setLong(1, id);
-            preparedStatement.executeUpdate();
+    public BookCopy findById(Long id) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.get(BookCopy.class, id);
         }
     }
 
-    private void deleteBookDamage(Connection connection, Long bookCopyId) throws SQLException {
-        deleteBookCopyLinks(connection, bookCopyId, DELETE_BOOK_DAMAGE_QUERY);
+    @Override
+    public List<BookCopy> findAll() throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(SELECT_ALL_QUERY, BookCopy.class).list();
+        }
+    }
+
+    @Override
+    public boolean add(BookCopy bookCopy) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.save(bookCopy);
+            return true;
+        }
+    }
+
+    @Override
+    public boolean update(BookCopy bookCopy) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            try {
+                session.getTransaction().begin();
+                Query query = session.createQuery(UPDATE_QUERY);
+                constructQuery(query, bookCopy);
+                query.executeUpdate();
+                session.getTransaction().commit();
+                return true;
+            } catch (Exception ex) {
+                session.getTransaction().rollback();
+                throw new RepositoryException("Book copy was not updated[" + ex.getMessage() + "]");
+            }
+        }
+    }
+
+    @Override
+    public boolean delete(Long id) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            try {
+                session.getTransaction().begin();
+                BookCopy bookCopy = session.get(BookCopy.class, id);
+                bookCopy.getOrders().forEach(order -> order.getBookCopies().remove(bookCopy));
+                deleteBookDamage(session, bookCopy);
+                session.delete(bookCopy);
+                session.getTransaction().commit();
+                return true;
+            } catch (Exception ex) {
+                session.getTransaction().rollback();
+                throw new RepositoryException("Book copy was not deleted[" + ex.getMessage() + "]");
+            }
+        }
+    }
+
+    private void deleteBookDamage(Session session, BookCopy bookCopy) {
+        session.createQuery(DELETE_BOOK_DAMAGE_QUERY)
+                .setParameter(BOOK_COPY_ID_COLUMN, bookCopy.getId())
+                .executeUpdate();
+    }
+
+    private void constructQuery(Query query, BookCopy bookCopy) {
+        query.setParameter(BOOK_COPY_STATUS_COLUMN, bookCopy.getStatus())
+                .setParameter(REGISTRATION_DATE_COLUMN, bookCopy.getRegistrationDate())
+                .setParameter(IMAGE_PATH_COLUMN, bookCopy.getImagePath())
+                .setParameter(PRICE_PER_DAY_COLUMN, bookCopy.getPricePerDay())
+                .setParameter(ID_COLUMN, bookCopy.getId());
     }
 }
