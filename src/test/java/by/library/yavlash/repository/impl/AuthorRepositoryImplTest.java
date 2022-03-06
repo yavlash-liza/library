@@ -13,7 +13,7 @@ class AuthorRepositoryImplTest extends BaseRepositoryTest {
     private final AuthorRepositoryImpl authorRepository;
 
     public AuthorRepositoryImplTest() {
-        authorRepository = new AuthorRepositoryImpl(getDataSource());
+        authorRepository = new AuthorRepositoryImpl();
     }
 
     @Test
@@ -43,15 +43,19 @@ class AuthorRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedAuthor() throws RepositoryException {
         //given
-        Author expected = Author.builder().id(6L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
-        Author actual = Author.builder().firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
+        List<Author> expected = findAuthorsForFindAll();
+        Assertions.assertEquals(5, expected.size());
 
         //when
-        actual = authorRepository.add(actual);
+        Author newAuthorActual = Author.builder().firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
+        boolean isAdded = authorRepository.add(newAuthorActual);
+        Author newAuthorExpected = Author.builder().id(6L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
+        expected.add(newAuthorExpected);
 
         //then
-        Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected, authorRepository.findById(expected.getId()));
+        Assertions.assertTrue(isAdded);
+        Assertions.assertEquals(newAuthorExpected, newAuthorActual);
+        Assertions.assertEquals(newAuthorExpected, authorRepository.findById(newAuthorActual.getId()));
     }
 
     @Test

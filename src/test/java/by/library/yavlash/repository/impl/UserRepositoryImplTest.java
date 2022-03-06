@@ -13,7 +13,7 @@ class UserRepositoryImplTest extends BaseRepositoryTest {
     private final UserRepositoryImpl userRepository;
 
     public UserRepositoryImplTest() {
-        userRepository = new UserRepositoryImpl(getDataSource());
+        userRepository = new UserRepositoryImpl();
     }
 
     @Test
@@ -43,15 +43,19 @@ class UserRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedUser() throws RepositoryException {
         //given
-        User expected = User.builder().id(6L).firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).build();
-        User actual = User.builder().firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).build();
+        List<User> expected = findUsersForFindAll();
+        Assertions.assertEquals(5, expected.size());
 
         //when
-        actual = userRepository.add(actual);
+        User newUserActual = User.builder().firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).build();
+        boolean isAdded = userRepository.add(newUserActual);
+        User newUserExpected = User.builder().id(6L).firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).build();
+        expected.add(newUserExpected);
 
         //then
-        Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected, userRepository.findById(expected.getId()));
+        Assertions.assertTrue(isAdded);
+        Assertions.assertEquals(newUserExpected, newUserActual);
+        Assertions.assertEquals(newUserExpected, userRepository.findById(newUserActual.getId()));
     }
 
     @Test

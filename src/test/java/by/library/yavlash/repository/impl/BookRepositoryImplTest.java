@@ -12,7 +12,7 @@ class BookRepositoryImplTest extends BaseRepositoryTest {
     private final BookRepositoryImpl bookRepository;
 
     public BookRepositoryImplTest() {
-        bookRepository = new BookRepositoryImpl(getDataSource());
+        bookRepository = new BookRepositoryImpl();
     }
 
     @Test
@@ -42,15 +42,19 @@ class BookRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedBook() throws RepositoryException {
         //given
-        Book expected = Book.builder().id(6L).title("asd").pagesNumber(12).imagePath("image path").build();
-        Book actual = Book.builder().title("asd").pagesNumber(12).imagePath("image path").build();
+        List<Book> expected = findBooksForFindAll();
+        Assertions.assertEquals(5, expected.size());
 
         //when
-        actual = bookRepository.add(actual);
+        Book newBookActual = Book.builder().title("asd").pagesNumber(12).imagePath("image path").build();
+        boolean isAdded = bookRepository.add(newBookActual);
+        Book newBookExpected = Book.builder().id(6L).title("asd").pagesNumber(12).imagePath("image path").build();
+        expected.add(newBookExpected);
 
         //then
-        Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected, bookRepository.findById(expected.getId()));
+        Assertions.assertTrue(isAdded);
+        Assertions.assertEquals(newBookExpected, newBookActual);
+        Assertions.assertEquals(newBookExpected, bookRepository.findById(newBookActual.getId()));
     }
 
     @Test
