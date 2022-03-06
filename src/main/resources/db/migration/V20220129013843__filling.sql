@@ -69,7 +69,7 @@ VALUES  ('Lev', 'Tolstoy', '1879-04-04', 'image path'),
 
 INSERT INTO book_author_links (book_id, author_id)
 VALUES  (1, 1),
-         (2, 3),
+         (2, 1),
           (3, 5),
            (4, 2),
             (5, 4);
