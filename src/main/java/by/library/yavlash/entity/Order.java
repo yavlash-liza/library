@@ -49,12 +49,12 @@ public class Order extends BaseEntity {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private Set<BookDamage> bookDamages = new HashSet<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "order_book_copy_links",
             joinColumns = @JoinColumn(name = "order_id"),

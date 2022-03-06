@@ -7,10 +7,11 @@ import lombok.experimental.SuperBuilder;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.ManyToMany;
+import javax.persistence.FetchType;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,11 +24,11 @@ import java.util.Set;
 @Entity
 @Table(name = "genres")
 public class Genre extends BaseEntity {
-    @Column(name = "genre_name", length = 64)
+    @Column(name = "genre_name")
     private String genreName;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany(mappedBy = "genres")
+    @ManyToMany(mappedBy = "genres", fetch = FetchType.LAZY)
     private Set<Book> books = new HashSet<>();
 }

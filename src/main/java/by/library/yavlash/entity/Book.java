@@ -38,12 +38,12 @@ public class Book extends BaseEntity {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     private Set<BookCopy> bookCopies = new HashSet<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "book_author_links",
             joinColumns = @JoinColumn(name = "book_id"),
@@ -53,7 +53,7 @@ public class Book extends BaseEntity {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "book_genre_links",
             joinColumns = @JoinColumn(name = "book_id"),

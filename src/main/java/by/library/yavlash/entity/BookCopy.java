@@ -48,12 +48,12 @@ public class BookCopy extends BaseEntity {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany(mappedBy = "bookCopies")
+    @ManyToMany(mappedBy = "bookCopies", fetch = FetchType.LAZY)
     private Set<Order> orders = new HashSet<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bookCopy")
+    @OneToMany(mappedBy = "bookCopy", fetch = FetchType.LAZY)
     private Set<BookDamage> bookDamages = new HashSet<>();
     ;
 }
