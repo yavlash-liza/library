@@ -1,5 +1,8 @@
 package by.library.yavlash.repository.impl;
 
+import by.library.yavlash.entity.Author;
+import by.library.yavlash.entity.Book;
+import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.Order;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.OrderRepository;
@@ -8,8 +11,9 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.util.List;
+import java.util.Set;
 
-public class OrderRepositoryImpl implements OrderRepository {
+public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implements OrderRepository {
     private static final String ID_COLUMN = "id";
     private static final String ORDER_STATUS_COLUMN = "orderStatus";
     private static final String START_DATE_COLUMN = "startDate";
@@ -24,61 +28,28 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     private static final String DELETE_BOOK_DAMAGE_QUERY = "delete BookDamage bd where bd.order.id=:orderId";
 
-    @Override
-    public Order findById(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(Order.class, id);
-        }
+    public OrderRepositoryImpl() {
+        super(Order.class);
     }
 
     @Override
-    public List<Order> findAll() throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery(SELECT_ALL_QUERY, Order.class).list();
-        }
+    protected String defineSelectAllQuery() {
+        return SELECT_ALL_QUERY;
     }
 
     @Override
-    public boolean add(Order order) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.save(order);
-            return true;
-        }
+    protected String defineUpdateQuery() {
+        return UPDATE_QUERY;
     }
 
     @Override
-    public boolean update(Order order) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            try {
-                session.getTransaction().begin();
-                Query query = session.createQuery(UPDATE_QUERY);
-                constructQuery(query, order);
-                query.executeUpdate();
-                session.getTransaction().commit();
-                return true;
-            } catch (Exception ex) {
-                session.getTransaction().rollback();
-                throw new RepositoryException("Order was not updated[" + ex.getMessage() + "]");
-            }
-        }
+    protected void deleteLinks(Session session, Order order) {
+        deleteBookCopyLinks(order, order.getBookCopies());
+        deleteBookDamage(session, order);
     }
 
-    @Override
-    public boolean delete(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            try {
-                session.getTransaction().begin();
-                Order order = session.get(Order.class, id);
-                order.getBookCopies().forEach(bookCopy -> bookCopy.getOrders().remove(order));
-                deleteBookDamage(session, order);
-                session.delete(order);
-                session.getTransaction().commit();
-                return true;
-            } catch (Exception ex) {
-                session.getTransaction().rollback();
-                throw new RepositoryException("Order was not deleted[" + ex.getMessage() + "]");
-            }
-        }
+    private void deleteBookCopyLinks(Order order, Set<BookCopy> bookCopies) {
+        bookCopies.forEach(bookCopy -> bookCopy.getOrders().remove(order));
     }
 
     private void deleteBookDamage(Session session, Order order) {
@@ -87,7 +58,8 @@ public class OrderRepositoryImpl implements OrderRepository {
                 .executeUpdate();
     }
 
-    private void constructQuery(Query query, Order order) {
+    @Override
+    protected void constructQuery(Query query, Order order) {
         query.setParameter(ORDER_STATUS_COLUMN, order.getOrderStatus())
                 .setParameter(START_DATE_COLUMN, order.getStartDate())
                 .setParameter(END_DATE_COLUMN, order.getEndDate())

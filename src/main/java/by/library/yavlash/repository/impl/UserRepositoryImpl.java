@@ -1,15 +1,14 @@
 package by.library.yavlash.repository.impl;
 
+import by.library.yavlash.entity.Role;
 import by.library.yavlash.entity.User;
-import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.UserRepository;
-import by.library.yavlash.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-import java.util.List;
+import java.util.Set;
 
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements UserRepository {
     private static final String FIRST_NAME_COLUMN = "firstName";
     private static final String LAST_NAME_COLUMN = "lastName";
     private static final String PASSPORT_COLUMN = "passportNumber";
@@ -27,62 +26,29 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String DELETE_BOOK_DAMAGE_QUERY = "delete BookDamage bd where bd.user.id=:userId";
     private static final String DELETE_ORDER_QUERY = "delete Order o where o.user.id=:userId";
 
-    @Override
-    public User findById(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(User.class, id);
-        }
+    public UserRepositoryImpl() {
+        super(User.class);
     }
 
     @Override
-    public List<User> findAll() throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery(SELECT_ALL_QUERY, User.class).list();
-        }
+    protected String defineSelectAllQuery() {
+        return SELECT_ALL_QUERY;
     }
 
     @Override
-    public boolean add(User user) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.save(user);
-            return true;
-        }
+    protected String defineUpdateQuery() {
+        return UPDATE_QUERY;
     }
 
     @Override
-    public boolean update(User user) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            try {
-                session.getTransaction().begin();
-                Query query = session.createQuery(UPDATE_QUERY);
-                constructQuery(query, user);
-                query.executeUpdate();
-                session.getTransaction().commit();
-                return true;
-            } catch (Exception ex) {
-                session.getTransaction().rollback();
-                throw new RepositoryException("User was not updated[" + ex.getMessage() + "]");
-            }
-        }
+    protected void deleteLinks(Session session, User user) {
+        deleteRoleLinks(user, user.getRoles());
+        deleteBookDamage(session, user);
+        deleteOrder(session, user);
     }
 
-    @Override
-    public boolean delete(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            try {
-                session.getTransaction().begin();
-                User user = session.get(User.class, id);
-                user.getRoles().forEach(role -> role.getUsers().remove(user));
-                deleteBookDamage(session, user);
-                deleteOrder(session, user);
-                session.delete(user);
-                session.getTransaction().commit();
-                return true;
-            } catch (Exception ex) {
-                session.getTransaction().rollback();
-                throw new RepositoryException("User was not deleted[" + ex.getMessage() + "]");
-            }
-        }
+    private void deleteRoleLinks(User user, Set<Role> roles) {
+        roles.forEach(role -> role.getUsers().remove(user));
     }
 
     private void deleteBookDamage(Session session, User user) {
@@ -97,7 +63,8 @@ public class UserRepositoryImpl implements UserRepository {
                 .executeUpdate();
     }
 
-    private void constructQuery(Query query, User user) {
+    @Override
+    protected void constructQuery(Query query, User user) {
         query.setParameter(FIRST_NAME_COLUMN, user.getFirstName())
                 .setParameter(LAST_NAME_COLUMN, user.getLastName())
                 .setParameter(PASSPORT_COLUMN, user.getPassportNumber())

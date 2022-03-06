@@ -1,17 +1,16 @@
 package by.library.yavlash.repository.impl;
 
+import by.library.yavlash.entity.Author;
 import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
-import by.library.yavlash.exception.RepositoryException;
+import by.library.yavlash.entity.Genre;
 import by.library.yavlash.repository.BookRepository;
-import by.library.yavlash.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-import java.util.List;
 import java.util.Set;
 
-public class BookRepositoryImpl implements BookRepository {
+public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements BookRepository {
     private static final String ID_COLUMN = "id";
     private static final String BOOK_COPY_ID_COLUMN = "bookCopyId";
     private static final String TITLE_COLUMN = "title";
@@ -25,63 +24,34 @@ public class BookRepositoryImpl implements BookRepository {
     private static final String DELETE_BOOK_COPY_QUERY = "delete BookCopy bc where bc.book.id=:bookId";
     private static final String DELETE_BOOK_DAMAGE_QUERY = "DELETE BookDamage bd WHERE bd.bookCopy.id=:bookCopyId";
 
-    @Override
-    public Book findById(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(Book.class, id);
-        }
+    public BookRepositoryImpl() {
+        super(Book.class);
     }
 
     @Override
-    public List<Book> findAll() throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery(SELECT_ALL_QUERY, Book.class).list();
-        }
+    protected String defineSelectAllQuery() {
+        return SELECT_ALL_QUERY;
     }
 
     @Override
-    public boolean add(Book book) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.save(book);
-            return true;
-        }
+    protected String defineUpdateQuery() {
+        return UPDATE_QUERY;
     }
 
     @Override
-    public boolean update(Book book) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            try {
-                session.getTransaction().begin();
-                Query query = session.createQuery(UPDATE_QUERY);
-                constructQuery(query, book);
-                query.executeUpdate();
-                session.getTransaction().commit();
-                return true;
-            } catch (Exception ex) {
-                session.getTransaction().rollback();
-                throw new RepositoryException("Book was not updated[" + ex.getMessage() + "]");
-            }
-        }
+    protected void deleteLinks(Session session, Book book) {
+        deleteGenreLinks(book, book.getGenres());
+        deleteAuthorLinks(book, book.getAuthors());
+        deleteBookCopyDamage(session, book.getBookCopies());
+        deleteBookCopies(session, book);
     }
 
-    @Override
-    public boolean delete(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            try {
-                session.getTransaction().begin();
-                Book book = session.get(Book.class, id);
-                book.getGenres().forEach(genre -> genre.getBooks().remove(book));
-                book.getAuthors().forEach(author -> author.getBooks().remove(book));
-                deleteBookCopyDamage(session, book.getBookCopies());
-                deleteBookCopies(session, book);
-                session.delete(book);
-                session.getTransaction().commit();
-                return true;
-            } catch (Exception ex) {
-                session.getTransaction().rollback();
-                throw new RepositoryException("Book was not deleted[" + ex.getMessage() + "]");
-            }
-        }
+    private void deleteGenreLinks(Book book, Set<Genre> genres) {
+        genres.forEach(genre -> genre.getBooks().remove(book));
+    }
+
+    private void deleteAuthorLinks(Book book, Set<Author> authors) {
+        authors.forEach(author -> author.getBooks().remove(book));
     }
 
     private void deleteBookCopies(Session session, Book book) {
@@ -98,7 +68,8 @@ public class BookRepositoryImpl implements BookRepository {
         );
     }
 
-    private void constructQuery(Query query, Book book) {
+    @Override
+    protected void constructQuery(Query query, Book book) {
         query.setParameter(TITLE_COLUMN, book.getTitle())
                 .setParameter(PAGES_COLUMN, book.getPagesNumber())
                 .setParameter(IMAGE_PATH_COLUMN, book.getImagePath())

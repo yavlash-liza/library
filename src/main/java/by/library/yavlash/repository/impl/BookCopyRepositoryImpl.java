@@ -1,15 +1,14 @@
 package by.library.yavlash.repository.impl;
 
 import by.library.yavlash.entity.BookCopy;
-import by.library.yavlash.exception.RepositoryException;
+import by.library.yavlash.entity.Order;
 import by.library.yavlash.repository.BookCopyRepository;
-import by.library.yavlash.util.HibernateUtil;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import java.util.List;
+import java.util.Set;
 
-public class BookCopyRepositoryImpl implements BookCopyRepository {
+public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> implements BookCopyRepository {
     private static final String ID_COLUMN = "id";
     private static final String BOOK_COPY_STATUS_COLUMN = "status";
     private static final String REGISTRATION_DATE_COLUMN = "registrationDate";
@@ -23,61 +22,28 @@ public class BookCopyRepositoryImpl implements BookCopyRepository {
 
     private static final String DELETE_BOOK_DAMAGE_QUERY = "delete BookDamage bd where bd.bookCopy.id=:bookCopyId";
 
-    @Override
-    public BookCopy findById(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(BookCopy.class, id);
-        }
+    public BookCopyRepositoryImpl() {
+        super(BookCopy.class);
     }
 
     @Override
-    public List<BookCopy> findAll() throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery(SELECT_ALL_QUERY, BookCopy.class).list();
-        }
+    protected String defineSelectAllQuery() {
+        return SELECT_ALL_QUERY;
     }
 
     @Override
-    public boolean add(BookCopy bookCopy) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.save(bookCopy);
-            return true;
-        }
+    protected String defineUpdateQuery() {
+        return UPDATE_QUERY;
     }
 
     @Override
-    public boolean update(BookCopy bookCopy) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            try {
-                session.getTransaction().begin();
-                Query query = session.createQuery(UPDATE_QUERY);
-                constructQuery(query, bookCopy);
-                query.executeUpdate();
-                session.getTransaction().commit();
-                return true;
-            } catch (Exception ex) {
-                session.getTransaction().rollback();
-                throw new RepositoryException("Book copy was not updated[" + ex.getMessage() + "]");
-            }
-        }
+    protected void deleteLinks(Session session, BookCopy bookCopy) {
+        deleteOrderLinks(bookCopy, bookCopy.getOrders());
+        deleteBookDamage(session, bookCopy);
     }
 
-    @Override
-    public boolean delete(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            try {
-                session.getTransaction().begin();
-                BookCopy bookCopy = session.get(BookCopy.class, id);
-                bookCopy.getOrders().forEach(order -> order.getBookCopies().remove(bookCopy));
-                deleteBookDamage(session, bookCopy);
-                session.delete(bookCopy);
-                session.getTransaction().commit();
-                return true;
-            } catch (Exception ex) {
-                session.getTransaction().rollback();
-                throw new RepositoryException("Book copy was not deleted[" + ex.getMessage() + "]");
-            }
-        }
+    private void deleteOrderLinks(BookCopy bookCopy, Set<Order> orders) {
+        orders.forEach(order -> order.getBookCopies().remove(bookCopy));
     }
 
     private void deleteBookDamage(Session session, BookCopy bookCopy) {
@@ -86,7 +52,8 @@ public class BookCopyRepositoryImpl implements BookCopyRepository {
                 .executeUpdate();
     }
 
-    private void constructQuery(Query query, BookCopy bookCopy) {
+    @Override
+    protected void constructQuery(org.hibernate.query.Query query, BookCopy bookCopy) {
         query.setParameter(BOOK_COPY_STATUS_COLUMN, bookCopy.getStatus())
                 .setParameter(REGISTRATION_DATE_COLUMN, bookCopy.getRegistrationDate())
                 .setParameter(IMAGE_PATH_COLUMN, bookCopy.getImagePath())
