@@ -3,8 +3,8 @@ package by.library.yavlash.repository.impl;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.Order;
 import by.library.yavlash.repository.BookCopyRepository;
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import java.util.Set;
 
@@ -53,7 +53,7 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
     }
 
     @Override
-    protected void constructQuery(org.hibernate.query.Query query, BookCopy bookCopy) {
+    protected void constructQuery(Query query, BookCopy bookCopy) {
         query.setParameter(BOOK_COPY_STATUS_COLUMN, bookCopy.getStatus())
                 .setParameter(REGISTRATION_DATE_COLUMN, bookCopy.getRegistrationDate())
                 .setParameter(IMAGE_PATH_COLUMN, bookCopy.getImagePath())

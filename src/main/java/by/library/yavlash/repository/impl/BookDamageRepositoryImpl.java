@@ -2,8 +2,8 @@ package by.library.yavlash.repository.impl;
 
 import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.repository.BookDamageRepository;
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 public class BookDamageRepositoryImpl extends AbstractRepositoryImpl<BookDamage> implements BookDamageRepository {
     private static final String ID_COLUMN = "id";
@@ -33,7 +33,7 @@ public class BookDamageRepositoryImpl extends AbstractRepositoryImpl<BookDamage>
     }
 
     @Override
-    protected void constructQuery(org.hibernate.query.Query query, BookDamage element) {
+    protected void constructQuery(Query query, BookDamage element) {
         query.setParameter(IMAGE_PATH_COLUMN, element.getImagePath())
                 .setParameter(DAMAGE_DESCRIPTION_COLUMN, element.getDamageDescription())
                 .setParameter(ID_COLUMN, element.getId());
