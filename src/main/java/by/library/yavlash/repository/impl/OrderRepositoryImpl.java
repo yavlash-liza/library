@@ -1,20 +1,14 @@
 package by.library.yavlash.repository.impl;
 
-import by.library.yavlash.entity.Author;
-import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.Order;
-import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.OrderRepository;
-import by.library.yavlash.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-import java.util.List;
 import java.util.Set;
 
 public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implements OrderRepository {
-    private static final String ID_COLUMN = "id";
     private static final String ORDER_STATUS_COLUMN = "orderStatus";
     private static final String START_DATE_COLUMN = "startDate";
     private static final String END_DATE_COLUMN = "endDate";
@@ -42,7 +36,6 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
         return UPDATE_QUERY;
     }
 
-    @Override
     protected void deleteLinks(Session session, Order order) {
         deleteBookCopyLinks(order, order.getBookCopies());
         deleteBookDamage(session, order);
@@ -63,7 +56,6 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
         query.setParameter(ORDER_STATUS_COLUMN, order.getOrderStatus())
                 .setParameter(START_DATE_COLUMN, order.getStartDate())
                 .setParameter(END_DATE_COLUMN, order.getEndDate())
-                .setParameter(PRICE_COLUMN, order.getPrice())
-                .setParameter(ID_COLUMN, order.getId());
+                .setParameter(PRICE_COLUMN, order.getPrice());
     }
 }

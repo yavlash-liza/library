@@ -12,6 +12,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements BaseRepository<E> {
+    private static final String ID_COLUMN = "id";
     private final Class<E> clazz;
 
     @Override
@@ -19,7 +20,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(clazz, id);
         } catch (Exception ex) {
-            throw new RepositoryException("{} findById in class: " + clazz.getSimpleName() + " has been failed: " + ex.getMessage(), ex);
+            throw new RepositoryException(String.format("%s: {%s}", clazz.getSimpleName(), ex.getMessage()));
         }
     }
 
@@ -28,7 +29,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery(defineSelectAllQuery(), clazz).list();
         } catch (Exception ex) {
-            throw new RepositoryException("{} findAll in class: " + clazz.getSimpleName() + " has been failed: " + ex.getMessage(), ex);
+            throw new RepositoryException(String.format("%s: {%s}", clazz.getSimpleName(), ex.getMessage()));
         }
     }
 
@@ -41,7 +42,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
                 session.save(element);
                 return true;
             } catch (Exception ex) {
-                throw new RepositoryException("{} add in class: " + clazz.getSimpleName() + " has been failed: " + ex.getMessage(), ex);
+                throw new RepositoryException(String.format("%s: {%s}", clazz.getSimpleName(), ex.getMessage()));
             }
         }
     }
@@ -58,14 +59,16 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
                 return true;
             } catch (Exception ex) {
                 session.getTransaction().rollback();
-                throw new RepositoryException("{} update in class: " + clazz.getSimpleName() + " has been failed: " + ex.getMessage(), ex);
+                throw new RepositoryException(String.format("%s: {%s}", clazz.getSimpleName(), ex.getMessage()));
             }
         }
     }
 
     protected abstract String defineUpdateQuery();
 
-    protected abstract void constructQuery(Query query, E element);
+    protected void constructQuery(Query query, E element){
+        query.setParameter(ID_COLUMN, element.getId());
+    };
 
     @Override
     public boolean delete(Long id) throws RepositoryException {
@@ -79,10 +82,11 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
                 return true;
             } catch (Exception ex) {
                 session.getTransaction().rollback();
-                throw new RepositoryException("{} delete in class: " + clazz.getSimpleName() + " has been failed: " + ex.getMessage(), ex);
+                throw new RepositoryException(String.format("%s: {%s}", clazz.getSimpleName(), ex.getMessage()));
             }
         }
     }
 
-    protected abstract void deleteLinks(Session session, E element);
+    protected void deleteLinks(Session session, E element) {
+    }
 }

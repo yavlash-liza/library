@@ -9,7 +9,6 @@ import org.hibernate.query.Query;
 import java.util.Set;
 
 public class GenreRepositoryImpl extends AbstractRepositoryImpl<Genre> implements GenreRepository {
-    private static final String ID_COLUMN = "id";
     private static final String GENRE_NAME_COLUMN = "genreName";
 
     private static final String SELECT_ALL_QUERY = "from Genre";
@@ -29,7 +28,6 @@ public class GenreRepositoryImpl extends AbstractRepositoryImpl<Genre> implement
         return UPDATE_QUERY;
     }
 
-    @Override
     protected void deleteLinks(Session session, Genre genre) {
         deleteBookGenreLinks(genre, genre.getBooks());
     }
@@ -40,7 +38,6 @@ public class GenreRepositoryImpl extends AbstractRepositoryImpl<Genre> implement
 
     @Override
     protected void constructQuery(Query query, Genre genre) {
-        query.setParameter(GENRE_NAME_COLUMN, genre.getGenreName())
-                .setParameter(ID_COLUMN, genre.getId());
+        query.setParameter(GENRE_NAME_COLUMN, genre.getGenreName());
     }
 }

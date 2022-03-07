@@ -20,8 +20,9 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
 
     private static final String SELECT_ALL_QUERY = "from User";
     private static final String UPDATE_QUERY =
-            "update User set firstName=:firstName, lastName=:lastName, passportNumber=:passportNumber, email=:email, " +
-                    "address=:address, birthDate=:birthDate where id=:id";
+            "update User set firstName=:firstName, lastName=:lastName, passportNumber=:passportNumber," +
+                    " email=:email, address=:address, birthDate=:birthDate " +
+                    " where id=:id";
 
     private static final String DELETE_BOOK_DAMAGE_QUERY = "delete BookDamage bd where bd.user.id=:userId";
     private static final String DELETE_ORDER_QUERY = "delete Order o where o.user.id=:userId";
@@ -40,7 +41,6 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
         return UPDATE_QUERY;
     }
 
-    @Override
     protected void deleteLinks(Session session, User user) {
         deleteRoleLinks(user, user.getRoles());
         deleteBookDamage(session, user);

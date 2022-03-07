@@ -6,13 +6,13 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 public class BookDamageRepositoryImpl extends AbstractRepositoryImpl<BookDamage> implements BookDamageRepository {
-    private static final String ID_COLUMN = "id";
     private static final String IMAGE_PATH_COLUMN = "imagePath";
     private static final String DAMAGE_DESCRIPTION_COLUMN = "damageDescription";
 
     private static final String SELECT_ALL_QUERY = "from BookDamage";
     private static final String UPDATE_QUERY =
-            "update BookDamage set imagePath=:imagePath, damageDescription=:damageDescription where id=:id";
+            "update BookDamage set imagePath=:imagePath, damageDescription=:damageDescription " +
+                    " where id=:id";
 
     public BookDamageRepositoryImpl() {
         super(BookDamage.class);
@@ -28,14 +28,12 @@ public class BookDamageRepositoryImpl extends AbstractRepositoryImpl<BookDamage>
         return UPDATE_QUERY;
     }
 
-    @Override
     protected void deleteLinks(Session session, BookDamage bookDamage) {
     }
 
     @Override
     protected void constructQuery(Query query, BookDamage element) {
         query.setParameter(IMAGE_PATH_COLUMN, element.getImagePath())
-                .setParameter(DAMAGE_DESCRIPTION_COLUMN, element.getDamageDescription())
-                .setParameter(ID_COLUMN, element.getId());
+                .setParameter(DAMAGE_DESCRIPTION_COLUMN, element.getDamageDescription());
     }
 }

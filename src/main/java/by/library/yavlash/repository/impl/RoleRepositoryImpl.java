@@ -9,7 +9,6 @@ import org.hibernate.query.Query;
 import java.util.Set;
 
 public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements RoleRepository {
-    private static final String ID_COLUMN = "id";
     private static final String ROLE_NAME_COLUMN = "roleName";
 
     private static final String SELECT_ALL_QUERY = "from Role";
@@ -29,7 +28,6 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
         return UPDATE_QUERY;
     }
 
-    @Override
     protected void deleteLinks(Session session, Role role) {
         deleteUsersLinks(role, role.getUsers());
     }
@@ -40,7 +38,6 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
 
     @Override
     protected void constructQuery(Query query, Role role) {
-        query.setParameter(ROLE_NAME_COLUMN, role.getRoleName())
-                .setParameter(ID_COLUMN, role.getId());
+        query.setParameter(ROLE_NAME_COLUMN, role.getRoleName());
     }
 }

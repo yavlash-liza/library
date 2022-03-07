@@ -34,7 +34,6 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
         return UPDATE_QUERY;
     }
 
-    @Override
     protected void deleteLinks(Session session, Author author) {
         deleteBookLinks(author, author.getBooks());
     }

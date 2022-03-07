@@ -11,7 +11,6 @@ import org.hibernate.query.Query;
 import java.util.Set;
 
 public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements BookRepository {
-    private static final String ID_COLUMN = "id";
     private static final String BOOK_COPY_ID_COLUMN = "bookCopyId";
     private static final String TITLE_COLUMN = "title";
     private static final String PAGES_COLUMN = "pagesNumber";
@@ -19,7 +18,9 @@ public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements 
     private static final String BOOK_ID_COLUMN = "bookId";
 
     private static final String SELECT_ALL_QUERY = "from Book";
-    private static final String UPDATE_QUERY = "update Book set title=:title, pagesNumber=:pagesNumber, imagePath=:imagePath where id=:id";
+    private static final String UPDATE_QUERY =
+            "update Book set title=:title, pagesNumber=:pagesNumber, imagePath=:imagePath " +
+                    " where id=:id";
 
     private static final String DELETE_BOOK_COPY_QUERY = "delete BookCopy bc where bc.book.id=:bookId";
     private static final String DELETE_BOOK_DAMAGE_QUERY = "DELETE BookDamage bd WHERE bd.bookCopy.id=:bookCopyId";
@@ -38,7 +39,6 @@ public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements 
         return UPDATE_QUERY;
     }
 
-    @Override
     protected void deleteLinks(Session session, Book book) {
         deleteGenreLinks(book, book.getGenres());
         deleteAuthorLinks(book, book.getAuthors());
@@ -72,7 +72,6 @@ public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements 
     protected void constructQuery(Query query, Book book) {
         query.setParameter(TITLE_COLUMN, book.getTitle())
                 .setParameter(PAGES_COLUMN, book.getPagesNumber())
-                .setParameter(IMAGE_PATH_COLUMN, book.getImagePath())
-                .setParameter(ID_COLUMN, book.getId());
+                .setParameter(IMAGE_PATH_COLUMN, book.getImagePath());
     }
 }
