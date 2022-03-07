@@ -74,12 +74,13 @@ class UserRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void deleteTest_shouldDeleteUser() throws RepositoryException {
         //given
-        Long userId = 1L;
+        User expected = User.builder().id(2L).firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).build();
 
         // when
-        boolean isDeleted = userRepository.delete(userId);
+        boolean isDeleted = userRepository.delete(expected.getId());
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNotEquals(expected, userRepository.findById(expected.getId()));
     }
 }

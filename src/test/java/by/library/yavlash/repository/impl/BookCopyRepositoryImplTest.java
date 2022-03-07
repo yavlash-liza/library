@@ -75,12 +75,13 @@ class BookCopyRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void deleteTest_shouldDeleteBookCopy() throws RepositoryException {
         //given
-        Long bookCopyId = 1L;
+        BookCopy expected = BookCopy.builder().id(2L).status("AVAILABLE").imagePath("image path").registrationDate(LocalDate.of(2000, 1, 1)).pricePerDay(13).book(Book.builder().id(2L).build()).build();
 
         // when
-        boolean isDeleted = bookCopyRepository.delete(bookCopyId);
+        boolean isDeleted = bookCopyRepository.delete(expected.getId());
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNotEquals(expected, bookCopyRepository.findById(expected.getId()));
     }
 }

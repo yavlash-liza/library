@@ -73,12 +73,13 @@ class GenreRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void deleteTest_shouldDeleteGenre() throws RepositoryException {
         //given
-        Long genreId = 1L;
+        Genre expected = Genre.builder().id(2L).genreName("tale").build();
 
         // when
-        boolean isDeleted = genreRepository.delete(genreId);
+        boolean isDeleted = genreRepository.delete(expected.getId());
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNotEquals(expected, genreRepository.findById(expected.getId()));
     }
 }

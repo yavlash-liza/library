@@ -75,12 +75,13 @@ class OrderRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void deleteTest_shouldDeleteOrder() throws RepositoryException {
         //given
-        Long orderId = 1L;
+        Order expected = Order.builder().id(2L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(243).user(User.builder().id(1L).build()).build();
 
         // when
-        boolean isDeleted = orderRepository.delete(orderId);
+        boolean isDeleted = orderRepository.delete(expected.getId());
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNotEquals(expected, orderRepository.findById(expected.getId()));
     }
 }

@@ -76,12 +76,13 @@ class BookDamageRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void deleteTest_shouldDeleteBookDamage() throws RepositoryException {
         //given
-        Long bookDamageId = 1L;
+        BookDamage expected = BookDamage.builder().id(2L).imagePath("image path").damageDescription("damage3").user(User.builder().id(1L).build()).order(Order.builder().id(2L).build()).bookCopy(BookCopy.builder().id(3L).build()).build();
 
         // when
-        boolean isDeleted = bookDamageRepository.delete(bookDamageId);
+        boolean isDeleted = bookDamageRepository.delete(expected.getId());
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNotEquals(expected, bookDamageRepository.findById(expected.getId()));
     }
 }

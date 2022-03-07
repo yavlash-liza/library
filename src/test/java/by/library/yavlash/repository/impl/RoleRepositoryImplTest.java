@@ -73,12 +73,13 @@ class RoleRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void deleteTest_shouldDeleteRole() throws RepositoryException {
         //given
-        Long roleId = 1L;
+        Role expected = Role.builder().id(2L).roleName("superUser").build();
 
         // when
-        boolean isDeleted = roleRepository.delete(roleId);
+        boolean isDeleted = roleRepository.delete(expected.getId());
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNotEquals(expected, roleRepository.findById(expected.getId()));
     }
 }

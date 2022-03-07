@@ -74,12 +74,13 @@ class AuthorRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void deleteTest_shouldDeleteAuthor() throws RepositoryException {
         //given
-        Long authorId = 1L;
+        Author expected = Author.builder().id(2L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1998, 8, 8)).imagePath("image path").build();
 
         // when
-        boolean isDeleted = authorRepository.delete(authorId);
+        boolean isDeleted = authorRepository.delete(expected.getId());
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNotEquals(expected, authorRepository.findById(expected.getId()));
     }
 }

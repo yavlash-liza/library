@@ -73,12 +73,13 @@ class BookRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void deleteTest_shouldDeleteBook() throws RepositoryException {
         //given
-        Long bookId = 1L;
+        Book expected = Book.builder().id(2L).title("Hello").pagesNumber(12).imagePath("image path").build();
 
         // when
-        boolean isDeleted = bookRepository.delete(bookId);
+        boolean isDeleted = bookRepository.delete(expected.getId());
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNotEquals(expected, bookRepository.findById(expected.getId()));
     }
 }
