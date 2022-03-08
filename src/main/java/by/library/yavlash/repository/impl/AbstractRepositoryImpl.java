@@ -20,7 +20,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(clazz, id);
         } catch (Exception ex) {
-            throw new RepositoryException(String.format("%s: {%s}", clazz.getSimpleName(), ex.getMessage()));
+            throw new RepositoryException(String.format("%s was not found: {%s}", clazz.getSimpleName(), ex.getMessage()));
         }
     }
 
@@ -29,7 +29,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery(defineSelectAllQuery(), clazz).list();
         } catch (Exception ex) {
-            throw new RepositoryException(String.format("%s: {%s}", clazz.getSimpleName(), ex.getMessage()));
+            throw new RepositoryException(String.format("%ss were not found: {%s}", clazz.getSimpleName(), ex.getMessage()));
         }
     }
 
@@ -42,7 +42,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
                 session.save(element);
                 return true;
             } catch (Exception ex) {
-                throw new RepositoryException(String.format("%s: {%s}", clazz.getSimpleName(), ex.getMessage()));
+                throw new RepositoryException(String.format("%s was not added: {%s}", clazz.getSimpleName(), ex.getMessage()));
             }
         }
     }
@@ -59,7 +59,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
                 return true;
             } catch (Exception ex) {
                 session.getTransaction().rollback();
-                throw new RepositoryException(String.format("%s: {%s}", clazz.getSimpleName(), ex.getMessage()));
+                throw new RepositoryException(String.format("%s was not updated: {%s}", clazz.getSimpleName(), ex.getMessage()));
             }
         }
     }
@@ -82,7 +82,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
                 return true;
             } catch (Exception ex) {
                 session.getTransaction().rollback();
-                throw new RepositoryException(String.format("%s: {%s}", clazz.getSimpleName(), ex.getMessage()));
+                throw new RepositoryException(String.format("%s was not deleted: {%s}", clazz.getSimpleName(), ex.getMessage()));
             }
         }
     }
