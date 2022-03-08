@@ -82,6 +82,6 @@ class OrderRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertNotEquals(expected, orderRepository.findById(expected.getId()));
+        Assertions.assertNull(orderRepository.findById(expected.getId()));
     }
 }

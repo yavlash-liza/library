@@ -80,6 +80,6 @@ class RoleRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertNotEquals(expected, roleRepository.findById(expected.getId()));
+        Assertions.assertNull(roleRepository.findById(expected.getId()));
     }
 }

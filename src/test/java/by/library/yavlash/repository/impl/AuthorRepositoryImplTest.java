@@ -81,6 +81,6 @@ class AuthorRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertNotEquals(expected, authorRepository.findById(expected.getId()));
+        Assertions.assertNull(authorRepository.findById(expected.getId()));
     }
 }
