@@ -57,6 +57,7 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
         query.setParameter(BOOK_COPY_STATUS_COLUMN, bookCopy.getStatus())
                 .setParameter(REGISTRATION_DATE_COLUMN, bookCopy.getRegistrationDate())
                 .setParameter(IMAGE_PATH_COLUMN, bookCopy.getImagePath())
-                .setParameter(PRICE_PER_DAY_COLUMN, bookCopy.getPricePerDay());
+                .setParameter(PRICE_PER_DAY_COLUMN, bookCopy.getPricePerDay())
+                .setParameter(ID_COLUMN, bookCopy.getId());
     }
 }

@@ -38,6 +38,7 @@ public class GenreRepositoryImpl extends AbstractRepositoryImpl<Genre> implement
 
     @Override
     protected void constructQuery(Query query, Genre genre) {
-        query.setParameter(GENRE_NAME_COLUMN, genre.getGenreName());
+        query.setParameter(GENRE_NAME_COLUMN, genre.getGenreName())
+                .setParameter(ID_COLUMN, genre.getId());
     }
 }

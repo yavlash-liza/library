@@ -12,7 +12,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements BaseRepository<E> {
-    private static final String ID_COLUMN = "id";
+    protected static final String ID_COLUMN = "id";
     private final Class<E> clazz;
 
     @Override
@@ -66,9 +66,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
 
     protected abstract String defineUpdateQuery();
 
-    protected void constructQuery(Query query, E element){
-        query.setParameter(ID_COLUMN, element.getId());
-    };
+    protected abstract void constructQuery(Query query, E element);
 
     @Override
     public boolean delete(Long id) throws RepositoryException {

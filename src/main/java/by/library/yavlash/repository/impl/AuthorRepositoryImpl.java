@@ -9,7 +9,6 @@ import org.hibernate.query.Query;
 import java.util.Set;
 
 public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> implements AuthorRepository {
-    private static final String ID_COLUMN = "id";
     private static final String FIRST_NAME_COLUMN = "firstName";
     private static final String LAST_NAME_COLUMN = "lastName";
     private static final String BIRTH_DATE_COLUMN = "birthDate";
@@ -43,11 +42,11 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
     }
 
     @Override
-    protected void constructQuery(Query query, Author element) {
-        query.setParameter(FIRST_NAME_COLUMN, element.getFirstName())
-                .setParameter(LAST_NAME_COLUMN, element.getLastName())
-                .setParameter(BIRTH_DATE_COLUMN, element.getBirthDate())
-                .setParameter(IMAGE_PATH_COLUMN, element.getImagePath())
-                .setParameter(ID_COLUMN, element.getId());
+    protected void constructQuery(Query query, Author author) {
+        query.setParameter(FIRST_NAME_COLUMN, author.getFirstName())
+                .setParameter(LAST_NAME_COLUMN, author.getLastName())
+                .setParameter(BIRTH_DATE_COLUMN, author.getBirthDate())
+                .setParameter(IMAGE_PATH_COLUMN, author.getImagePath())
+                .setParameter(ID_COLUMN, author.getId());
     }
 }

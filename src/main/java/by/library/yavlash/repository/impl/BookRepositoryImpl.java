@@ -72,6 +72,7 @@ public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements 
     protected void constructQuery(Query query, Book book) {
         query.setParameter(TITLE_COLUMN, book.getTitle())
                 .setParameter(PAGES_COLUMN, book.getPagesNumber())
-                .setParameter(IMAGE_PATH_COLUMN, book.getImagePath());
+                .setParameter(IMAGE_PATH_COLUMN, book.getImagePath())
+                .setParameter(ID_COLUMN, book.getId());
     }
 }

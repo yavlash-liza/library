@@ -32,8 +32,9 @@ public class BookDamageRepositoryImpl extends AbstractRepositoryImpl<BookDamage>
     }
 
     @Override
-    protected void constructQuery(Query query, BookDamage element) {
-        query.setParameter(IMAGE_PATH_COLUMN, element.getImagePath())
-                .setParameter(DAMAGE_DESCRIPTION_COLUMN, element.getDamageDescription());
+    protected void constructQuery(Query query, BookDamage bookDamage) {
+        query.setParameter(IMAGE_PATH_COLUMN, bookDamage.getImagePath())
+                .setParameter(DAMAGE_DESCRIPTION_COLUMN, bookDamage.getDamageDescription())
+                .setParameter(ID_COLUMN, bookDamage.getId());
     }
 }

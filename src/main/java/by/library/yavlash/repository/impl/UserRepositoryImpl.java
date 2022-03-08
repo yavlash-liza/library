@@ -15,7 +15,6 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     private static final String EMAIL_COLUMN = "email";
     private static final String ADDRESS_COLUMN = "address";
     private static final String BIRTH_DATE_COLUMN = "birthDate";
-    private static final String ID_COLUMN = "id";
     private static final String USER_ID_COLUMN = "userId";
 
     private static final String SELECT_ALL_QUERY = "from User";

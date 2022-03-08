@@ -38,6 +38,7 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
 
     @Override
     protected void constructQuery(Query query, Role role) {
-        query.setParameter(ROLE_NAME_COLUMN, role.getRoleName());
+        query.setParameter(ROLE_NAME_COLUMN, role.getRoleName())
+                .setParameter(ID_COLUMN, role.getId());
     }
 }

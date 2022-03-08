@@ -56,6 +56,7 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
         query.setParameter(ORDER_STATUS_COLUMN, order.getOrderStatus())
                 .setParameter(START_DATE_COLUMN, order.getStartDate())
                 .setParameter(END_DATE_COLUMN, order.getEndDate())
-                .setParameter(PRICE_COLUMN, order.getPrice());
+                .setParameter(PRICE_COLUMN, order.getPrice())
+                .setParameter(ID_COLUMN, order.getId());
     }
 }
