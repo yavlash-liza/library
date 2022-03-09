@@ -1,134 +1,75 @@
 package by.library.yavlash.repository.impl;
 
+import by.library.yavlash.entity.Role;
 import by.library.yavlash.entity.User;
 import by.library.yavlash.repository.UserRepository;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements UserRepository {
-    private static final String FIRST_NAME_COLUMN = "first_name";
-    private static final String LAST_NAME_COLUMN = "last_name";
-    private static final String PASSPORT_COLUMN = "passport";
+    private static final String FIRST_NAME_COLUMN = "firstName";
+    private static final String LAST_NAME_COLUMN = "lastName";
+    private static final String PASSPORT_COLUMN = "passportNumber";
     private static final String EMAIL_COLUMN = "email";
     private static final String ADDRESS_COLUMN = "address";
-    private static final String BIRTH_DATE_COLUMN = "birth_date";
+    private static final String BIRTH_DATE_COLUMN = "birthDate";
+    private static final String USER_ID_COLUMN = "userId";
 
-    private static final String SELECT_BY_ID_QUERY = "SELECT * FROM users WHERE id=?";
-    private static final String SELECT_ALL_QUERY = "SELECT * FROM users";
-    private static final String INSERT_QUERY =
-            "INSERT INTO users (first_name, last_name, passport, email, address, birth_date) VALUES (?,?,?,?,?,?)";
+    private static final String SELECT_ALL_QUERY = "from User";
     private static final String UPDATE_QUERY =
-            "UPDATE users SET first_name=?, last_name=?, passport=?, email=?, address=?, birth_date=? WHERE id=?";
-    private static final String DELETE_QUERY = "DELETE FROM users WHERE id=?";
+            "update User set firstName=:firstName, lastName=:lastName, passportNumber=:passportNumber," +
+                    " email=:email, address=:address, birthDate=:birthDate " +
+                    " where id=:id";
 
-    private static final String SELECT_ORDERS_BY_USER_ID_QUERY = "SELECT id FROM orders WHERE user_id=?";
-    private static final String DELETE_ROLE_LINKS_QUERY = "DELETE FROM user_role_links WHERE user_id=?";
-    private static final String DELETE_ORDERS_QUERY = "DELETE FROM orders WHERE user_id=?";
-    private static final String DELETE_ORDER_LINKS_QUERY = "DELETE FROM order_book_copy_links WHERE order_id=?";
-    private static final String DELETE_BOOK_DAMAGE_QUERY = "DELETE FROM book_damage WHERE user_id=?";
+    private static final String DELETE_BOOK_DAMAGE_QUERY = "delete BookDamage bd where bd.user.id=:userId";
+    private static final String DELETE_ORDER_QUERY = "delete Order o where o.user.id=:userId";
 
-    public UserRepositoryImpl(DataSource dataSource) {
-        super(dataSource);
+    public UserRepositoryImpl() {
+        super(User.class);
     }
 
     @Override
-    protected String getSelectByIdQuery() {
-        return SELECT_BY_ID_QUERY;
-    }
-
-    @Override
-    protected String getSelectAllQuery() {
+    protected String defineSelectAllQuery() {
         return SELECT_ALL_QUERY;
     }
 
     @Override
-    protected String getInsertQuery() {
-        return INSERT_QUERY;
-    }
-
-    @Override
-    protected String getUpdateQuery() {
+    protected String defineUpdateQuery() {
         return UPDATE_QUERY;
     }
 
-    @Override
-    protected String getDeleteQuery() {
-        return DELETE_QUERY;
+    protected void deleteLinks(Session session, User user) {
+        deleteRoleLinks(user, user.getRoles());
+        deleteBookDamage(session, user);
+        deleteOrder(session, user);
+    }
+
+    private void deleteRoleLinks(User user, Set<Role> roles) {
+        roles.forEach(role -> role.getUsers().remove(user));
+    }
+
+    private void deleteBookDamage(Session session, User user) {
+        session.createQuery(DELETE_BOOK_DAMAGE_QUERY)
+                .setParameter(USER_ID_COLUMN, user.getId())
+                .executeUpdate();
+    }
+
+    private void deleteOrder(Session session, User user) {
+        session.createQuery(DELETE_ORDER_QUERY)
+                .setParameter(USER_ID_COLUMN, user.getId())
+                .executeUpdate();
     }
 
     @Override
-    protected User construct(ResultSet resultSet) throws SQLException {
-        return User.builder()
-                .id(resultSet.getLong(ID_COLUMN))
-                .firstName(resultSet.getString(FIRST_NAME_COLUMN))
-                .lastName(resultSet.getString(LAST_NAME_COLUMN))
-                .passportNumber(resultSet.getString(PASSPORT_COLUMN))
-                .email(resultSet.getString(EMAIL_COLUMN))
-                .address(resultSet.getString(ADDRESS_COLUMN))
-                .birthDate(resultSet.getDate(BIRTH_DATE_COLUMN).toLocalDate())
-                .build();
-    }
-
-    @Override
-    protected void settingPreparedStatement(PreparedStatement preparedStatement, User user) throws SQLException {
-        preparedStatement.setString(1, user.getFirstName());
-        preparedStatement.setString(2, user.getLastName());
-        preparedStatement.setString(3, user.getPassportNumber());
-        preparedStatement.setString(4, user.getEmail());
-        preparedStatement.setString(5, user.getAddress());
-        preparedStatement.setDate(6, Date.valueOf(user.getBirthDate()));
-    }
-
-    @Override
-    protected void deleteLinks(Connection connection, Long id) throws SQLException {
-        deleteUserRoleLinks(connection, id);
-        deleteBookDamage(connection, id);
-        deleteUserOrders(connection, id);
-    }
-
-    private void deleteUserRoleLinks(Connection connection, Long userId) throws SQLException {
-        deleteUserLinks(connection, userId, DELETE_ROLE_LINKS_QUERY);
-    }
-
-    private void deleteUserLinks(Connection connection, Long id, String query) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setLong(1, id);
-            preparedStatement.executeUpdate();
-        }
-    }
-
-    private void deleteBookDamage(Connection connection, Long userId) throws SQLException {
-        deleteUserLinks(connection, userId, DELETE_BOOK_DAMAGE_QUERY);
-    }
-
-    private void deleteUserOrders(Connection connection, Long userId) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ORDERS_BY_USER_ID_QUERY)) {
-            preparedStatement.setLong(1, userId);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                List<Long> ordersId = new ArrayList<>();
-                while (resultSet.next()) {
-                    ordersId.add(resultSet.getLong(1));
-                }
-                deleteOrdersLinks(connection, ordersId);
-                deleteOrders(connection, userId);
-            }
-        }
-    }
-
-    private void deleteOrdersLinks(Connection connection, List<Long> orders) throws SQLException {
-        for (Long orderId : orders) {
-            deleteUserLinks(connection, orderId, DELETE_ORDER_LINKS_QUERY);
-        }
-    }
-
-    private void deleteOrders(Connection connection, Long userId) throws SQLException {
-        deleteUserLinks(connection, userId, DELETE_ORDERS_QUERY);
+    protected void constructQuery(Query query, User user) {
+        query.setParameter(FIRST_NAME_COLUMN, user.getFirstName())
+                .setParameter(LAST_NAME_COLUMN, user.getLastName())
+                .setParameter(PASSPORT_COLUMN, user.getPassportNumber())
+                .setParameter(EMAIL_COLUMN, user.getEmail())
+                .setParameter(ADDRESS_COLUMN, user.getAddress())
+                .setParameter(BIRTH_DATE_COLUMN, user.getBirthDate())
+                .setParameter(ID_COLUMN, user.getId());
     }
 }

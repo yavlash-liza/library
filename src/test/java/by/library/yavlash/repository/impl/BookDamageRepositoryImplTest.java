@@ -1,6 +1,9 @@
 package by.library.yavlash.repository.impl;
 
 import by.library.yavlash.entity.BookDamage;
+import by.library.yavlash.entity.BookCopy;
+import by.library.yavlash.entity.User;
+import by.library.yavlash.entity.Order;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
@@ -12,7 +15,7 @@ class BookDamageRepositoryImplTest extends BaseRepositoryTest {
     private final BookDamageRepositoryImpl bookDamageRepository;
 
     public BookDamageRepositoryImplTest() {
-        bookDamageRepository = new BookDamageRepositoryImpl(getDataSource());
+        bookDamageRepository = new BookDamageRepositoryImpl();
     }
 
     @Test
@@ -42,21 +45,25 @@ class BookDamageRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedBookDamage() throws RepositoryException {
         //given
-        BookDamage expected = BookDamage.builder().id(5L).imagePath("image path").damageDescription("damage5").userId(1L).orderId(2L).bookCopyId(3L).build();
-        BookDamage actual = BookDamage.builder().imagePath("image path").damageDescription("damage5").userId(1L).orderId(2L).bookCopyId(3L).build();
+        List<BookDamage> expected = findBookDamageForFindAll();
+        Assertions.assertEquals(4, expected.size());
 
         //when
-        actual = bookDamageRepository.add(actual);
+        BookDamage newBookDamageActual = BookDamage.builder().imagePath("image path").damageDescription("damage5").user(User.builder().id(1L).build()).order(Order.builder().id(2L).build()).bookCopy(BookCopy.builder().id(3L).build()).build();
+        boolean isAdded = bookDamageRepository.add(newBookDamageActual);
+        BookDamage newBookDamageExpected = BookDamage.builder().id(5L).imagePath("image path").damageDescription("damage5").user(User.builder().id(1L).build()).order(Order.builder().id(2L).build()).bookCopy(BookCopy.builder().id(3L).build()).build();
+        expected.add(newBookDamageExpected);
 
         //then
-        Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected, bookDamageRepository.findById(expected.getId()));
+        Assertions.assertTrue(isAdded);
+        Assertions.assertEquals(newBookDamageExpected, newBookDamageActual);
+        Assertions.assertEquals(newBookDamageExpected, bookDamageRepository.findById(newBookDamageActual.getId()));
     }
 
     @Test
     void updateTest_shouldUpdateBookDamage() throws RepositoryException {
         //given
-        BookDamage bookDamage = BookDamage.builder().id(2L).imagePath("image path").damageDescription("damage3").userId(1L).orderId(2L).bookCopyId(3L).build();
+        BookDamage bookDamage = BookDamage.builder().id(2L).imagePath("image path").damageDescription("damage3").user(User.builder().id(1L).build()).order(Order.builder().id(2L).build()).bookCopy(BookCopy.builder().id(3L).build()).build();
 
         // when
         boolean isUpdated = bookDamageRepository.update(bookDamage);
@@ -69,12 +76,13 @@ class BookDamageRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void deleteTest_shouldDeleteBookDamage() throws RepositoryException {
         //given
-        Long bookDamageId = 1L;
+        BookDamage expected = BookDamage.builder().id(2L).imagePath("image path").damageDescription("damage3").user(User.builder().id(1L).build()).order(Order.builder().id(2L).build()).bookCopy(BookCopy.builder().id(3L).build()).build();
 
         // when
-        boolean isDeleted = bookDamageRepository.delete(bookDamageId);
+        boolean isDeleted = bookDamageRepository.delete(expected.getId());
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNull(bookDamageRepository.findById(expected.getId()));
     }
 }

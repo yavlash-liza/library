@@ -12,7 +12,7 @@ class RoleRepositoryImplTest extends BaseRepositoryTest {
     private final RoleRepositoryImpl roleRepository;
 
     public RoleRepositoryImplTest() {
-        roleRepository = new RoleRepositoryImpl(getDataSource());
+        roleRepository = new RoleRepositoryImpl();
     }
 
     @Test
@@ -42,15 +42,19 @@ class RoleRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedRole() throws RepositoryException {
         //given
-        Role expected = Role.builder().id(3L).roleName("superUser").build();
-        Role actual = Role.builder().roleName("superUser").build();
+        List<Role> expected = findRolesForFindAll();
+        Assertions.assertEquals(2, expected.size());
 
         //when
-        actual = roleRepository.add(actual);
+        Role newRoleActual = Role.builder().roleName("superUser").build();
+        boolean isAdded = roleRepository.add(newRoleActual);
+        Role newRoleExpected = Role.builder().id(3L).roleName("superUser").build();
+        expected.add(newRoleExpected);
 
         //then
-        Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected, roleRepository.findById(expected.getId()));
+        Assertions.assertTrue(isAdded);
+        Assertions.assertEquals(newRoleExpected, newRoleActual);
+        Assertions.assertEquals(newRoleExpected, roleRepository.findById(newRoleActual.getId()));
     }
 
     @Test
@@ -69,12 +73,13 @@ class RoleRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void deleteTest_shouldDeleteRole() throws RepositoryException {
         //given
-        Long roleId = 1L;
+        Role expected = Role.builder().id(2L).roleName("superUser").build();
 
         // when
-        boolean isDeleted = roleRepository.delete(roleId);
+        boolean isDeleted = roleRepository.delete(expected.getId());
 
         //then
         Assertions.assertTrue(isDeleted);
+        Assertions.assertNull(roleRepository.findById(expected.getId()));
     }
 }
