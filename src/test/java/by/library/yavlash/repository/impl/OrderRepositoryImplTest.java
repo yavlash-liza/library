@@ -1,7 +1,6 @@
 package by.library.yavlash.repository.impl;
 
 import by.library.yavlash.entity.Order;
-import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
@@ -14,7 +13,7 @@ class OrderRepositoryImplTest extends BaseRepositoryTest {
     private final OrderRepositoryImpl orderRepository;
 
     public OrderRepositoryImplTest() {
-        orderRepository = new OrderRepositoryImpl();
+        orderRepository = new OrderRepositoryImpl(getDataSource());
     }
 
     @Test
@@ -44,25 +43,21 @@ class OrderRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedOrder() throws RepositoryException {
         //given
-        List<Order> expected = findOrdersForFindAll();
-        Assertions.assertEquals(5, expected.size());
+        Order expected = Order.builder().id(6L).orderStatus("NEW").startDate(LocalDate.of(1999, 7, 6)).endDate(LocalDate.of(1988, 5, 6)).price(223).userId(4L).build();
+        Order actual = Order.builder().orderStatus("NEW").startDate(LocalDate.of(1999, 7, 6)).endDate(LocalDate.of(1988, 5, 6)).price(223).userId(4L).build();
 
         //when
-        Order newOrderActual = Order.builder().orderStatus("NEW").startDate(LocalDate.of(1999, 7, 6)).endDate(LocalDate.of(1988, 5, 6)).price(223).user(User.builder().id(4L).build()).build();
-        boolean isAdded = orderRepository.add(newOrderActual);
-        Order newOrderExpected = Order.builder().id(6L).orderStatus("NEW").startDate(LocalDate.of(1999, 7, 6)).endDate(LocalDate.of(1988, 5, 6)).price(223).user(User.builder().id(4L).build()).build();
-        expected.add(newOrderExpected);
+        actual = orderRepository.add(actual);
 
         //then
-        Assertions.assertTrue(isAdded);
-        Assertions.assertEquals(newOrderExpected, newOrderActual);
-        Assertions.assertEquals(newOrderExpected, orderRepository.findById(newOrderActual.getId()));
+        Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, orderRepository.findById(expected.getId()));
     }
 
     @Test
     void updateTest_shouldUpdateOrder() throws RepositoryException {
         //given
-        Order order = Order.builder().id(2L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(243).user(User.builder().id(1L).build()).build();
+        Order order = Order.builder().id(2L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(243).userId(1L).build();
 
         // when
         boolean isUpdated = orderRepository.update(order);
@@ -75,13 +70,12 @@ class OrderRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void deleteTest_shouldDeleteOrder() throws RepositoryException {
         //given
-        Order expected = Order.builder().id(2L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(243).user(User.builder().id(1L).build()).build();
+        Long orderId = 1L;
 
         // when
-        boolean isDeleted = orderRepository.delete(expected.getId());
+        boolean isDeleted = orderRepository.delete(orderId);
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertNull(orderRepository.findById(expected.getId()));
     }
 }

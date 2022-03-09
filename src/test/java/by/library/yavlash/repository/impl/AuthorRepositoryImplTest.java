@@ -13,7 +13,7 @@ class AuthorRepositoryImplTest extends BaseRepositoryTest {
     private final AuthorRepositoryImpl authorRepository;
 
     public AuthorRepositoryImplTest() {
-        authorRepository = new AuthorRepositoryImpl();
+        authorRepository = new AuthorRepositoryImpl(getDataSource());
     }
 
     @Test
@@ -43,19 +43,15 @@ class AuthorRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedAuthor() throws RepositoryException {
         //given
-        List<Author> expected = findAuthorsForFindAll();
-        Assertions.assertEquals(5, expected.size());
+        Author expected = Author.builder().id(6L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
+        Author actual = Author.builder().firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
 
         //when
-        Author newAuthorActual = Author.builder().firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
-        boolean isAdded = authorRepository.add(newAuthorActual);
-        Author newAuthorExpected = Author.builder().id(6L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1999, 8, 8)).imagePath("image path").build();
-        expected.add(newAuthorExpected);
+        actual = authorRepository.add(actual);
 
         //then
-        Assertions.assertTrue(isAdded);
-        Assertions.assertEquals(newAuthorExpected, newAuthorActual);
-        Assertions.assertEquals(newAuthorExpected, authorRepository.findById(newAuthorActual.getId()));
+        Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, authorRepository.findById(expected.getId()));
     }
 
     @Test
@@ -74,13 +70,12 @@ class AuthorRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void deleteTest_shouldDeleteAuthor() throws RepositoryException {
         //given
-        Author expected = Author.builder().id(2L).firstName("Mikhail").lastName("Lermontov").birthDate(LocalDate.of(1998, 8, 8)).imagePath("image path").build();
+        Long authorId = 1L;
 
         // when
-        boolean isDeleted = authorRepository.delete(expected.getId());
+        boolean isDeleted = authorRepository.delete(authorId);
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertNull(authorRepository.findById(expected.getId()));
     }
 }

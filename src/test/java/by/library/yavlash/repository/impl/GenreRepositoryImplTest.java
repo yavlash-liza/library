@@ -12,7 +12,7 @@ class GenreRepositoryImplTest extends BaseRepositoryTest {
     private final GenreRepositoryImpl genreRepository;
 
     public GenreRepositoryImplTest() {
-        genreRepository = new GenreRepositoryImpl();
+        genreRepository = new GenreRepositoryImpl(getDataSource());
     }
 
     @Test
@@ -42,19 +42,15 @@ class GenreRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedGenre() throws RepositoryException {
         //given
-        List<Genre> expected = findGenresForFindAll();
-        Assertions.assertEquals(7, expected.size());
+        Genre expected = Genre.builder().id(8L).genreName("tale").build();
+        Genre actual = Genre.builder().genreName("tale").build();
 
         //when
-        Genre newGenreActual = Genre.builder().genreName("tale").build();
-        boolean isAdded = genreRepository.add(newGenreActual);
-        Genre newGenreExpected = Genre.builder().id(8L).genreName("tale").build();
-        expected.add(newGenreExpected);
+        actual = genreRepository.add(actual);
 
         //then
-        Assertions.assertTrue(isAdded);
-        Assertions.assertEquals(newGenreExpected, newGenreActual);
-        Assertions.assertEquals(newGenreExpected, genreRepository.findById(newGenreActual.getId()));
+        Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, genreRepository.findById(expected.getId()));
     }
 
     @Test
@@ -73,13 +69,12 @@ class GenreRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void deleteTest_shouldDeleteGenre() throws RepositoryException {
         //given
-        Genre expected = Genre.builder().id(2L).genreName("tale").build();
+        Long genreId = 1L;
 
         // when
-        boolean isDeleted = genreRepository.delete(expected.getId());
+        boolean isDeleted = genreRepository.delete(genreId);
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertNull(genreRepository.findById(expected.getId()));
     }
 }

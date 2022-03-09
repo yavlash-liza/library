@@ -12,7 +12,7 @@ class BookRepositoryImplTest extends BaseRepositoryTest {
     private final BookRepositoryImpl bookRepository;
 
     public BookRepositoryImplTest() {
-        bookRepository = new BookRepositoryImpl();
+        bookRepository = new BookRepositoryImpl(getDataSource());
     }
 
     @Test
@@ -42,19 +42,15 @@ class BookRepositoryImplTest extends BaseRepositoryTest {
     @Test
     void addTest_shouldReturnAddedBook() throws RepositoryException {
         //given
-        List<Book> expected = findBooksForFindAll();
-        Assertions.assertEquals(5, expected.size());
+        Book expected = Book.builder().id(6L).title("asd").pagesNumber(12).imagePath("image path").build();
+        Book actual = Book.builder().title("asd").pagesNumber(12).imagePath("image path").build();
 
         //when
-        Book newBookActual = Book.builder().title("asd").pagesNumber(12).imagePath("image path").build();
-        boolean isAdded = bookRepository.add(newBookActual);
-        Book newBookExpected = Book.builder().id(6L).title("asd").pagesNumber(12).imagePath("image path").build();
-        expected.add(newBookExpected);
+        actual = bookRepository.add(actual);
 
         //then
-        Assertions.assertTrue(isAdded);
-        Assertions.assertEquals(newBookExpected, newBookActual);
-        Assertions.assertEquals(newBookExpected, bookRepository.findById(newBookActual.getId()));
+        Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, bookRepository.findById(expected.getId()));
     }
 
     @Test
@@ -73,13 +69,12 @@ class BookRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void deleteTest_shouldDeleteBook() throws RepositoryException {
         //given
-        Book expected = Book.builder().id(2L).title("Hello").pagesNumber(12).imagePath("image path").build();
+        Long bookId = 1L;
 
         // when
-        boolean isDeleted = bookRepository.delete(expected.getId());
+        boolean isDeleted = bookRepository.delete(bookId);
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertNull(bookRepository.findById(expected.getId()));
     }
 }
