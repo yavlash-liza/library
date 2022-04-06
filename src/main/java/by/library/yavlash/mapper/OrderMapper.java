@@ -1,8 +1,8 @@
 package by.library.yavlash.mapper;
 
-import by.library.yavlash.dto.order.OrderDto;
-import by.library.yavlash.dto.order.OrderListDto;
-import by.library.yavlash.dto.order.OrderSaveDto;
+import by.library.yavlash.dto.OrderDto;
+import by.library.yavlash.dto.OrderListDto;
+import by.library.yavlash.dto.OrderSaveDto;
 import by.library.yavlash.entity.Order;
 import org.mapstruct.Mapper;
 
@@ -15,4 +15,5 @@ public interface OrderMapper {
     OrderListDto toOrderListDto(Order order);
     List<OrderListDto> toOrderListDtos(List<Order> order);
     Order fromSaveDto(OrderSaveDto orderSaveDto);
+    Order fromDto(OrderDto orderDto);
 }

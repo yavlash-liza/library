@@ -1,8 +1,8 @@
 package by.library.yavlash.mapper;
 
-import by.library.yavlash.dto.author.AuthorDto;
-import by.library.yavlash.dto.author.AuthorListDto;
-import by.library.yavlash.dto.author.AuthorSaveDto;
+import by.library.yavlash.dto.AuthorDto;
+import by.library.yavlash.dto.AuthorListDto;
+import by.library.yavlash.dto.AuthorSaveDto;
 import by.library.yavlash.entity.Author;
 import org.mapstruct.Mapper;
 

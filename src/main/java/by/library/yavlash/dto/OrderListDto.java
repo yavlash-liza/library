@@ -1,19 +1,16 @@
-package by.library.yavlash.dto.order;
+package by.library.yavlash.dto;
 
-import by.library.yavlash.dto.BookCopyDto;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 @Data
 @Builder
-public class OrderSaveDto {
+public class OrderListDto {
     private Long id;
+    private String orderStatus;
     private LocalDate startDate;
     private LocalDate endDate;
     private int price;
-    private Long userId;
-    private Set<BookCopyDto> bookCopies;
 }

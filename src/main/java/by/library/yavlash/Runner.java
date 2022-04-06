@@ -1,7 +1,5 @@
 package by.library.yavlash;
 
-import by.library.yavlash.entity.Genre;
-import by.library.yavlash.repository.impl.*;
 import by.library.yavlash.service.FlywayService;
 import org.h2.jdbcx.JdbcConnectionPool;
 
@@ -18,7 +16,7 @@ public class Runner {
 
 
 //        BookRepository bookRepository = new BookRepositoryImpl(dataSource);
-        GenreRepositoryImpl genreRepository = new GenreRepositoryImpl(dataSource);
+//        GenreRepositoryImpl genreRepository = new GenreRepositoryImpl(dataSource);
 //        UserRepository userRepository = new UserRepositoryImpl(dataSource);
 //        AuthorRepositoryImpl authorRepository = new AuthorRepositoryImpl(dataSource);
 //        OrderRepository orderRepository = new OrderRepositoryImpl(dataSource);
@@ -30,8 +28,8 @@ public class Runner {
 //        bookRepository.delete(2L);
 //        System.out.println(bookDamageRepository.findAll());
 //        System.out.println(bookCopyRepository.findAll());
-        System.out.println(genreRepository.findAll());
-        genreRepository.add(Genre.builder().genreName("tale").build());
-        System.out.println(genreRepository.findAll());
+//        System.out.println(genreRepository.findAll());
+//        genreRepository.add(Genre.builder().genreName("tale").build());
+//        System.out.println(genreRepository.findAll());
     }
 }

@@ -1,12 +1,10 @@
-package by.library.yavlash.dto.user;
+package by.library.yavlash.dto;
 
-import by.library.yavlash.dto.RoleDto;
-import by.library.yavlash.dto.order.OrderDto;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
@@ -16,7 +14,8 @@ public class UserDto {
     private String lastName;
     private String email;
     private String address;
+    private String passportNumber;
     private LocalDate birthDate;
-    private Set<OrderDto> orders;
-    private Set<RoleDto> roleName;
+    private List<OrderListDto> orders;
+    private List<Long> rolesId;
 }

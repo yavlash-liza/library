@@ -1,4 +1,4 @@
-package by.library.yavlash.dto.author;
+package by.library.yavlash.dto;
 
 import lombok.Builder;
 import lombok.Data;

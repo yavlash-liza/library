@@ -1,6 +1,8 @@
 package by.library.yavlash.mapper;
 
 import by.library.yavlash.dto.BookCopyDto;
+import by.library.yavlash.dto.BookCopyListDto;
+import by.library.yavlash.dto.BookCopySaveDto;
 import by.library.yavlash.entity.BookCopy;
 import org.mapstruct.Mapper;
 
@@ -10,4 +12,8 @@ import java.util.List;
 public interface BookCopyMapper {
     BookCopyDto toDto(BookCopy bookCopy);
     List<BookCopyDto> toDtos(List<BookCopy> bookCopy);
+    BookCopyListDto toBookCopyListDto(BookCopy bookCopy);
+    List<BookCopyListDto> toBookCopyListDtos(List<BookCopy> bookCopies);
+    BookCopy fromSaveDto(BookCopySaveDto bookCopySaveDto);
+    BookCopy fromDto(BookCopyDto bookCopyDto);
 }

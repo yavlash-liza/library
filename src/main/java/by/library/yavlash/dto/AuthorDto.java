@@ -1,11 +1,10 @@
-package by.library.yavlash.dto.author;
+package by.library.yavlash.dto;
 
-import by.library.yavlash.dto.book.BookDto;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Builder
 @Data
@@ -15,5 +14,5 @@ public class AuthorDto {
     private String lastName;
     private LocalDate birthDate;
     private String imagePath;
-    private Set<BookDto> books;
+    private List<BookCopyListDto> books;
 }

@@ -1,6 +1,5 @@
-package by.library.yavlash.dto.user;
+package by.library.yavlash.dto;
 
-import by.library.yavlash.dto.RoleDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,5 +12,5 @@ public class UserListDto {
     private String lastName;
     private String email;
     private String address;
-    private RoleDto role;
+    private Long roleId;
 }

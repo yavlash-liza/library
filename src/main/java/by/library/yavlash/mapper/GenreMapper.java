@@ -10,4 +10,5 @@ import java.util.List;
 public interface GenreMapper {
     GenreDto toDto(Genre genre);
     List<GenreDto> toListDto(List<Genre> genre);
+    Genre fromSaveDto(GenreDto genreDto);
 }
