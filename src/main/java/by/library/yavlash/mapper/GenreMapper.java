@@ -1,6 +1,6 @@
 package by.library.yavlash.mapper;
 
-import by.library.yavlash.dto.genre.GenreDto;
+import by.library.yavlash.dto.GenreDto;
 import by.library.yavlash.entity.Genre;
 import org.mapstruct.Mapper;
 

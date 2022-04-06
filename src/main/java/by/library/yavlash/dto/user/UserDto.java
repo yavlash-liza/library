@@ -18,6 +18,5 @@ public class UserDto {
     private String address;
     private LocalDate birthDate;
     private Set<OrderDto> orders;
-//    private Set<BookDamageDto> bookDamages; // todo кол-во, список испорченных книг
     private Set<RoleDto> roleName;
 }
