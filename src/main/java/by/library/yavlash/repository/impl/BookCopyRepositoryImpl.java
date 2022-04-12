@@ -1,8 +1,13 @@
 package by.library.yavlash.repository.impl;
 
+import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
+import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Order;
+import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.BookCopyRepository;
+import by.library.yavlash.util.HibernateUtil;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -25,6 +30,39 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
 
     public BookCopyRepositoryImpl() {
         super(BookCopy.class);
+    }
+
+    @Override
+    public Book findBookByBookCopyId(Long bookCopyId) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            BookCopy bookCopy = session.get(BookCopy.class, bookCopyId);
+            Hibernate.initialize(bookCopy.getBook());
+            return bookCopy.getBook();
+        } catch (Exception ex) {
+            throw new RepositoryException(String.format("%s was not found: {%s}", getClass().getSimpleName(), ex.getMessage()));
+        }
+    }
+
+    @Override
+    public Set<BookDamage> findBookDamagesByBookCopyId(Long bookCopyId) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            BookCopy bookCopy = session.get(BookCopy.class, bookCopyId);
+            Hibernate.initialize(bookCopy.getBookDamages());
+            return bookCopy.getBookDamages();
+        } catch (Exception ex) {
+            throw new RepositoryException(String.format("%s was not found: {%s}", getClass().getSimpleName(), ex.getMessage()));
+        }
+    }
+
+    @Override
+    public Set<Order> findOrdersByBookCopyId(Long bookCopyId) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            BookCopy bookCopy = session.get(BookCopy.class, bookCopyId);
+            Hibernate.initialize(bookCopy.getOrders());
+            return bookCopy.getOrders();
+        } catch (Exception ex) {
+            throw new RepositoryException(String.format("%s was not found: {%s}", getClass().getSimpleName(), ex.getMessage()));
+        }
     }
 
     @Override

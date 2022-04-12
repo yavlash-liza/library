@@ -1,12 +1,17 @@
 package by.library.yavlash.repository.impl;
 
+import by.library.yavlash.entity.Order;
 import by.library.yavlash.entity.Role;
 import by.library.yavlash.entity.User;
+import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.UserRepository;
+import by.library.yavlash.util.HibernateUtil;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements UserRepository {
     private static final String FIRST_NAME_COLUMN = "firstName";
@@ -28,6 +33,35 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
 
     public UserRepositoryImpl() {
         super(User.class);
+    }
+
+    @Override
+    public Set<Role> findRolesByUserId(Long userId) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            User user = session.get(User.class, userId);
+            Hibernate.initialize(user.getRoles());
+            return user.getRoles();
+        } catch (Exception ex) {
+            throw new RepositoryException(String.format("%s was not found: {%s}", getClass().getSimpleName(), ex.getMessage()));
+        }
+    }
+
+    @Override
+    public Set<Order> findOrdersByUserId(Long userId) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            User user = session.get(User.class, userId);
+            Hibernate.initialize(user.getOrders());
+            return user.getOrders();
+        } catch (Exception ex) {
+            throw new RepositoryException(String.format("%s was not found: {%s}", getClass().getSimpleName(), ex.getMessage()));
+        }
+    }
+
+    @Override
+    public Set<Role> findRolesByRolesId(Set<Long> rolesId) {
+        return rolesId.stream()
+                .map(roleId -> Role.builder().id(roleId).build())
+                .collect(Collectors.toSet());
     }
 
     @Override

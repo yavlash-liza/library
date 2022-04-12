@@ -2,7 +2,10 @@ package by.library.yavlash.repository.impl;
 
 import by.library.yavlash.entity.Author;
 import by.library.yavlash.entity.Book;
+import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.AuthorRepository;
+import by.library.yavlash.util.HibernateUtil;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -21,6 +24,17 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
 
     public AuthorRepositoryImpl() {
         super(Author.class);
+    }
+
+    @Override
+    public Set<Book> findBooksByAuthorId(Long id) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Author author = session.get(Author.class, id);
+            Hibernate.initialize(author.getBooks());
+            return author.getBooks();
+        } catch (Exception ex) {
+            throw new RepositoryException(String.format("%s was not found: {%s}", getClass().getSimpleName(), ex.getMessage()));
+        }
     }
 
     @Override
