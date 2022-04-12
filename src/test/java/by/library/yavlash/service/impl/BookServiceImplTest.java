@@ -1,0 +1,78 @@
+package by.library.yavlash.service.impl;
+
+import by.library.yavlash.dto.BookSaveDto;
+import by.library.yavlash.entity.Author;
+import by.library.yavlash.entity.Book;
+import by.library.yavlash.entity.Genre;
+import by.library.yavlash.exception.RepositoryException;
+import by.library.yavlash.exception.ServiceException;
+import by.library.yavlash.mapper.BookMapperImpl;
+import by.library.yavlash.repository.BookRepository;
+import by.library.yavlash.repository.impl.BookRepositoryImpl;
+import by.library.yavlash.service.BookService;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class BookServiceImplTest {
+    private final BookRepository bookRepository;
+    private final BookService bookService;
+
+    public BookServiceImplTest() {
+        bookRepository = mock(BookRepositoryImpl.class);
+        bookService = new BookServiceImpl(bookRepository, new BookMapperImpl());
+    }
+
+    @Test
+    void addBook() throws RepositoryException, ServiceException {
+        //given && when
+        when(bookRepository.findGenresByGenresId(new HashSet<>() {{
+            add(1L);
+        }}))
+                .thenReturn(new HashSet<>() {{
+                    add(Genre.builder().id(1L).build());
+                }});
+        when(bookRepository.findAuthorsByAuthorsId(new HashSet<>() {{
+            add(1L);
+        }}))
+                .thenReturn(new HashSet<>() {{
+                    add(Author.builder().id(1L).build());
+                }});
+
+        when(bookRepository.add(Book.builder().title("Hamlet").build()))
+                .thenReturn(true);
+        boolean actual = bookService.addBook(BookSaveDto.builder()
+                .genresId(new ArrayList<>() {{
+                    add(1L);
+                }})
+                .authorsId(new ArrayList<>() {{
+                    add(1L);
+                }})
+                .title("Hamlet")
+                .build());
+
+        //then
+        Assertions.assertEquals(true, actual);
+    }
+
+    @Test
+    void deleteBook() throws RepositoryException, ServiceException {
+        //given
+        Long id = 3L;
+
+        //when
+        when(bookRepository.delete(id)).thenReturn(true);
+        boolean actual = bookService.deleteBook(id);
+
+        //then
+        Assertions.assertTrue(actual);
+    }
+}
