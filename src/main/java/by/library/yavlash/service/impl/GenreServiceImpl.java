@@ -16,6 +16,16 @@ public class GenreServiceImpl implements GenreService {
     private final GenreMapper genreMapper;
 
     @Override
+    public List<GenreDto> findAllGenres() throws ServiceException {
+        try {
+            List<Genre> genres = genreRepository.findAll();
+            return genreMapper.toListDto(genres);
+        } catch (Exception exception) {
+            throw new ServiceException(String.format("%s were not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
+        }
+    }
+
+    @Override
     public boolean addGenre(GenreDto genreDto) throws ServiceException {
         try {
             Genre genre = genreMapper.fromSaveDto(genreDto);
@@ -23,16 +33,6 @@ public class GenreServiceImpl implements GenreService {
             return true;
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
-        }
-    }
-
-    @Override
-    public List<GenreDto> findAllGenres() throws ServiceException {
-        try {
-            List<Genre> genres = genreRepository.findAll();
-            return genreMapper.toListDto(genres);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s were not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
     }
 

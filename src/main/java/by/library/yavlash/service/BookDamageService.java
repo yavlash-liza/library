@@ -8,8 +8,8 @@ import by.library.yavlash.exception.ServiceException;
 import java.util.List;
 
 public interface BookDamageService {
-    boolean addBookDamage(BookDamageSaveDto bookDamageSaveDto) throws ServiceException;
-    List<BookDamageListDto> findAllBookDamages() throws ServiceException;
     BookDamageDto findBookDamageById(Long bookDamageId) throws ServiceException;
+    List<BookDamageListDto> findAllBookDamages() throws ServiceException;
+    boolean addBookDamage(BookDamageSaveDto bookDamageSaveDto) throws ServiceException;
     boolean deleteBookDamage(Long bookDamageId) throws ServiceException;
 }

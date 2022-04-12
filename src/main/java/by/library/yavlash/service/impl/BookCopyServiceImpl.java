@@ -19,14 +19,15 @@ public class BookCopyServiceImpl implements BookCopyService {
     private final BookCopyMapper bookCopyMapper;
 
     @Override
-    public boolean addBookCopy(BookCopySaveDto bookCopySaveDto) throws ServiceException {
+    public BookCopyDto findBookCopyById(Long bookCopyId) throws ServiceException {
         try {
-            BookCopy bookCopy = bookCopyMapper.fromSaveDto(bookCopySaveDto);
-            bookCopy.setBook(Book.builder().id(bookCopySaveDto.getBookId()).build());
-            bookCopyRepository.add(bookCopy);
-            return true;
+            BookCopy bookCopy = bookCopyRepository.findById(bookCopyId);
+            bookCopy.setBook(bookCopyRepository.findBookByBookCopyId(bookCopyId));
+            bookCopy.setBookDamages(bookCopyRepository.findBookDamagesByBookCopyId(bookCopyId));
+            bookCopy.setOrders(bookCopyRepository.findOrdersByBookCopyId(bookCopyId));
+            return bookCopyMapper.toDto(bookCopy);
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
     }
 
@@ -41,25 +42,15 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
-    public BookCopyDto findBookCopyById(Long bookCopyId) throws ServiceException {
+    public boolean addBookCopy(BookCopySaveDto bookCopySaveDto) throws ServiceException {
         try {
-            BookCopy bookCopy = bookCopyRepository.findById(bookCopyId);
-            bookCopy.setBook(bookCopyRepository.findBookByBookCopyId(bookCopyId));
-            bookCopy.setBookDamages(bookCopyRepository.findBookDamagesByBookCopyId(bookCopyId));
-            bookCopy.setOrders(bookCopyRepository.findOrdersByBookCopyId(bookCopyId));
-            return bookCopyMapper.toDto(bookCopy);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
-        }
-    }
-
-    @Override
-    public boolean deleteBookCopy(Long bookCopyId) throws ServiceException {
-        try {
-            bookCopyRepository.delete(bookCopyId);
+            BookCopy bookCopy = bookCopyMapper.fromSaveDto(bookCopySaveDto);
+            bookCopy.setBook(Book.builder().id(bookCopySaveDto.getBookId()).build());
+            bookCopyRepository.add(bookCopy);
             return true;
+
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
     }
 
@@ -71,6 +62,16 @@ public class BookCopyServiceImpl implements BookCopyService {
             return true;
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not updated: {%s}", getClass().getSimpleName(), exception.getMessage()));
+        }
+    }
+
+    @Override
+    public boolean deleteBookCopy(Long bookCopyId) throws ServiceException {
+        try {
+            bookCopyRepository.delete(bookCopyId);
+            return true;
+        } catch (Exception exception) {
+            throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
     }
 }

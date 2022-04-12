@@ -35,17 +35,22 @@ class BookDamageServiceImplTest {
     }
 
     @Test
-    void addBookDamage() throws RepositoryException, ServiceException {
-        //given && when
-        when(bookDamageRepository.add(BookDamage.builder()
+    void findBookDamageById() throws RepositoryException, ServiceException {
+        //given
+        Long id = 1L;
+        BookDamage bookDamage = BookDamage.builder()
                 .bookCopy(BookCopy.builder().id(1L).build())
                 .order(Order.builder().id(1L).build())
-                .user(User.builder().id(1L).build()).build()))
-                .thenReturn(true);
-        boolean actual = bookDamageService.addBookDamage(BookDamageSaveDto.builder().id(3L).bookCopyId(1L).orderId(1L).userId(1L).build());
+                .user(User.builder().id(1L).build()).build();
+
+        BookDamageDto expected = BookDamageDto.builder().id(id).userId(1L).bookCopyId(1L).orderId(1L).build();
+
+        //when
+        when(bookDamageRepository.findById(id)).thenReturn(bookDamage);
+        BookDamageDto actual = bookDamageService.findBookDamageById(id);
 
         //then
-        Assertions.assertEquals(true, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -68,21 +73,20 @@ class BookDamageServiceImplTest {
     }
 
     @Test
-    void findBookDamageById() throws RepositoryException, ServiceException {
+    void addBookDamage() throws RepositoryException, ServiceException {
         //given
-        Long id = 1L;
-        BookDamageDto expected = BookDamageDto.builder().id(id).userId(1L).bookCopyId(1L).orderId(1L).build();
-
-        //when
-        when(bookDamageRepository.findById(id)).thenReturn(BookDamage.builder().id(id)
+        BookDamage bookDamage = BookDamage.builder()
                 .bookCopy(BookCopy.builder().id(1L).build())
-                .user(User.builder().id(1L).build())
                 .order(Order.builder().id(1L).build())
-                .build());
-        BookDamageDto actual = bookDamageService.findBookDamageById(id);
+                .user(User.builder().id(1L).build()).build();
+
+        // when
+        when(bookDamageRepository.add(bookDamage))
+                .thenReturn(true);
+        boolean actual = bookDamageService.addBookDamage(BookDamageSaveDto.builder().id(3L).bookCopyId(1L).orderId(1L).userId(1L).build());
 
         //then
-        Assertions.assertEquals(expected, actual);
+        Assertions.assertTrue(actual);
     }
 
     @Test
@@ -95,6 +99,6 @@ class BookDamageServiceImplTest {
         boolean actual = bookDamageService.deleteBookDamage(id);
 
         //then
-        Assertions.assertEquals(true, actual);
+        Assertions.assertTrue(actual);
     }
 }

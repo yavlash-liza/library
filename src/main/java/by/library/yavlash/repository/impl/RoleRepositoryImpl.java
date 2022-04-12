@@ -2,10 +2,7 @@ package by.library.yavlash.repository.impl;
 
 import by.library.yavlash.entity.Role;
 import by.library.yavlash.entity.User;
-import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.RoleRepository;
-import by.library.yavlash.util.HibernateUtil;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -22,23 +19,12 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
     }
 
     @Override
-    public Set<User> findUsersByRoleId(Long roleId) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Role role = session.get(Role.class, roleId);
-            Hibernate.initialize(role.getUsers());
-            return role.getUsers();
-        } catch (Exception ex) {
-            throw new RepositoryException(String.format("%s was not found: {%s}", getClass().getSimpleName(), ex.getMessage()));
-        }
-    }
-
-    @Override
-    protected String defineSelectAllQuery() {
+    protected String obtainSelectAllQuery() {
         return SELECT_ALL_QUERY;
     }
 
     @Override
-    protected String defineUpdateQuery() {
+    protected String obtainUpdateQuery() {
         return UPDATE_QUERY;
     }
 

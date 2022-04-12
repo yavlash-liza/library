@@ -21,16 +21,15 @@ public class BookDamageServiceImpl implements BookDamageService {
     private final BookDamageMapper bookDamageMapper;
 
     @Override
-    public boolean addBookDamage(BookDamageSaveDto bookDamageSaveDto) throws ServiceException {
+    public BookDamageDto findBookDamageById(Long bookDamageId) throws ServiceException {
         try {
-            BookDamage bookDamage = bookDamageMapper.fromSaveDto(bookDamageSaveDto);
-            bookDamage.setUser(User.builder().id(bookDamageSaveDto.getUserId()).build());
-            bookDamage.setOrder(Order.builder().id(bookDamageSaveDto.getOrderId()).build());
-            bookDamage.setBookCopy(BookCopy.builder().id(bookDamageSaveDto.getBookCopyId()).build());
-            bookDamageRepository.add(bookDamage);
-            return true;
+            BookDamage bookDamage = bookDamageRepository.findById(bookDamageId);
+            bookDamage.setBookCopy(BookCopy.builder().id(bookDamage.getBookCopy().getId()).build());
+            bookDamage.setUser(User.builder().id(bookDamage.getUser().getId()).build());
+            bookDamage.setOrder(Order.builder().id(bookDamage.getOrder().getId()).build());
+            return bookDamageMapper.toDto(bookDamage);
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
     }
 
@@ -45,15 +44,16 @@ public class BookDamageServiceImpl implements BookDamageService {
     }
 
     @Override
-    public BookDamageDto findBookDamageById(Long bookDamageId) throws ServiceException {
+    public boolean addBookDamage(BookDamageSaveDto bookDamageSaveDto) throws ServiceException {
         try {
-            BookDamage bookDamage = bookDamageRepository.findById(bookDamageId);
-            bookDamage.setBookCopy(BookCopy.builder().id(bookDamage.getBookCopy().getId()).build());
-            bookDamage.setUser(User.builder().id(bookDamage.getUser().getId()).build());
-            bookDamage.setOrder(Order.builder().id(bookDamage.getOrder().getId()).build());
-            return bookDamageMapper.toDto(bookDamage);
+            BookDamage bookDamage = bookDamageMapper.fromSaveDto(bookDamageSaveDto);
+            bookDamage.setUser(User.builder().id(bookDamageSaveDto.getUserId()).build());
+            bookDamage.setOrder(Order.builder().id(bookDamageSaveDto.getOrderId()).build());
+            bookDamage.setBookCopy(BookCopy.builder().id(bookDamageSaveDto.getBookCopyId()).build());
+            bookDamageRepository.add(bookDamage);
+            return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
     }
 

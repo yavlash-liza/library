@@ -38,12 +38,12 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
     }
 
     @Override
-    protected String defineSelectAllQuery() {
+    protected String obtainSelectAllQuery() {
         return SELECT_ALL_QUERY;
     }
 
     @Override
-    protected String defineUpdateQuery() {
+    protected String obtainUpdateQuery() {
         return UPDATE_QUERY;
     }
 

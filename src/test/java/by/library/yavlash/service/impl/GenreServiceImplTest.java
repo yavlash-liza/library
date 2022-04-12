@@ -30,17 +30,6 @@ class GenreServiceImplTest {
     }
 
     @Test
-    void addGenre() throws RepositoryException, ServiceException {
-        //given && when
-        when(genreRepository.add(Genre.builder().genreName("fantasy").build()))
-                .thenReturn(true);
-        boolean actual = genreService.addGenre(GenreDto.builder().genreName("fantasy").build());
-
-        //then
-        Assertions.assertEquals(true, actual);
-    }
-
-    @Test
     void findAllGenres() throws RepositoryException, ServiceException {
         //given
         List<GenreDto> expected = new ArrayList<>() {{
@@ -60,6 +49,17 @@ class GenreServiceImplTest {
     }
 
     @Test
+    void addGenre() throws RepositoryException, ServiceException {
+        //given && when
+        when(genreRepository.add(Genre.builder().genreName("fantasy").build()))
+                .thenReturn(true);
+        boolean actual = genreService.addGenre(GenreDto.builder().genreName("fantasy").build());
+
+        //then
+        Assertions.assertTrue(actual);
+    }
+
+    @Test
     void deleteGenre() throws RepositoryException, ServiceException {
         //given
         Long id = 3L;
@@ -69,6 +69,6 @@ class GenreServiceImplTest {
         boolean actual = genreService.deleteGenre(id);
 
         //then
-        Assertions.assertEquals(true, actual);
+        Assertions.assertTrue(actual);
     }
 }

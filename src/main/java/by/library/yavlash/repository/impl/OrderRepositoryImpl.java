@@ -12,7 +12,6 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implements OrderRepository {
     private static final String ORDER_STATUS_COLUMN = "orderStatus";
@@ -25,6 +24,10 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
     private static final String UPDATE_QUERY =
             "update Order set orderStatus=:orderStatus, startDate=:startDate, endDate=:endDate, price=:price " +
                     " where id=:id";
+    private static final String SELECT_BOOK_COPIES_BY_ORDER_ID_QUERY = "SELECT bc.id,  FROM Order o " +
+            " JOIN order_book_copy_links obcl ON o.id = obcl.order_id " +
+            " JOIN BookCopy bc ON obl.order_id = bc.id " +
+            " WHERE o.id = ? ";
 
     private static final String DELETE_BOOK_DAMAGE_QUERY = "delete BookDamage bd where bd.order.id=:orderId";
 
@@ -66,19 +69,12 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
     }
 
     @Override
-    public Set<BookCopy> findBookCopiesByBookCopiesId(Set<Long> bookCopiesId) {
-        return bookCopiesId.stream()
-                .map(bookCopyId -> BookCopy.builder().id(bookCopyId).build())
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    protected String defineSelectAllQuery() {
+    protected String obtainSelectAllQuery() {
         return SELECT_ALL_QUERY;
     }
 
     @Override
-    protected String defineUpdateQuery() {
+    protected String obtainUpdateQuery() {
         return UPDATE_QUERY;
     }
 

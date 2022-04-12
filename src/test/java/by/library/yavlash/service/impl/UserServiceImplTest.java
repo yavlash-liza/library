@@ -35,20 +35,19 @@ class UserServiceImplTest {
     }
 
     @Test
-    void addUser() throws RepositoryException, ServiceException {
+    void findUserById() throws RepositoryException, ServiceException {
         //given
-        Set<Role> roles = new HashSet<>() {{
-            add(Role.builder().id(1L).build());
-        }};
+        Long id = 1L;
+        UserDto expected = UserDto.builder().id(id).rolesId(new ArrayList<>()).orders(new ArrayList<>()).build();
 
-        // when
-        when(userRepository.add(User.builder().roles(roles).build())).thenReturn(true);
-        boolean actual = userService.addUser(UserSaveDto.builder().roleId(new ArrayList<>() {{
-            add(1L);
-        }}).build());
+        //when
+        when(userRepository.findById(id)).thenReturn(User.builder().id(id).build());
+        when(userRepository.findRolesByUserId(id)).thenReturn(new HashSet<>());
+        when(userRepository.findOrdersByUserId(id)).thenReturn(new HashSet<>());
+        UserDto actual = userService.findUserById(id);
 
         //then
-        Assertions.assertEquals(true, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -71,32 +70,18 @@ class UserServiceImplTest {
     }
 
     @Test
-    void findUserById() throws RepositoryException, ServiceException {
+    void addUser() throws RepositoryException, ServiceException {
         //given
-        Long id = 1L;
-        UserDto expected = UserDto.builder().id(id).rolesId(new ArrayList<>()).orders(new ArrayList<>()).build();
+        Set<Role> roles = new HashSet<>() {{
+            add(Role.builder().id(1L).build());
+        }};
 
-        //when
-        when(userRepository.findById(id)).thenReturn(User.builder().id(id).build());
-        when(userRepository.findRolesByUserId(id)).thenReturn(new HashSet<>());
-        when(userRepository.findOrdersByUserId(id)).thenReturn(new HashSet<>());
-        UserDto actual = userService.findUserById(id);
+        // when
+        when(userRepository.add(User.builder().roles(roles).build())).thenReturn(true);
+        boolean actual = userService.addUser(UserSaveDto.builder().roleId(new ArrayList<>() {{add(1L);}}).build());
 
         //then
-        Assertions.assertEquals(expected, actual);
-    }
-
-    @Test
-    void deleteUser() throws RepositoryException, ServiceException {
-        //given
-        Long id = 3L;
-
-        //when
-        when(userRepository.delete(id)).thenReturn(true);
-        boolean actual = userService.deleteUser(id);
-
-        //then
-        Assertions.assertEquals(true, actual);
+        Assertions.assertTrue(actual);
     }
 
     @Test
@@ -107,6 +92,19 @@ class UserServiceImplTest {
         //when
         when(userRepository.update(User.builder().id(4L).firstName("Sergei").lastName("Smirnov").build())).thenReturn(true);
         boolean actual = userService.updateUser(expected);
+
+        //then
+        Assertions.assertTrue(actual);
+    }
+
+    @Test
+    void deleteUser() throws RepositoryException, ServiceException {
+        //given
+        Long id = 3L;
+
+        //when
+        when(userRepository.delete(id)).thenReturn(true);
+        boolean actual = userService.deleteUser(id);
 
         //then
         Assertions.assertTrue(actual);

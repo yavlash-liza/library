@@ -11,7 +11,6 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements UserRepository {
     private static final String FIRST_NAME_COLUMN = "firstName";
@@ -58,19 +57,12 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     }
 
     @Override
-    public Set<Role> findRolesByRolesId(Set<Long> rolesId) {
-        return rolesId.stream()
-                .map(roleId -> Role.builder().id(roleId).build())
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    protected String defineSelectAllQuery() {
+    protected String obtainSelectAllQuery() {
         return SELECT_ALL_QUERY;
     }
 
     @Override
-    protected String defineUpdateQuery() {
+    protected String obtainUpdateQuery() {
         return UPDATE_QUERY;
     }
 

@@ -12,5 +12,4 @@ public interface OrderRepository extends BaseRepository<Order> {
     User findUserByOrderId(Long orderId) throws RepositoryException;
     Set<BookCopy> findBookCopiesByOrderId(Long orderId) throws RepositoryException;
     Set<BookDamage> findBookDamagesByOrderId(Long orderId) throws RepositoryException;
-    Set<BookCopy> findBookCopiesByBookCopiesId(Set<Long> bookCopiesId);
 }

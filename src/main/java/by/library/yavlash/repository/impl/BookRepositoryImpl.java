@@ -9,7 +9,6 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements BookRepository {
     private static final String BOOK_COPY_ID_COLUMN = "bookCopyId";
@@ -30,27 +29,12 @@ public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements 
         super(Book.class);
     }
 
-    @Override
-    public Set<Author> findAuthorsByAuthorsId(Set<Long> authorsId) {
-        return authorsId.stream()
-                .map(authorId -> Author.builder().id(authorId).build())
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    public Set<Genre> findGenresByGenresId(Set<Long> genresId) {
-        return genresId.stream()
-                .map(genreId -> Genre.builder().id(genreId).build())
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    protected String defineSelectAllQuery() {
+    protected String obtainSelectAllQuery() {
         return SELECT_ALL_QUERY;
     }
 
     @Override
-    protected String defineUpdateQuery() {
+    protected String obtainUpdateQuery() {
         return UPDATE_QUERY;
     }
 

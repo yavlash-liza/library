@@ -35,31 +35,19 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void addOrder() throws RepositoryException, ServiceException {
-        //given && when
-        when(orderRepository.findBookCopiesByBookCopiesId(new HashSet<>() {{
-            add(2L);
-        }}))
-                .thenReturn(new HashSet<>() {{
-                    add(BookCopy.builder().id(2L).build());
-                }});
+    void findOrderById() throws RepositoryException, ServiceException {
+        Long id = 1L;
+        OrderDto expected = OrderDto.builder().id(id).userId(2L)
+                .bookCopies(new ArrayList<>())
+                .bookDamages(new ArrayList<>()).build();
 
-        when(orderRepository.add(Order.builder()
-                .user(User.builder().id(1L).build())
-                .bookCopies(new HashSet<>() {{
-                    add(BookCopy.builder().id(2L).build());
-                }})
-                .price(13).build()))
-                .thenReturn(true);
-        boolean actual = orderService.addOrder(OrderSaveDto.builder()
-                .price(13)
-                .userId(1L)
-                .bookCopiesId(new ArrayList<>() {{
-                    add(2L);
-                }}).build());
+        //when
+        when(orderRepository.findById(id)).thenReturn(Order.builder().id(id).user(User.builder().id(2L).build()).build());
+        when(orderRepository.findBookDamagesByOrderId(id)).thenReturn(new HashSet<>());
+        OrderDto actual = orderService.findOrderById(id);
 
         //then
-        Assertions.assertEquals(true, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -82,32 +70,27 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void findOrderById() throws RepositoryException, ServiceException {
-        Long id = 1L;
-        OrderDto expected = OrderDto.builder().id(id).userId(2L)
-                .bookCopies(new ArrayList<>())
-                .bookDamages(new ArrayList<>()).build();
-
-        //when
-        when(orderRepository.findById(id)).thenReturn(Order.builder().id(id).user(User.builder().id(2L).build()).build());
-        when(orderRepository.findBookDamagesByOrderId(id)).thenReturn(new HashSet<>());
-        OrderDto actual = orderService.findOrderById(id);
-
-        //then
-        Assertions.assertEquals(expected, actual);
-    }
-
-    @Test
-    void deleteOrder() throws RepositoryException, ServiceException {
+    void addOrder() throws RepositoryException, ServiceException {
         //given
-        Long id = 3L;
+        Order order = Order.builder()
+                .user(User.builder().id(1L).build())
+                .bookCopies(new HashSet<>() {{
+                    add(BookCopy.builder().id(2L).build());
+                }})
+                .price(13).build();
+        OrderSaveDto orderSaveDto = OrderSaveDto.builder()
+                .price(13)
+                .userId(1L)
+                .bookCopiesId(new ArrayList<>() {{
+                    add(2L);
+                }}).build();
 
-        //when
-        when(orderRepository.delete(id)).thenReturn(true);
-        boolean actual = orderService.deleteOrder(id);
+        // when
+        when(orderRepository.add(order)).thenReturn(true);
+        boolean actual = orderService.addOrder(orderSaveDto);
 
         //then
-        Assertions.assertEquals(true, actual);
+        Assertions.assertTrue(actual);
     }
 
     @Test
@@ -118,6 +101,19 @@ class OrderServiceImplTest {
         //when
         when(orderRepository.update(Order.builder().id(4L).orderStatus("ACCEPTED").build())).thenReturn(true);
         boolean actual = orderService.updateOrder(expected);
+
+        //then
+        Assertions.assertTrue(actual);
+    }
+
+    @Test
+    void deleteOrder() throws RepositoryException, ServiceException {
+        //given
+        Long id = 3L;
+
+        //when
+        when(orderRepository.delete(id)).thenReturn(true);
+        boolean actual = orderService.deleteOrder(id);
 
         //then
         Assertions.assertTrue(actual);

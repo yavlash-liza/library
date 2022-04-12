@@ -18,13 +18,13 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorMapper authorMapper;
 
     @Override
-    public boolean addAuthor(AuthorSaveDto authorSaveDto) throws ServiceException {
+    public AuthorDto findAuthorById(Long authorId) throws ServiceException {
         try {
-            Author author = authorMapper.fromSaveDto(authorSaveDto);
-            authorRepository.add(author);
-            return true;
+            Author author = authorRepository.findById(authorId);
+            author.setBooks(authorRepository.findBooksByAuthorId(authorId));
+            return authorMapper.toDto(author);
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
     }
 
@@ -39,23 +39,23 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    public boolean addAuthor(AuthorSaveDto authorSaveDto) throws ServiceException {
+        try {
+            Author author = authorMapper.fromSaveDto(authorSaveDto);
+            authorRepository.add(author);
+            return true;
+        } catch (Exception exception) {
+            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
+        }
+    }
+
+    @Override
     public boolean deleteAuthor(Long authorId) throws ServiceException {
         try {
             authorRepository.delete(authorId);
             return true;
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
-        }
-    }
-
-    @Override
-    public AuthorDto findAuthorById(Long authorId) throws ServiceException {
-        try {
-            Author author = authorRepository.findById(authorId);
-            author.setBooks(authorRepository.findBooksByAuthorId(authorId));
-            return authorMapper.toDto(author);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
     }
 }

@@ -27,13 +27,13 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
     @Override
     public List<E> findAll() throws RepositoryException {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery(defineSelectAllQuery(), clazz).list();
+            return session.createQuery(obtainSelectAllQuery(), clazz).list();
         } catch (Exception ex) {
             throw new RepositoryException(String.format("%ss were not found: {%s}", clazz.getSimpleName(), ex.getMessage()));
         }
     }
 
-    protected abstract String defineSelectAllQuery();
+    protected abstract String obtainSelectAllQuery();
 
     @Override
     public boolean add(E element) throws RepositoryException {
@@ -52,7 +52,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
-                Query query = session.createQuery(defineUpdateQuery());
+                Query query = session.createQuery(obtainUpdateQuery());
                 constructQuery(query, element);
                 query.executeUpdate();
                 session.getTransaction().commit();
@@ -64,7 +64,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
         }
     }
 
-    protected abstract String defineUpdateQuery();
+    protected abstract String obtainUpdateQuery();
 
     protected abstract void constructQuery(Query query, E element);
 

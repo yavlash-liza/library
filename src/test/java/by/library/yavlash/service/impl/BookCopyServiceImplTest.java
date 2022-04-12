@@ -42,14 +42,48 @@ class BookCopyServiceImplTest {
     }
 
     @Test
-    void addBookCopy() throws RepositoryException, ServiceException {
-        //given && when
-        when(bookCopyRepository.add(BookCopy.builder().book(Book.builder().id(1L).build()).build()))
-                .thenReturn(true);
-        boolean actual = bookCopyService.addBookCopy(BookCopySaveDto.builder().build());
+    void findBookCopyById() throws RepositoryException, ServiceException {
+        //given
+        Long id = 1L;
+        Set<Book> books = new HashSet<>() {{
+            add(Book.builder().id(id).build());
+        }};
+        Book book = Book.builder().id(id)
+                .bookCopies(new HashSet<>() {{
+                    add(BookCopy.builder().id(id).build());
+                }})
+                .authors(new HashSet<>() {{
+                    add(Author.builder().id(1L).books(books).build());
+                }})
+                .genres(new HashSet<>() {{
+                    add(Genre.builder().id(1L).books(books).build());
+                }})
+                .build();
+
+        BookCopyDto expected = BookCopyDto.builder().id(id)
+                .bookDamages(new ArrayList<>() {{
+                    add(BookDamageListDto.builder().id(1L).build());
+                }})
+                .authors(new ArrayList<>() {{
+                    add(AuthorListDto.builder().id(1L).build());
+                }})
+                .genres(new ArrayList<>() {{
+                    add(GenreDto.builder().id(1L).build());
+                }}).build();
+
+        //when
+        when(bookCopyRepository.findById(id)).thenReturn(BookCopy.builder().id(id).build());
+        when(bookCopyRepository.findBookByBookCopyId(id)).thenReturn(book);
+        when(bookCopyRepository.findBookDamagesByBookCopyId(id)).thenReturn(new HashSet<>() {{
+            add(BookDamage.builder().id(1L).build());
+        }});
+        when(bookCopyRepository.findOrdersByBookCopyId(id)).thenReturn(new HashSet<>() {{
+            add(Order.builder().id(1L).build());
+        }});
+        BookCopyDto actual = bookCopyService.findBookCopyById(id);
 
         //then
-        Assertions.assertEquals(true, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -72,60 +106,14 @@ class BookCopyServiceImplTest {
     }
 
     @Test
-    void findBookCopyById() throws RepositoryException, ServiceException {
-        //given
-        Long id = 1L;
-        BookCopyDto expected = BookCopyDto.builder().id(id)
-                .bookDamages(new ArrayList<>() {{
-                    add(BookDamageListDto.builder().id(1L).build());
-                }})
-                .authors(new ArrayList<>() {{
-                    add(AuthorListDto.builder().id(1L).build());
-                }})
-                .genres(new ArrayList<>() {{
-                    add(GenreDto.builder().id(1L).build());
-                }}).build();
-
-        //when
-        Set<Book> books = new HashSet<>() {{
-            add(Book.builder().id(id).build());
-        }};
-        when(bookCopyRepository.findById(id)).thenReturn(BookCopy.builder().id(id).build());
-        when(bookCopyRepository.findBookByBookCopyId(id))
-                .thenReturn(Book.builder().id(id)
-                        .bookCopies(new HashSet<>() {{
-                            add(BookCopy.builder().id(id).build());
-                        }})
-                        .authors(new HashSet<>() {{
-                            add(Author.builder().id(1L).books(books).build());
-                        }})
-                        .genres(new HashSet<>() {{
-                            add(Genre.builder().id(1L).books(books).build());
-                        }})
-                        .build());
-        when(bookCopyRepository.findBookDamagesByBookCopyId(id)).thenReturn(new HashSet<>() {{
-            add(BookDamage.builder().id(1L).build());
-        }});
-        when(bookCopyRepository.findOrdersByBookCopyId(id)).thenReturn(new HashSet<>() {{
-            add(Order.builder().id(1L).build());
-        }});
-        BookCopyDto actual = bookCopyService.findBookCopyById(id);
+    void addBookCopy() throws RepositoryException, ServiceException {
+        //given && when
+        when(bookCopyRepository.add(BookCopy.builder().book(Book.builder().id(1L).build()).build()))
+                .thenReturn(true);
+        boolean actual = bookCopyService.addBookCopy(BookCopySaveDto.builder().build());
 
         //then
-        Assertions.assertEquals(expected, actual);
-    }
-
-    @Test
-    void deleteBookCopy() throws RepositoryException, ServiceException {
-        //given
-        Long id = 3L;
-
-        //when
-        when(bookCopyRepository.delete(id)).thenReturn(true);
-        boolean actual = bookCopyService.deleteBookCopy(id);
-
-        //then
-        Assertions.assertEquals(true, actual);
+        Assertions.assertTrue(actual);
     }
 
     @Test
@@ -136,6 +124,19 @@ class BookCopyServiceImplTest {
         //when
         when(bookCopyRepository.update(BookCopy.builder().id(4L).imagePath("image").build())).thenReturn(true);
         boolean actual = bookCopyService.updateBookCopy(expected);
+
+        //then
+        Assertions.assertTrue(actual);
+    }
+
+    @Test
+    void deleteBookCopy() throws RepositoryException, ServiceException {
+        //given
+        Long id = 3L;
+
+        //when
+        when(bookCopyRepository.delete(id)).thenReturn(true);
+        boolean actual = bookCopyService.deleteBookCopy(id);
 
         //then
         Assertions.assertTrue(actual);

@@ -19,12 +19,12 @@ public class BookDamageRepositoryImpl extends AbstractRepositoryImpl<BookDamage>
     }
 
     @Override
-    protected String defineSelectAllQuery() {
+    protected String obtainSelectAllQuery() {
         return SELECT_ALL_QUERY;
     }
 
     @Override
-    protected String defineUpdateQuery() {
+    protected String obtainUpdateQuery() {
         return UPDATE_QUERY;
     }
 
