@@ -3,6 +3,7 @@ package by.library.yavlash.service.impl;
 import by.library.yavlash.dto.BookCopyDto;
 import by.library.yavlash.dto.BookCopyListDto;
 import by.library.yavlash.dto.BookCopySaveDto;
+import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.mapper.BookCopyMapper;
@@ -14,14 +15,16 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class BookCopyServiceImpl implements BookCopyService {
-    public BookCopyRepository bookCopyRepository;
-    public BookCopyMapper bookCopyMapper;
+    private final BookCopyRepository bookCopyRepository;
+    private final BookCopyMapper bookCopyMapper;
 
     @Override
-    public void addBookCopy(BookCopySaveDto bookCopySaveDto) throws ServiceException {
+    public boolean addBookCopy(BookCopySaveDto bookCopySaveDto) throws ServiceException {
         try {
             BookCopy bookCopy = bookCopyMapper.fromSaveDto(bookCopySaveDto);
+            bookCopy.setBook(Book.builder().id(bookCopySaveDto.getBookId()).build());
             bookCopyRepository.add(bookCopy);
+            return true;
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
@@ -41,6 +44,9 @@ public class BookCopyServiceImpl implements BookCopyService {
     public BookCopyDto findBookCopyById(Long bookCopyId) throws ServiceException {
         try {
             BookCopy bookCopy = bookCopyRepository.findById(bookCopyId);
+            bookCopy.setBook(bookCopyRepository.findBookByBookCopyId(bookCopyId));
+            bookCopy.setBookDamages(bookCopyRepository.findBookDamagesByBookCopyId(bookCopyId));
+            bookCopy.setOrders(bookCopyRepository.findOrdersByBookCopyId(bookCopyId));
             return bookCopyMapper.toDto(bookCopy);
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
@@ -48,19 +54,21 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
-    public void deleteBookCopy(Long bookCopyId) throws ServiceException {
+    public boolean deleteBookCopy(Long bookCopyId) throws ServiceException {
         try {
             bookCopyRepository.delete(bookCopyId);
+            return true;
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
     }
 
     @Override
-    public void updateBookCopy(BookCopyDto bookCopyDto) throws ServiceException {
+    public boolean updateBookCopy(BookCopyDto bookCopyDto) throws ServiceException {
         try {
             BookCopy bookCopy = bookCopyMapper.fromDto(bookCopyDto);
             bookCopyRepository.update(bookCopy);
+            return true;
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not updated: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }

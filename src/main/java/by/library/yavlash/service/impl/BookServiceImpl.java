@@ -8,25 +8,31 @@ import by.library.yavlash.repository.BookRepository;
 import by.library.yavlash.service.BookService;
 import lombok.RequiredArgsConstructor;
 
+import java.util.HashSet;
+
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
-    public BookRepository bookRepository;
-    public BookMapper bookMapper;
+    private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
 
     @Override
-    public void addBook(BookSaveDto bookSaveDto) throws ServiceException {
+    public boolean addBook(BookSaveDto bookSaveDto) throws ServiceException {
         try {
             Book book = bookMapper.fromSaveDto(bookSaveDto);
+            book.setGenres(bookRepository.findGenresByGenresId(new HashSet<>(bookSaveDto.getGenresId())));
+            book.setAuthors(bookRepository.findAuthorsByAuthorsId(new HashSet<>(bookSaveDto.getAuthorsId())));
             bookRepository.add(book);
+            return true;
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
     }
 
     @Override
-    public void deleteBook(Long bookId) throws ServiceException {
+    public boolean deleteBook(Long bookId) throws ServiceException {
         try {
             bookRepository.delete(bookId);
+            return true;
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }

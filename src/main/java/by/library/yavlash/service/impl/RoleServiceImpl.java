@@ -12,8 +12,8 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
-    public RoleRepository roleRepository;
-    public RoleMapper roleMapper;
+    private final RoleRepository roleRepository;
+    private final RoleMapper roleMapper;
 
     @Override
     public List<RoleDto> findAllRoles() throws ServiceException {

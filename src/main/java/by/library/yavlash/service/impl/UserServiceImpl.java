@@ -14,14 +14,15 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    public UserRepository userRepository;
-    public UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
-    public void addUser(UserSaveDto userSaveDto) throws ServiceException {
+    public boolean addUser(UserSaveDto userSaveDto) throws ServiceException {
         try {
             User user = userMapper.fromSaveDto(userSaveDto);
             userRepository.add(user);
+            return true;
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
@@ -41,6 +42,8 @@ public class UserServiceImpl implements UserService {
     public UserDto findUserById(Long userId) throws ServiceException {
         try {
             User user = userRepository.findById(userId);
+            user.setRoles(userRepository.findRolesByUserId(userId));
+            user.setOrders(userRepository.findOrdersByUserId(userId));
             return userMapper.toDto(user);
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
@@ -48,19 +51,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId) throws ServiceException {
+    public boolean deleteUser(Long userId) throws ServiceException {
         try {
             userRepository.delete(userId);
+            return true;
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
     }
 
     @Override
-    public void updateUser(UserDto userDto) throws ServiceException {
+    public boolean updateUser(UserDto userDto) throws ServiceException {
         try {
             User user = userMapper.fromDto(userDto);
             userRepository.update(user);
+            return true;
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not updated: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }

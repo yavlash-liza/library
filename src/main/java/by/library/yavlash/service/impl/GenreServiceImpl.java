@@ -12,14 +12,15 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class GenreServiceImpl implements GenreService {
-    public GenreRepository genreRepository;
-    public GenreMapper genreMapper;
+    private final GenreRepository genreRepository;
+    private final GenreMapper genreMapper;
 
     @Override
-    public void addGenre(GenreDto genreDto) throws ServiceException {
+    public boolean addGenre(GenreDto genreDto) throws ServiceException {
         try {
             Genre genre = genreMapper.fromSaveDto(genreDto);
             genreRepository.add(genre);
+            return true;
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
@@ -36,9 +37,10 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public void deleteGenre(Long genreId) throws ServiceException {
+    public boolean deleteGenre(Long genreId) throws ServiceException {
         try {
             genreRepository.delete(genreId);
+            return true;
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
