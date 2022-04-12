@@ -11,4 +11,5 @@ public class BookDamageDto {
     private String damageDescription;
     private Long userId;
     private Long orderId;
+    private Long bookCopyId;
 }
