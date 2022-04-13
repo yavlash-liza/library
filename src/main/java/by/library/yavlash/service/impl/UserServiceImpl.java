@@ -21,8 +21,6 @@ public class UserServiceImpl implements UserService {
     public UserDto findUserById(Long userId) throws ServiceException {
         try {
             User user = userRepository.findById(userId);
-            user.setRoles(userRepository.findRolesByUserId(userId));
-            user.setOrders(userRepository.findOrdersByUserId(userId));
             return userMapper.toDto(user);
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));

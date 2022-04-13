@@ -1,9 +1,12 @@
 package by.library.yavlash.service.impl;
 
+import by.library.yavlash.dto.BookCopyListDto;
+import by.library.yavlash.dto.BookDamageListDto;
 import by.library.yavlash.dto.OrderDto;
 import by.library.yavlash.dto.OrderListDto;
 import by.library.yavlash.dto.OrderSaveDto;
 import by.library.yavlash.entity.BookCopy;
+import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Order;
 import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.RepositoryException;
@@ -20,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -38,12 +42,17 @@ class OrderServiceImplTest {
     void findOrderById() throws RepositoryException, ServiceException {
         Long id = 1L;
         OrderDto expected = OrderDto.builder().id(id).userId(2L)
-                .bookCopies(new ArrayList<>())
-                .bookDamages(new ArrayList<>()).build();
+                .bookCopies(new ArrayList<>() {{add(BookCopyListDto.builder().id(2L).build());}})
+                .bookDamages(new ArrayList<>() {{add(BookDamageListDto.builder().id(2L).build());}})
+                .build();
+        Set<BookCopy> bookCopies = new HashSet<>() {{add(BookCopy.builder().id(2L).build());}};
+        Set<BookDamage> bookDamages = new HashSet<>() {{add(BookDamage.builder().id(2L).build());}};
 
         //when
-        when(orderRepository.findById(id)).thenReturn(Order.builder().id(id).user(User.builder().id(2L).build()).build());
-        when(orderRepository.findBookDamagesByOrderId(id)).thenReturn(new HashSet<>());
+        when(orderRepository.findById(id)).thenReturn(Order.builder().id(id).user(User.builder().id(2L).build())
+                .bookDamages(bookDamages)
+                .bookCopies(bookCopies)
+                .build());
         OrderDto actual = orderService.findOrderById(id);
 
         //then

@@ -20,10 +20,12 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
     private static final String PRICE_COLUMN = "price";
     private static final String ORDER_ID_COLUMN = "orderId";
 
+    private static final String SELECT_BY_ID = " from Order o left join fetch o.bookCopies bc " +
+            " left join fetch o.bookDamages left join fetch o.user where o.id=:id ";
     private static final String SELECT_ALL_QUERY = "from Order";
     private static final String UPDATE_QUERY =
             "update Order set orderStatus=:orderStatus, startDate=:startDate, endDate=:endDate, price=:price " +
-                    " where id=:id";
+                    " where id=:id ";
     private static final String SELECT_BOOK_COPIES_BY_ORDER_ID_QUERY = "SELECT bc.id,  FROM Order o " +
             " JOIN order_book_copy_links obcl ON o.id = obcl.order_id " +
             " JOIN BookCopy bc ON obl.order_id = bc.id " +
@@ -33,6 +35,17 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
 
     public OrderRepositoryImpl() {
         super(Order.class);
+    }
+
+    @Override
+    public Order findById(Long id) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(SELECT_BY_ID, Order.class)
+                    .setParameter(ID_COLUMN, id)
+                    .getSingleResult();
+        } catch (Exception ex) {
+            throw new RepositoryException(String.format("%s was not found: {%s}", getClass().getSimpleName(), ex.getMessage()));
+        }
     }
 
     @Override

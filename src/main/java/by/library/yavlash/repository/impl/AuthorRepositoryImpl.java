@@ -17,6 +17,7 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
     private static final String BIRTH_DATE_COLUMN = "birthDate";
     private static final String IMAGE_PATH_COLUMN = "imagePath";
 
+    private static final String SELECT_BY_ID = "from Author a left join fetch a.books bs where a.id=:id";
     private static final String SELECT_ALL_QUERY = "from Author";
     private static final String UPDATE_QUERY =
             " update Author set firstName=:firstName, lastName=:lastName, birthDate=:birthDate, imagePath=:imagePath " +
@@ -24,6 +25,17 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
 
     public AuthorRepositoryImpl() {
         super(Author.class);
+    }
+
+    @Override
+    public Author findById(Long id) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(SELECT_BY_ID, Author.class)
+                    .setParameter(ID_COLUMN, id)
+                    .getSingleResult();
+        } catch (Exception ex) {
+            throw new RepositoryException(String.format("%s was not found: {%s}", getClass().getSimpleName(), ex.getMessage()));
+        }
     }
 
     @Override

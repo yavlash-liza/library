@@ -20,6 +20,8 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
     private static final String PRICE_PER_DAY_COLUMN = "pricePerDay";
     private static final String BOOK_COPY_ID_COLUMN = "bookCopyId";
 
+    private static final String SELECT_BY_ID = " from BookCopy bc left join fetch bc.book b " +
+            " left join fetch bc.bookDamages left join fetch bc.orders where bc.id=:id ";
     private static final String SELECT_ALL_QUERY = "from BookCopy";
     private static final String UPDATE_QUERY =
             "update BookCopy set status=:status, registrationDate=:registrationDate, " +
@@ -30,6 +32,17 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
 
     public BookCopyRepositoryImpl() {
         super(BookCopy.class);
+    }
+
+    @Override
+    public BookCopy findById(Long id) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(SELECT_BY_ID, BookCopy.class)
+                    .setParameter(ID_COLUMN, id)
+                    .getSingleResult();
+        } catch (Exception ex) {
+            throw new RepositoryException(String.format("%s was not found: {%s}", getClass().getSimpleName(), ex.getMessage()));
+        }
     }
 
     @Override

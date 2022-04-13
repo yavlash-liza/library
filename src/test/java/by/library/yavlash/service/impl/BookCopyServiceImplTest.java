@@ -11,7 +11,6 @@ import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Genre;
-import by.library.yavlash.entity.Order;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.mapper.BookCopyMapperImpl;
@@ -45,8 +44,9 @@ class BookCopyServiceImplTest {
     void findBookCopyById() throws RepositoryException, ServiceException {
         //given
         Long id = 1L;
-        Set<Book> books = new HashSet<>() {{
-            add(Book.builder().id(id).build());
+        Set<Book> books = new HashSet<>() {{add(Book.builder().id(id).build());}};
+        Set<BookDamage> bookDamages = new HashSet<>() {{
+            add(BookDamage.builder().id(1L).build());
         }};
         Book book = Book.builder().id(id)
                 .bookCopies(new HashSet<>() {{
@@ -72,14 +72,8 @@ class BookCopyServiceImplTest {
                 }}).build();
 
         //when
-        when(bookCopyRepository.findById(id)).thenReturn(BookCopy.builder().id(id).build());
-        when(bookCopyRepository.findBookByBookCopyId(id)).thenReturn(book);
-        when(bookCopyRepository.findBookDamagesByBookCopyId(id)).thenReturn(new HashSet<>() {{
-            add(BookDamage.builder().id(1L).build());
-        }});
-        when(bookCopyRepository.findOrdersByBookCopyId(id)).thenReturn(new HashSet<>() {{
-            add(Order.builder().id(1L).build());
-        }});
+        when(bookCopyRepository.findById(id)).thenReturn(BookCopy.builder().id(id).book(book).bookDamages(bookDamages).build());
+
         BookCopyDto actual = bookCopyService.findBookCopyById(id);
 
         //then

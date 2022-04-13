@@ -21,7 +21,6 @@ public class AuthorServiceImpl implements AuthorService {
     public AuthorDto findAuthorById(Long authorId) throws ServiceException {
         try {
             Author author = authorRepository.findById(authorId);
-            author.setBooks(authorRepository.findBooksByAuthorId(authorId));
             return authorMapper.toDto(author);
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));

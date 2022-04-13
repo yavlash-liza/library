@@ -54,8 +54,7 @@ class AuthorServiceImplTest {
                 }}).build();
 
         //when
-        when(authorRepository.findById(id)).thenReturn(Author.builder().id(id).firstName("Liza").build());
-        when(authorRepository.findBooksByAuthorId(id)).thenReturn(books);
+        when(authorRepository.findById(id)).thenReturn(Author.builder().id(id).firstName("Liza").books(books).build());
         AuthorDto actual = authorService.findAuthorById(id);
 
         //then

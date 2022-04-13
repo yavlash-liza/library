@@ -1,8 +1,11 @@
 package by.library.yavlash.service.impl;
 
+import by.library.yavlash.dto.OrderListDto;
+import by.library.yavlash.dto.RoleIdDto;
 import by.library.yavlash.dto.UserDto;
 import by.library.yavlash.dto.UserListDto;
 import by.library.yavlash.dto.UserSaveDto;
+import by.library.yavlash.entity.Order;
 import by.library.yavlash.entity.Role;
 import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.RepositoryException;
@@ -38,12 +41,15 @@ class UserServiceImplTest {
     void findUserById() throws RepositoryException, ServiceException {
         //given
         Long id = 1L;
-        UserDto expected = UserDto.builder().id(id).rolesId(new ArrayList<>()).orders(new ArrayList<>()).build();
+        UserDto expected = UserDto.builder().id(id)
+                .rolesId(new ArrayList<>(){{add(RoleIdDto.builder().id(2L).build());}})
+                .orders(new ArrayList<>(){{add(OrderListDto.builder().id(2L).build());}})
+                .build();
+        Set<Order> orders = new HashSet<>() {{add(Order.builder().id(2L).build());}};
+        Set<Role> roles = new HashSet<>() {{add(Role.builder().id(2L).build());}};
 
         //when
-        when(userRepository.findById(id)).thenReturn(User.builder().id(id).build());
-        when(userRepository.findRolesByUserId(id)).thenReturn(new HashSet<>());
-        when(userRepository.findOrdersByUserId(id)).thenReturn(new HashSet<>());
+        when(userRepository.findById(id)).thenReturn(User.builder().id(id).roles(roles).orders(orders).build());
         UserDto actual = userService.findUserById(id);
 
         //then

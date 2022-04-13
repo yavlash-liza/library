@@ -39,6 +39,7 @@ class BookDamageServiceImplTest {
         //given
         Long id = 1L;
         BookDamage bookDamage = BookDamage.builder()
+                .id(id)
                 .bookCopy(BookCopy.builder().id(1L).build())
                 .order(Order.builder().id(1L).build())
                 .user(User.builder().id(1L).build()).build();

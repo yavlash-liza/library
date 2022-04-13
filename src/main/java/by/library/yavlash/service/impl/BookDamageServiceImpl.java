@@ -24,9 +24,6 @@ public class BookDamageServiceImpl implements BookDamageService {
     public BookDamageDto findBookDamageById(Long bookDamageId) throws ServiceException {
         try {
             BookDamage bookDamage = bookDamageRepository.findById(bookDamageId);
-            bookDamage.setBookCopy(BookCopy.builder().id(bookDamage.getBookCopy().getId()).build());
-            bookDamage.setUser(User.builder().id(bookDamage.getUser().getId()).build());
-            bookDamage.setOrder(Order.builder().id(bookDamage.getOrder().getId()).build());
             return bookDamageMapper.toDto(bookDamage);
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));

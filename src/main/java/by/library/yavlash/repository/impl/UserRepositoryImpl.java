@@ -21,6 +21,8 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     private static final String BIRTH_DATE_COLUMN = "birthDate";
     private static final String USER_ID_COLUMN = "userId";
 
+    private static final String SELECT_BY_ID = " from User u left join fetch u.roles r " +
+            " left join fetch u.bookDamages left join fetch u.orders where u.id=:id ";
     private static final String SELECT_ALL_QUERY = "from User";
     private static final String UPDATE_QUERY =
             "update User set firstName=:firstName, lastName=:lastName, passportNumber=:passportNumber," +
@@ -32,6 +34,17 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
 
     public UserRepositoryImpl() {
         super(User.class);
+    }
+
+    @Override
+    public User findById(Long id) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(SELECT_BY_ID, User.class)
+                    .setParameter(ID_COLUMN, id)
+                    .getSingleResult();
+        } catch (Exception ex) {
+            throw new RepositoryException(String.format("%s was not found: {%s}", getClass().getSimpleName(), ex.getMessage()));
+        }
     }
 
     @Override

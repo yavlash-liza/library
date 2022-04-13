@@ -22,9 +22,6 @@ public class BookCopyServiceImpl implements BookCopyService {
     public BookCopyDto findBookCopyById(Long bookCopyId) throws ServiceException {
         try {
             BookCopy bookCopy = bookCopyRepository.findById(bookCopyId);
-            bookCopy.setBook(bookCopyRepository.findBookByBookCopyId(bookCopyId));
-            bookCopy.setBookDamages(bookCopyRepository.findBookDamagesByBookCopyId(bookCopyId));
-            bookCopy.setOrders(bookCopyRepository.findOrdersByBookCopyId(bookCopyId));
             return bookCopyMapper.toDto(bookCopy);
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));

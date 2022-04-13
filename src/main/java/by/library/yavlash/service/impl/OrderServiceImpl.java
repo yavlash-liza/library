@@ -25,9 +25,9 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto findOrderById(Long orderId) throws ServiceException {
         try {
             Order order = orderRepository.findById(orderId);
-            order.setUser(User.builder().id(order.getUser().getId()).build());
-            order.setBookCopies(orderRepository.findBookCopiesByOrderId(orderId));
-            order.setBookDamages(orderRepository.findBookDamagesByOrderId(orderId));
+//            order.setUser(User.builder().id(order.getUser().getId()).build());
+//            order.setBookCopies(orderRepository.findBookCopiesByOrderId(orderId));
+//            order.setBookDamages(orderRepository.findBookDamagesByOrderId(orderId));
             return orderMapper.toDto(order);
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
