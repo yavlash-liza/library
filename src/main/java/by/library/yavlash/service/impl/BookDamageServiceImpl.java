@@ -2,7 +2,6 @@ package by.library.yavlash.service.impl;
 
 import by.library.yavlash.converter.BookDamageConverter;
 import by.library.yavlash.dto.BookDamageDto;
-import by.library.yavlash.dto.BookDamageSaveDto;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Order;
@@ -27,12 +26,12 @@ public class BookDamageServiceImpl implements BookDamageService {
     }
 
     @Override
-    public boolean addBookDamage(BookDamageSaveDto bookDamageSaveDto) throws ServiceException {
+    public boolean addBookDamage(BookDamageDto bookDamageDto) throws ServiceException {
         try {
-            BookDamage bookDamage = BookDamageConverter.fromSaveDto(bookDamageSaveDto);
-            bookDamage.setUser(User.builder().id(bookDamageSaveDto.getUserId()).build());
-            bookDamage.setOrder(Order.builder().id(bookDamageSaveDto.getOrderId()).build());
-            bookDamage.setBookCopy(BookCopy.builder().id(bookDamageSaveDto.getBookCopyId()).build());
+            BookDamage bookDamage = BookDamageConverter.fromSaveDto(bookDamageDto);
+            bookDamage.setUser(User.builder().id(bookDamageDto.getUserId()).build());
+            bookDamage.setOrder(Order.builder().id(bookDamageDto.getOrderId()).build());
+            bookDamage.setBookCopy(BookCopy.builder().id(bookDamageDto.getBookCopyId()).build());
             bookDamageRepository.add(bookDamage);
             return true;
         } catch (Exception exception) {

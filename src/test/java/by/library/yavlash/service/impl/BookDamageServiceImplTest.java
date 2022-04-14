@@ -1,7 +1,6 @@
 package by.library.yavlash.service.impl;
 
 import by.library.yavlash.dto.BookDamageDto;
-import by.library.yavlash.dto.BookDamageSaveDto;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Order;
@@ -60,7 +59,7 @@ class BookDamageServiceImplTest {
         // when
         when(bookDamageRepository.add(bookDamage))
                 .thenReturn(true);
-        boolean actual = bookDamageService.addBookDamage(BookDamageSaveDto.builder().id(3L).bookCopyId(1L).orderId(1L).userId(1L).build());
+        boolean actual = bookDamageService.addBookDamage(BookDamageDto.builder().id(3L).bookCopyId(1L).orderId(1L).userId(1L).build());
 
         //then
         Assertions.assertTrue(actual);

@@ -1,7 +1,6 @@
 package by.library.yavlash.converter;
 
 import by.library.yavlash.dto.BookDamageDto;
-import by.library.yavlash.dto.BookDamageSaveDto;
 import by.library.yavlash.entity.BaseEntity;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.BookDamage;
@@ -36,17 +35,17 @@ public class BookDamageConverter {
                 .collect(Collectors.toList());
     }
 
-    public static BookDamage fromSaveDto(BookDamageSaveDto bookDamageSaveDto) {
-        if ( bookDamageSaveDto == null ) {
+    public static BookDamage fromSaveDto(BookDamageDto bookDamageDto) {
+        if ( bookDamageDto == null ) {
             return null;
         }
         return BookDamage.builder()
-                .id(bookDamageSaveDto.getId())
-                .imagePath(bookDamageSaveDto.getImagePath())
-                .damageDescription(bookDamageSaveDto.getDamageDescription())
-                .user(User.builder().id(bookDamageSaveDto.getUserId()).build())
-                .order(Order.builder().id(bookDamageSaveDto.getOrderId()).build())
-                .bookCopy(BookCopy.builder().id(bookDamageSaveDto.getBookCopyId()).build())
+                .id(bookDamageDto.getId())
+                .imagePath(bookDamageDto.getImagePath())
+                .damageDescription(bookDamageDto.getDamageDescription())
+                .user(User.builder().id(bookDamageDto.getUserId()).build())
+                .order(Order.builder().id(bookDamageDto.getOrderId()).build())
+                .bookCopy(BookCopy.builder().id(bookDamageDto.getBookCopyId()).build())
                 .build();
     }
 
