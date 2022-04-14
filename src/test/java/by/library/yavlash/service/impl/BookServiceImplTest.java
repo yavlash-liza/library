@@ -4,7 +4,6 @@ import by.library.yavlash.dto.BookSaveDto;
 import by.library.yavlash.entity.Book;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
-import by.library.yavlash.mapper.BookMapperImpl;
 import by.library.yavlash.repository.BookRepository;
 import by.library.yavlash.repository.impl.BookRepositoryImpl;
 import by.library.yavlash.service.BookService;
@@ -25,7 +24,7 @@ class BookServiceImplTest {
 
     public BookServiceImplTest() {
         bookRepository = mock(BookRepositoryImpl.class);
-        bookService = new BookServiceImpl(bookRepository, new BookMapperImpl());
+        bookService = new BookServiceImpl(bookRepository);
     }
 
     @Test

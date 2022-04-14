@@ -1,9 +1,9 @@
 package by.library.yavlash.repository.impl;
 
-import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.BookCopy;
-import by.library.yavlash.entity.User;
+import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Order;
+import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
@@ -83,6 +83,6 @@ class BookDamageRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertNull(bookDamageRepository.findById(expected.getId()));
+        Assertions.assertThrows(RepositoryException.class, () -> bookDamageRepository.findById(expected.getId()));
     }
 }

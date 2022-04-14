@@ -1,17 +1,18 @@
 package by.library.yavlash.service.impl;
 
 import by.library.yavlash.dto.BookCopyListDto;
-import by.library.yavlash.dto.BookDamageListDto;
+import by.library.yavlash.dto.GenreDto;
 import by.library.yavlash.dto.OrderDto;
 import by.library.yavlash.dto.OrderListDto;
 import by.library.yavlash.dto.OrderSaveDto;
+import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.BookDamage;
+import by.library.yavlash.entity.Genre;
 import by.library.yavlash.entity.Order;
 import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
-import by.library.yavlash.mapper.OrderMapperImpl;
 import by.library.yavlash.repository.OrderRepository;
 import by.library.yavlash.repository.impl.OrderRepositoryImpl;
 import by.library.yavlash.service.OrderService;
@@ -35,18 +36,21 @@ class OrderServiceImplTest {
 
     public OrderServiceImplTest() {
         orderRepository = mock(OrderRepositoryImpl.class);
-        orderService = new OrderServiceImpl(orderRepository, new OrderMapperImpl());
+        orderService = new OrderServiceImpl(orderRepository);
     }
 
     @Test
     void findOrderById() throws RepositoryException, ServiceException {
         Long id = 1L;
-        OrderDto expected = OrderDto.builder().id(id).userId(2L)
-                .bookCopies(new ArrayList<>() {{add(BookCopyListDto.builder().id(2L).build());}})
-                .bookDamages(new ArrayList<>() {{add(BookDamageListDto.builder().id(2L).build());}})
-                .build();
-        Set<BookCopy> bookCopies = new HashSet<>() {{add(BookCopy.builder().id(2L).build());}};
+        List<GenreDto> genreDtos = new ArrayList<>(){{add(GenreDto.builder().id(1L).build());}};
+        Set<Genre> genres = new HashSet<>(){{add(Genre.builder().id(1L).build());}};
+        Set<BookCopy> bookCopies = new HashSet<>() {{add(BookCopy.builder().id(2L).book(Book.builder().id(1L).genres(genres).build()).build());}};
         Set<BookDamage> bookDamages = new HashSet<>() {{add(BookDamage.builder().id(2L).build());}};
+
+        OrderDto expected = OrderDto.builder().id(id).userId(2L)
+                .bookCopies(new ArrayList<>() {{add(BookCopyListDto.builder().id(2L).genres(genreDtos).build());}})
+                .bookDamages(new ArrayList<>() {{add(2L);}})
+                .build();
 
         //when
         when(orderRepository.findById(id)).thenReturn(Order.builder().id(id).user(User.builder().id(2L).build())
@@ -105,10 +109,12 @@ class OrderServiceImplTest {
     @Test
     void updateOrder() throws RepositoryException, ServiceException {
         //given
-        OrderDto expected = OrderDto.builder().id(4L).orderStatus("ACCEPTED").build();
+        List<Long> bookDamageList = new ArrayList<>() {{add(2L);}};
+        Set<BookDamage> bookDamages = new HashSet<>() {{add(BookDamage.builder().id(2L).build());}};
+        OrderDto expected = OrderDto.builder().id(4L).orderStatus("ACCEPTED").bookDamages(bookDamageList).build();
 
         //when
-        when(orderRepository.update(Order.builder().id(4L).orderStatus("ACCEPTED").build())).thenReturn(true);
+        when(orderRepository.update(Order.builder().id(4L).orderStatus("ACCEPTED").bookDamages(bookDamages).build())).thenReturn(true);
         boolean actual = orderService.updateOrder(expected);
 
         //then

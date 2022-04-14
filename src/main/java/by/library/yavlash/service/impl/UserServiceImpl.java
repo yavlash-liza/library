@@ -1,11 +1,11 @@
 package by.library.yavlash.service.impl;
 
+import by.library.yavlash.converter.UserConverter;
 import by.library.yavlash.dto.UserDto;
 import by.library.yavlash.dto.UserListDto;
 import by.library.yavlash.dto.UserSaveDto;
 import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.ServiceException;
-import by.library.yavlash.mapper.UserMapper;
 import by.library.yavlash.repository.UserRepository;
 import by.library.yavlash.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +15,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
 
     @Override
     public UserDto findUserById(Long userId) throws ServiceException {
         try {
             User user = userRepository.findById(userId);
-            return userMapper.toDto(user);
+            return UserConverter.toDto(user);
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
@@ -31,7 +30,7 @@ public class UserServiceImpl implements UserService {
     public List<UserListDto> findAllUsers() throws ServiceException {
         try {
             List<User> users = userRepository.findAll();
-            return userMapper.toListDtos(users);
+            return UserConverter.toListDtos(users);
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s were not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
@@ -40,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean addUser(UserSaveDto userSaveDto) throws ServiceException {
         try {
-            User user = userMapper.fromSaveDto(userSaveDto);
+            User user = UserConverter.fromSaveDto(userSaveDto);
             userRepository.add(user);
             return true;
         } catch (Exception exception) {
@@ -51,7 +50,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean updateUser(UserDto userDto) throws ServiceException {
         try {
-            User user = userMapper.fromDto(userDto);
+            User user = UserConverter.fromDto(userDto);
             userRepository.update(user);
             return true;
         } catch (Exception exception) {

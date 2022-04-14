@@ -18,5 +18,5 @@ public class BookCopyDto {
     private String imagePath;
     private List<AuthorListDto> authors;
     private List<GenreDto> genres;
-    private List<BookDamageListDto> bookDamages;
+    private List<Long> bookDamagesId;
 }

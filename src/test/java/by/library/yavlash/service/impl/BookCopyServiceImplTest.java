@@ -4,7 +4,6 @@ import by.library.yavlash.dto.AuthorListDto;
 import by.library.yavlash.dto.BookCopyDto;
 import by.library.yavlash.dto.BookCopyListDto;
 import by.library.yavlash.dto.BookCopySaveDto;
-import by.library.yavlash.dto.BookDamageListDto;
 import by.library.yavlash.dto.GenreDto;
 import by.library.yavlash.entity.Author;
 import by.library.yavlash.entity.Book;
@@ -13,7 +12,6 @@ import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Genre;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
-import by.library.yavlash.mapper.BookCopyMapperImpl;
 import by.library.yavlash.repository.BookCopyRepository;
 import by.library.yavlash.repository.impl.BookCopyRepositoryImpl;
 import by.library.yavlash.service.BookCopyService;
@@ -37,7 +35,7 @@ class BookCopyServiceImplTest {
 
     public BookCopyServiceImplTest() {
         bookCopyRepository = mock(BookCopyRepositoryImpl.class);
-        bookCopyService = new BookCopyServiceImpl(bookCopyRepository, new BookCopyMapperImpl());
+        bookCopyService = new BookCopyServiceImpl(bookCopyRepository);
     }
 
     @Test
@@ -61,8 +59,8 @@ class BookCopyServiceImplTest {
                 .build();
 
         BookCopyDto expected = BookCopyDto.builder().id(id)
-                .bookDamages(new ArrayList<>() {{
-                    add(BookDamageListDto.builder().id(1L).build());
+                .bookDamagesId(new ArrayList<>() {{
+                    add(1L);
                 }})
                 .authors(new ArrayList<>() {{
                     add(AuthorListDto.builder().id(1L).build());
@@ -83,15 +81,17 @@ class BookCopyServiceImplTest {
     @Test
     void findAllBookCopies() throws RepositoryException, ServiceException {
         //given
+        List<GenreDto> genreDtos = new ArrayList<>(){{add(GenreDto.builder().id(1L).build());}};
+        Set<Genre> genres = new HashSet<>(){{add(Genre.builder().id(1L).build());}};
         List<BookCopyListDto> expected = new ArrayList<>() {{
-            add(BookCopyListDto.builder().id(1L).build());
-            add(BookCopyListDto.builder().id(2L).build());
+            add(BookCopyListDto.builder().id(1L).genres(genreDtos).build());
+            add(BookCopyListDto.builder().id(2L).genres(genreDtos).build());
         }};
 
         //when
         when(bookCopyRepository.findAll()).thenReturn(new ArrayList<>() {{
-            add(BookCopy.builder().id(1L).book(Book.builder().id(1L).build()).build());
-            add(BookCopy.builder().id(2L).book(Book.builder().id(1L).build()).build());
+            add(BookCopy.builder().id(1L).book(Book.builder().id(1L).genres(genres).build()).build());
+            add(BookCopy.builder().id(2L).book(Book.builder().id(1L).genres(genres).build()).build());
         }});
         List<BookCopyListDto> actual = bookCopyService.findAllBookCopies();
 
@@ -113,10 +113,12 @@ class BookCopyServiceImplTest {
     @Test
     void updateBookCopy() throws RepositoryException, ServiceException {
         //given
-        BookCopyDto expected = BookCopyDto.builder().id(4L).imagePath("image").build();
+        List<Long> list = new ArrayList(){{add(2L);}};
+        Set<BookDamage> bookDamages = new HashSet<>(){{add(BookDamage.builder().id(2L).build());}};
+        BookCopyDto expected = BookCopyDto.builder().id(4L).imagePath("image").bookDamagesId(list).build();
 
         //when
-        when(bookCopyRepository.update(BookCopy.builder().id(4L).imagePath("image").build())).thenReturn(true);
+        when(bookCopyRepository.update(BookCopy.builder().id(4L).imagePath("image").bookDamages(bookDamages).build())).thenReturn(true);
         boolean actual = bookCopyService.updateBookCopy(expected);
 
         //then

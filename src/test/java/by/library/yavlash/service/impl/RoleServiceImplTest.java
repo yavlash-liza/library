@@ -4,7 +4,6 @@ import by.library.yavlash.dto.RoleDto;
 import by.library.yavlash.entity.Role;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
-import by.library.yavlash.mapper.RoleMapperImpl;
 import by.library.yavlash.repository.RoleRepository;
 import by.library.yavlash.repository.impl.RoleRepositoryImpl;
 import by.library.yavlash.service.RoleService;
@@ -26,7 +25,7 @@ class RoleServiceImplTest {
 
     public RoleServiceImplTest() {
         roleRepository = mock(RoleRepositoryImpl.class);
-        roleService = new RoleServiceImpl(roleRepository, new RoleMapperImpl());
+        roleService = new RoleServiceImpl(roleRepository);
     }
 
     @Test

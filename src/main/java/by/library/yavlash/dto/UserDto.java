@@ -17,5 +17,5 @@ public class UserDto {
     private String passportNumber;
     private LocalDate birthDate;
     private List<OrderListDto> orders;
-    private List<RoleIdDto> rolesId;
+    private List<Long> rolesId;
 }

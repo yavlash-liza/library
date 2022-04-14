@@ -1,7 +1,6 @@
 package by.library.yavlash.service.impl;
 
 import by.library.yavlash.dto.BookDamageDto;
-import by.library.yavlash.dto.BookDamageListDto;
 import by.library.yavlash.dto.BookDamageSaveDto;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.BookDamage;
@@ -9,7 +8,6 @@ import by.library.yavlash.entity.Order;
 import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
-import by.library.yavlash.mapper.BookDamageMapperImpl;
 import by.library.yavlash.repository.BookDamageRepository;
 import by.library.yavlash.repository.impl.BookDamageRepositoryImpl;
 import by.library.yavlash.service.BookDamageService;
@@ -17,9 +15,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -31,7 +26,7 @@ class BookDamageServiceImplTest {
 
     public BookDamageServiceImplTest() {
         bookDamageRepository = mock(BookDamageRepositoryImpl.class);
-        bookDamageService = new BookDamageServiceImpl(bookDamageRepository, new BookDamageMapperImpl());
+        bookDamageService = new BookDamageServiceImpl(bookDamageRepository);
     }
 
     @Test
@@ -49,25 +44,6 @@ class BookDamageServiceImplTest {
         //when
         when(bookDamageRepository.findById(id)).thenReturn(bookDamage);
         BookDamageDto actual = bookDamageService.findBookDamageById(id);
-
-        //then
-        Assertions.assertEquals(expected, actual);
-    }
-
-    @Test
-    void findAllBookDamages() throws RepositoryException, ServiceException {
-        //given
-        List<BookDamageListDto> expected = new ArrayList<>() {{
-            add(BookDamageListDto.builder().id(1L).build());
-            add(BookDamageListDto.builder().id(2L).build());
-        }};
-
-        //when
-        when(bookDamageRepository.findAll()).thenReturn(new ArrayList<>() {{
-            add(BookDamage.builder().id(1L).build());
-            add(BookDamage.builder().id(2L).build());
-        }});
-        List<BookDamageListDto> actual = bookDamageService.findAllBookDamages();
 
         //then
         Assertions.assertEquals(expected, actual);

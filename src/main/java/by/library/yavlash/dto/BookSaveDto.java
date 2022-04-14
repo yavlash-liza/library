@@ -12,7 +12,6 @@ public class BookSaveDto {
     private String title;
     private int pagesNumber;
     private String imagePath;
-    private int quantity;
     private List<Long> authorsId;
     private List<Long> genresId;
 }

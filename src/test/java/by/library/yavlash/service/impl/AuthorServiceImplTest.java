@@ -4,12 +4,13 @@ import by.library.yavlash.dto.AuthorDto;
 import by.library.yavlash.dto.AuthorListDto;
 import by.library.yavlash.dto.AuthorSaveDto;
 import by.library.yavlash.dto.BookCopyListDto;
+import by.library.yavlash.dto.GenreDto;
 import by.library.yavlash.entity.Author;
 import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
+import by.library.yavlash.entity.Genre;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
-import by.library.yavlash.mapper.AuthorMapperImpl;
 import by.library.yavlash.repository.AuthorRepository;
 import by.library.yavlash.repository.impl.AuthorRepositoryImpl;
 import by.library.yavlash.service.AuthorService;
@@ -26,7 +27,6 @@ import java.util.Set;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-
 @ExtendWith(MockitoExtension.class)
 class AuthorServiceImplTest {
     private final AuthorRepository authorRepository;
@@ -34,23 +34,25 @@ class AuthorServiceImplTest {
 
     public AuthorServiceImplTest() {
         authorRepository = mock(AuthorRepositoryImpl.class);
-        authorService = new AuthorServiceImpl(authorRepository, new AuthorMapperImpl());
+        authorService = new AuthorServiceImpl(authorRepository);
     }
 
     @Test
     void findById_shouldReturnAuthorDto() throws ServiceException, RepositoryException {
         //given
         Long id = 1L;
+        List<GenreDto> genreDtos = new ArrayList<>(){{add(GenreDto.builder().id(1L).build());}};
+        Set<Genre> genres = new HashSet<>(){{add(Genre.builder().id(1L).build());}};
         Set<Book> books = new HashSet<>() {{
             add(Book.builder().id(1L)
                     .bookCopies(new HashSet<>() {{
-                        add(BookCopy.builder().id(3L)
-                                .book(Book.builder().id(1L).build()).build());
+                        add(BookCopy.builder().id(1L)
+                                .book(Book.builder().id(1L).genres(genres).build()).build());
                     }}).build());
         }};
         AuthorDto expected = AuthorDto.builder().id(id).firstName("Liza")
                 .books(new ArrayList<>() {{
-                    add(BookCopyListDto.builder().id(1L).build());
+                    add(BookCopyListDto.builder().id(1L).genres(genreDtos).build());
                 }}).build();
 
         //when

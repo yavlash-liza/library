@@ -4,7 +4,6 @@ import by.library.yavlash.dto.GenreDto;
 import by.library.yavlash.entity.Genre;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
-import by.library.yavlash.mapper.GenreMapperImpl;
 import by.library.yavlash.repository.GenreRepository;
 import by.library.yavlash.repository.impl.GenreRepositoryImpl;
 import by.library.yavlash.service.GenreService;
@@ -26,7 +25,7 @@ class GenreServiceImplTest {
 
     public GenreServiceImplTest() {
         genreRepository = mock(GenreRepositoryImpl.class);
-        genreService = new GenreServiceImpl(genreRepository, new GenreMapperImpl());
+        genreService = new GenreServiceImpl(genreRepository);
     }
 
     @Test

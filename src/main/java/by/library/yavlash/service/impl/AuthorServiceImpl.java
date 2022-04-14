@@ -1,11 +1,11 @@
 package by.library.yavlash.service.impl;
 
+import by.library.yavlash.converter.AuthorConverter;
 import by.library.yavlash.dto.AuthorDto;
 import by.library.yavlash.dto.AuthorListDto;
 import by.library.yavlash.dto.AuthorSaveDto;
 import by.library.yavlash.entity.Author;
 import by.library.yavlash.exception.ServiceException;
-import by.library.yavlash.mapper.AuthorMapper;
 import by.library.yavlash.repository.AuthorRepository;
 import by.library.yavlash.service.AuthorService;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +15,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
-    private final AuthorMapper authorMapper;
 
     @Override
     public AuthorDto findAuthorById(Long authorId) throws ServiceException {
         try {
             Author author = authorRepository.findById(authorId);
-            return authorMapper.toDto(author);
+            return AuthorConverter.toDto(author);
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
@@ -31,7 +30,7 @@ public class AuthorServiceImpl implements AuthorService {
     public List<AuthorListDto> findAllAuthors() throws ServiceException {
         try {
             List<Author> authors = authorRepository.findAll();
-            return authorMapper.toAuthorListDtos(authors);
+            return AuthorConverter.toAuthorListDtos(authors);
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s were not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
         }
@@ -40,7 +39,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public boolean addAuthor(AuthorSaveDto authorSaveDto) throws ServiceException {
         try {
-            Author author = authorMapper.fromSaveDto(authorSaveDto);
+            Author author = AuthorConverter.fromSaveDto(authorSaveDto);
             authorRepository.add(author);
             return true;
         } catch (Exception exception) {

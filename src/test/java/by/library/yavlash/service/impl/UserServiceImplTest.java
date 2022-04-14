@@ -1,7 +1,6 @@
 package by.library.yavlash.service.impl;
 
 import by.library.yavlash.dto.OrderListDto;
-import by.library.yavlash.dto.RoleIdDto;
 import by.library.yavlash.dto.UserDto;
 import by.library.yavlash.dto.UserListDto;
 import by.library.yavlash.dto.UserSaveDto;
@@ -10,7 +9,6 @@ import by.library.yavlash.entity.Role;
 import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
-import by.library.yavlash.mapper.UserMapperImpl;
 import by.library.yavlash.repository.UserRepository;
 import by.library.yavlash.repository.impl.UserRepositoryImpl;
 import by.library.yavlash.service.UserService;
@@ -34,7 +32,7 @@ class UserServiceImplTest {
 
     public UserServiceImplTest() {
         userRepository = mock(UserRepositoryImpl.class);
-        userService = new UserServiceImpl(userRepository, new UserMapperImpl());
+        userService = new UserServiceImpl(userRepository);
     }
 
     @Test
@@ -42,7 +40,7 @@ class UserServiceImplTest {
         //given
         Long id = 1L;
         UserDto expected = UserDto.builder().id(id)
-                .rolesId(new ArrayList<>(){{add(RoleIdDto.builder().id(2L).build());}})
+                .rolesId(new ArrayList<>(){{add(2L);}})
                 .orders(new ArrayList<>(){{add(OrderListDto.builder().id(2L).build());}})
                 .build();
         Set<Order> orders = new HashSet<>() {{add(Order.builder().id(2L).build());}};
@@ -78,9 +76,7 @@ class UserServiceImplTest {
     @Test
     void addUser() throws RepositoryException, ServiceException {
         //given
-        Set<Role> roles = new HashSet<>() {{
-            add(Role.builder().id(1L).build());
-        }};
+        Set<Role> roles = new HashSet<>() {{add(Role.builder().id(1L).build());}};
 
         // when
         when(userRepository.add(User.builder().roles(roles).build())).thenReturn(true);
@@ -93,10 +89,12 @@ class UserServiceImplTest {
     @Test
     void updateUser() throws RepositoryException, ServiceException {
         //given
-        UserDto expected = UserDto.builder().id(4L).firstName("Sergei").lastName("Smirnov").build();
+        Set<Role> roles = new HashSet<>() {{add(Role.builder().id(1L).build());}};
+        List<Long> roleList = new ArrayList<>() {{add(1L);}};
+        UserDto expected = UserDto.builder().id(4L).firstName("Sergei").lastName("Smirnov").rolesId(roleList).build();
 
         //when
-        when(userRepository.update(User.builder().id(4L).firstName("Sergei").lastName("Smirnov").build())).thenReturn(true);
+        when(userRepository.update(User.builder().id(4L).firstName("Sergei").lastName("Smirnov").roles(roles).build())).thenReturn(true);
         boolean actual = userService.updateUser(expected);
 
         //then

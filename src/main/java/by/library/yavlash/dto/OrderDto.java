@@ -16,5 +16,5 @@ public class OrderDto {
     private int price;
     private Long userId;
     private List<BookCopyListDto> bookCopies;
-    private List<BookDamageListDto> bookDamages;
+    private List<Long> bookDamages;
 }
