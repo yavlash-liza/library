@@ -2,7 +2,10 @@ package by.library.yavlash.repository.impl;
 
 import by.library.yavlash.entity.Author;
 import by.library.yavlash.entity.Book;
+import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.AuthorRepository;
+import by.library.yavlash.util.HibernateUtil;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -14,6 +17,7 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
     private static final String BIRTH_DATE_COLUMN = "birthDate";
     private static final String IMAGE_PATH_COLUMN = "imagePath";
 
+    private static final String SELECT_BY_ID = "from Author a left join fetch a.books bs where a.id=:id";
     private static final String SELECT_ALL_QUERY = "from Author";
     private static final String UPDATE_QUERY =
             " update Author set firstName=:firstName, lastName=:lastName, birthDate=:birthDate, imagePath=:imagePath " +
@@ -24,12 +28,34 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
     }
 
     @Override
-    protected String defineSelectAllQuery() {
+    public Author findById(Long id) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(SELECT_BY_ID, Author.class)
+                    .setParameter(ID_COLUMN, id)
+                    .getSingleResult();
+        } catch (Exception ex) {
+            throw new RepositoryException(String.format("%s was not found: {%s}", getClass().getSimpleName(), ex.getMessage()));
+        }
+    }
+
+    @Override
+    public Set<Book> findBooksByAuthorId(Long id) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Author author = session.get(Author.class, id);
+            Hibernate.initialize(author.getBooks());
+            return author.getBooks();
+        } catch (Exception ex) {
+            throw new RepositoryException(String.format("%s was not found: {%s}", getClass().getSimpleName(), ex.getMessage()));
+        }
+    }
+
+    @Override
+    protected String obtainSelectAllQuery() {
         return SELECT_ALL_QUERY;
     }
 
     @Override
-    protected String defineUpdateQuery() {
+    protected String obtainUpdateQuery() {
         return UPDATE_QUERY;
     }
 

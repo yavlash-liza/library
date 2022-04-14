@@ -1,8 +1,12 @@
 package by.library.yavlash.repository.impl;
 
+import by.library.yavlash.entity.Order;
 import by.library.yavlash.entity.Role;
 import by.library.yavlash.entity.User;
+import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.UserRepository;
+import by.library.yavlash.util.HibernateUtil;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -17,6 +21,8 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     private static final String BIRTH_DATE_COLUMN = "birthDate";
     private static final String USER_ID_COLUMN = "userId";
 
+    private static final String SELECT_BY_ID = " from User u left join fetch u.roles r " +
+            " left join fetch u.bookDamages left join fetch u.orders where u.id=:id ";
     private static final String SELECT_ALL_QUERY = "from User";
     private static final String UPDATE_QUERY =
             "update User set firstName=:firstName, lastName=:lastName, passportNumber=:passportNumber," +
@@ -31,12 +37,45 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     }
 
     @Override
-    protected String defineSelectAllQuery() {
+    public User findById(Long id) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(SELECT_BY_ID, User.class)
+                    .setParameter(ID_COLUMN, id)
+                    .getSingleResult();
+        } catch (Exception ex) {
+            throw new RepositoryException(String.format("%s was not found: {%s}", getClass().getSimpleName(), ex.getMessage()));
+        }
+    }
+
+    @Override
+    public Set<Role> findRolesByUserId(Long userId) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            User user = session.get(User.class, userId);
+            Hibernate.initialize(user.getRoles());
+            return user.getRoles();
+        } catch (Exception ex) {
+            throw new RepositoryException(String.format("%s was not found: {%s}", getClass().getSimpleName(), ex.getMessage()));
+        }
+    }
+
+    @Override
+    public Set<Order> findOrdersByUserId(Long userId) throws RepositoryException {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            User user = session.get(User.class, userId);
+            Hibernate.initialize(user.getOrders());
+            return user.getOrders();
+        } catch (Exception ex) {
+            throw new RepositoryException(String.format("%s was not found: {%s}", getClass().getSimpleName(), ex.getMessage()));
+        }
+    }
+
+    @Override
+    protected String obtainSelectAllQuery() {
         return SELECT_ALL_QUERY;
     }
 
     @Override
-    protected String defineUpdateQuery() {
+    protected String obtainUpdateQuery() {
         return UPDATE_QUERY;
     }
 

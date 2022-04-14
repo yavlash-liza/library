@@ -29,13 +29,12 @@ public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements 
         super(Book.class);
     }
 
-    @Override
-    protected String defineSelectAllQuery() {
+    protected String obtainSelectAllQuery() {
         return SELECT_ALL_QUERY;
     }
 
     @Override
-    protected String defineUpdateQuery() {
+    protected String obtainUpdateQuery() {
         return UPDATE_QUERY;
     }
 

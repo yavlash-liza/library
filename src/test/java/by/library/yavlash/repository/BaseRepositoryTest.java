@@ -1,13 +1,19 @@
 package by.library.yavlash.repository;
 
-import by.library.yavlash.entity.*;
+import by.library.yavlash.entity.Author;
+import by.library.yavlash.entity.Book;
+import by.library.yavlash.entity.BookCopy;
+import by.library.yavlash.entity.BookDamage;
+import by.library.yavlash.entity.Genre;
+import by.library.yavlash.entity.Order;
+import by.library.yavlash.entity.Role;
+import by.library.yavlash.entity.User;
 import by.library.yavlash.service.FlywayService;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import javax.sql.DataSource;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,13 +113,13 @@ public abstract class BaseRepositoryTest {
 
     private void fillGenres() {
         genres = new ArrayList<>() {{
-            add(Genre.builder().id(1L).genreName("NOVEL").build());
             add(Genre.builder().id(2L).genreName("ADVENTURE").build());
             add(Genre.builder().id(3L).genreName("COMEDY").build());
             add(Genre.builder().id(4L).genreName("CRIME").build());
             add(Genre.builder().id(5L).genreName("HORROR").build());
-            add(Genre.builder().id(6L).genreName("SCIENCE FICTION").build());
+            add(Genre.builder().id(1L).genreName("NOVEL").build());
             add(Genre.builder().id(7L).genreName("ROMANCE").build());
+            add(Genre.builder().id(6L).genreName("SCIENCE FICTION").build());
         }};
     }
 

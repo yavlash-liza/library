@@ -19,12 +19,12 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
     }
 
     @Override
-    protected String defineSelectAllQuery() {
+    protected String obtainSelectAllQuery() {
         return SELECT_ALL_QUERY;
     }
 
     @Override
-    protected String defineUpdateQuery() {
+    protected String obtainUpdateQuery() {
         return UPDATE_QUERY;
     }
 
