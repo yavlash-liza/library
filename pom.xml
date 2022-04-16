@@ -24,6 +24,8 @@
         <lombok.version>1.18.22</lombok.version>
         <mockito-inline.version>4.3.1</mockito-inline.version>
         <mockito-junit-jupiter.version>4.3.1</mockito-junit-jupiter.version>
+
+        <spring.version>5.3.18</spring.version>
     </properties>
 
     <dependencies>
@@ -74,6 +76,22 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>${mockito-junit-jupiter.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
         </dependency>
     </dependencies>
 
