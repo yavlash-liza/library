@@ -10,9 +10,12 @@ import by.library.yavlash.util.HibernateUtil;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
+@Component
 public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implements OrderRepository {
     private static final String ORDER_STATUS_COLUMN = "orderStatus";
     private static final String START_DATE_COLUMN = "startDate";
@@ -33,6 +36,7 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
 
     private static final String DELETE_BOOK_DAMAGE_QUERY = "delete BookDamage bd where bd.order.id=:orderId";
 
+    @Autowired
     public OrderRepositoryImpl() {
         super(Order.class);
     }

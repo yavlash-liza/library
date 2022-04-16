@@ -10,9 +10,12 @@ import by.library.yavlash.util.HibernateUtil;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
+@Component
 public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> implements BookCopyRepository {
     private static final String BOOK_COPY_STATUS_COLUMN = "status";
     private static final String REGISTRATION_DATE_COLUMN = "registrationDate";
@@ -30,6 +33,7 @@ public class BookCopyRepositoryImpl extends AbstractRepositoryImpl<BookCopy> imp
 
     private static final String DELETE_BOOK_DAMAGE_QUERY = "delete BookDamage bd where bd.bookCopy.id=:bookCopyId";
 
+    @Autowired
     public BookCopyRepositoryImpl() {
         super(BookCopy.class);
     }

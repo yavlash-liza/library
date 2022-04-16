@@ -9,13 +9,19 @@ import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.BookCopyRepository;
 import by.library.yavlash.service.BookCopyService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@RequiredArgsConstructor
+@Component
 public class BookCopyServiceImpl implements BookCopyService {
     private final BookCopyRepository bookCopyRepository;
+
+    @Autowired
+    public BookCopyServiceImpl(BookCopyRepository bookCopyRepository) {
+        this.bookCopyRepository = bookCopyRepository;
+    }
 
     @Override
     public BookCopyDto findBookCopyById(Long bookCopyId) throws ServiceException {

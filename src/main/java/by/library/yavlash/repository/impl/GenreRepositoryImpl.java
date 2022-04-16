@@ -8,15 +8,19 @@ import by.library.yavlash.util.HibernateUtil;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
+@Component
 public class GenreRepositoryImpl extends AbstractRepositoryImpl<Genre> implements GenreRepository {
     private static final String GENRE_NAME_COLUMN = "genreName";
 
     private static final String SELECT_ALL_QUERY = "from Genre";
     private static final String UPDATE_QUERY = "update Genre set genreName=:genreName where id=:id";
 
+    @Autowired
     public GenreRepositoryImpl() {
         super(Genre.class);
     }

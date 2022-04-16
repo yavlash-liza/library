@@ -8,13 +8,19 @@ import by.library.yavlash.entity.Author;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.AuthorRepository;
 import by.library.yavlash.service.AuthorService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@RequiredArgsConstructor
+@Component
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
+
+    @Autowired
+    public AuthorServiceImpl(AuthorRepository authorRepository) {
+        this.authorRepository = authorRepository;
+    }
 
     @Override
     public AuthorDto findAuthorById(Long authorId) throws ServiceException {

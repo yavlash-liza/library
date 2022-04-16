@@ -7,9 +7,12 @@ import by.library.yavlash.entity.Genre;
 import by.library.yavlash.repository.BookRepository;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
+@Component
 public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements BookRepository {
     private static final String BOOK_COPY_ID_COLUMN = "bookCopyId";
     private static final String TITLE_COLUMN = "title";
@@ -25,6 +28,7 @@ public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements 
     private static final String DELETE_BOOK_COPY_QUERY = "delete BookCopy bc where bc.book.id=:bookId";
     private static final String DELETE_BOOK_DAMAGE_QUERY = "DELETE BookDamage bd WHERE bd.bookCopy.id=:bookCopyId";
 
+    @Autowired
     public BookRepositoryImpl() {
         super(Book.class);
     }

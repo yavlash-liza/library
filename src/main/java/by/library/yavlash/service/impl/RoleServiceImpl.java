@@ -6,13 +6,19 @@ import by.library.yavlash.entity.Role;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.RoleRepository;
 import by.library.yavlash.service.RoleService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@RequiredArgsConstructor
+@Component
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
+
+    @Autowired
+    public RoleServiceImpl(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     @Override
     public List<RoleDto> findAllRoles() throws ServiceException {

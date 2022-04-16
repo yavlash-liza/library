@@ -9,11 +9,17 @@ import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.BookDamageRepository;
 import by.library.yavlash.service.BookDamageService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
+@Component
 public class BookDamageServiceImpl implements BookDamageService {
     private final BookDamageRepository bookDamageRepository;
+
+    @Autowired
+    public BookDamageServiceImpl(BookDamageRepository bookDamageRepository) {
+        this.bookDamageRepository = bookDamageRepository;
+    }
 
     @Override
     public BookDamageDto findBookDamageById(Long bookDamageId) throws ServiceException {

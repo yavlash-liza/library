@@ -6,7 +6,10 @@ import by.library.yavlash.repository.BookDamageRepository;
 import by.library.yavlash.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BookDamageRepositoryImpl extends AbstractRepositoryImpl<BookDamage> implements BookDamageRepository {
     private static final String IMAGE_PATH_COLUMN = "imagePath";
     private static final String DAMAGE_DESCRIPTION_COLUMN = "damageDescription";
@@ -18,6 +21,7 @@ public class BookDamageRepositoryImpl extends AbstractRepositoryImpl<BookDamage>
             "update BookDamage set imagePath=:imagePath, damageDescription=:damageDescription " +
                     " where id=:id";
 
+    @Autowired
     public BookDamageRepositoryImpl() {
         super(BookDamage.class);
     }

@@ -9,9 +9,12 @@ import by.library.yavlash.util.HibernateUtil;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
+@Component
 public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements UserRepository {
     private static final String FIRST_NAME_COLUMN = "firstName";
     private static final String LAST_NAME_COLUMN = "lastName";
@@ -32,6 +35,7 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     private static final String DELETE_BOOK_DAMAGE_QUERY = "delete BookDamage bd where bd.user.id=:userId";
     private static final String DELETE_ORDER_QUERY = "delete Order o where o.user.id=:userId";
 
+    @Autowired
     public UserRepositoryImpl() {
         super(User.class);
     }

@@ -8,9 +8,12 @@ import by.library.yavlash.util.HibernateUtil;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
+@Component
 public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> implements AuthorRepository {
     private static final String FIRST_NAME_COLUMN = "firstName";
     private static final String LAST_NAME_COLUMN = "lastName";
@@ -23,6 +26,7 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
             " update Author set firstName=:firstName, lastName=:lastName, birthDate=:birthDate, imagePath=:imagePath " +
                     " where id=:id ";
 
+    @Autowired
     public AuthorRepositoryImpl() {
         super(Author.class);
     }
