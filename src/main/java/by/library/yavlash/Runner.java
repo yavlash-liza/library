@@ -1,35 +1,40 @@
 package by.library.yavlash;
 
-import by.library.yavlash.service.FlywayService;
-import org.h2.jdbcx.JdbcConnectionPool;
+import by.library.yavlash.service.UserService;
+import org.flywaydb.core.Flyway;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import javax.sql.DataSource;
-
-import static by.library.yavlash.service.Property.*;
-
+@Configuration
+@ComponentScan("by.library.yavlash")
+@PropertySource("classpath:db/migration")
 public class Runner {
+    @Value("jdbc:h2:mem:library;DB_CLOSE_DELAY=-1")
+    private String url;
+    @Value("sa")
+    private String user;
+    @Value("")
+    private String password;
+    @Value("db/migration")
+    private String migrationLocation;
+
+    @Bean(initMethod = "migrate")
+    public Flyway flyway() {
+        return Flyway.configure()
+                .dataSource(url, user, password)
+                .locations(migrationLocation)
+                .baselineOnMigrate(true)
+                .load();
+    }
+
     public static void main(String[] args) throws Exception {
-        DataSource dataSource = JdbcConnectionPool.create(H2_URL, H2_USER, H2_PASSWORD);
-        FlywayService flywayService = new FlywayService(H2_URL, H2_USER, H2_PASSWORD, MIGRATION_LOCATION);
-        flywayService.migrate();
-
-
-
-//        BookRepository bookRepository = new BookRepositoryImpl(dataSource);
-//        GenreRepositoryImpl genreRepository = new GenreRepositoryImpl(dataSource);
-//        UserRepository userRepository = new UserRepositoryImpl(dataSource);
-//        AuthorRepositoryImpl authorRepository = new AuthorRepositoryImpl(dataSource);
-//        OrderRepository orderRepository = new OrderRepositoryImpl(dataSource);
-//        BookCopyRepository bookCopyRepository = new BookCopyRepositoryImpl(dataSource);
-//        BookDamageRepository bookDamageRepository = new BookDamageRepositoryImpl(dataSource);
-//        RoleRepository roleRepository = new RoleRepositoryImpl(dataSource);
-//
-//        System.out.println(bookDamageRepository.findAll());
-//        bookRepository.delete(2L);
-//        System.out.println(bookDamageRepository.findAll());
-//        System.out.println(bookCopyRepository.findAll());
-//        System.out.println(genreRepository.findAll());
-//        genreRepository.add(Genre.builder().genreName("tale").build());
-//        System.out.println(genreRepository.findAll());
+        ApplicationContext context = new ClassPathXmlApplicationContext("context.xml");
+        UserService userService = context.getBean(UserService.class);
+        System.out.println("All USERS" + userService.findAllUsers());
     }
 }
