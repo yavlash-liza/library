@@ -6,19 +6,15 @@ import by.library.yavlash.entity.Genre;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.GenreRepository;
 import by.library.yavlash.service.GenreService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+@Service
+@RequiredArgsConstructor
 public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
-
-    @Autowired
-    public GenreServiceImpl(GenreRepository genreRepository) {
-        this.genreRepository = genreRepository;
-    }
 
     @Override
     public List<GenreDto> findAllGenres() throws ServiceException {

@@ -3,21 +3,27 @@ package by.library.yavlash.repository.impl;
 import by.library.yavlash.entity.BaseEntity;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.BaseRepository;
-import by.library.yavlash.util.HibernateUtil;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @RequiredArgsConstructor
+@Transactional
 public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements BaseRepository<E> {
     protected static final String ID_COLUMN = "id";
     private final Class<E> clazz;
 
+    @Autowired
+    protected SessionFactory sessionFactory;
+
     @Override
     public E findById(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             return session.get(clazz, id);
         } catch (Exception ex) {
             throw new RepositoryException(String.format("%s was not found: {%s}", clazz.getSimpleName(), ex.getMessage()));
@@ -26,7 +32,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
 
     @Override
     public List<E> findAll() throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             return session.createQuery(obtainSelectAllQuery(), clazz).list();
         } catch (Exception ex) {
             throw new RepositoryException(String.format("%ss were not found: {%s}", clazz.getSimpleName(), ex.getMessage()));
@@ -37,7 +43,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
 
     @Override
     public boolean add(E element) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             try {
                 session.save(element);
                 return true;
@@ -49,7 +55,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
 
     @Override
     public boolean update(E element) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             try {
                 session.getTransaction().begin();
                 Query query = session.createQuery(obtainUpdateQuery());
@@ -70,7 +76,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements Ba
 
     @Override
     public boolean delete(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             try {
                 session.getTransaction().begin();
                 E element = session.get(clazz, id);

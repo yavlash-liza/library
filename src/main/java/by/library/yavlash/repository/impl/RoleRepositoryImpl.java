@@ -7,10 +7,12 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
 @Component
+@Transactional
 public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements RoleRepository {
     private static final String ROLE_NAME_COLUMN = "roleName";
 

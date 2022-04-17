@@ -4,21 +4,26 @@ import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.Genre;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.GenreRepository;
-import by.library.yavlash.util.HibernateUtil;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
 @Component
+@Transactional
 public class GenreRepositoryImpl extends AbstractRepositoryImpl<Genre> implements GenreRepository {
     private static final String GENRE_NAME_COLUMN = "genreName";
 
     private static final String SELECT_ALL_QUERY = "from Genre";
     private static final String UPDATE_QUERY = "update Genre set genreName=:genreName where id=:id";
+
+    @Autowired
+    protected SessionFactory sessionFactory;
 
     @Autowired
     public GenreRepositoryImpl() {
@@ -27,7 +32,7 @@ public class GenreRepositoryImpl extends AbstractRepositoryImpl<Genre> implement
 
     @Override
     public Set<Book> findBooksByGenreId(Long genreId) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Genre genre = session.get(Genre.class, genreId);
             Hibernate.initialize(genre.getBooks());
             return genre.getBooks();

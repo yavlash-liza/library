@@ -4,16 +4,18 @@ import by.library.yavlash.entity.Author;
 import by.library.yavlash.entity.Book;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.AuthorRepository;
-import by.library.yavlash.util.HibernateUtil;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
 @Component
+@Transactional
 public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> implements AuthorRepository {
     private static final String FIRST_NAME_COLUMN = "firstName";
     private static final String LAST_NAME_COLUMN = "lastName";
@@ -27,13 +29,16 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
                     " where id=:id ";
 
     @Autowired
+    protected SessionFactory sessionFactory;
+
+    @Autowired
     public AuthorRepositoryImpl() {
         super(Author.class);
     }
 
     @Override
     public Author findById(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             return session.createQuery(SELECT_BY_ID, Author.class)
                     .setParameter(ID_COLUMN, id)
                     .getSingleResult();
@@ -43,8 +48,8 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
     }
 
     @Override
-    public Set<Book> findBooksByAuthorId(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+    public Set<Book> findByIdIs(Long id) throws RepositoryException {
+        try (Session session = sessionFactory.openSession()) {
             Author author = session.get(Author.class, id);
             Hibernate.initialize(author.getBooks());
             return author.getBooks();

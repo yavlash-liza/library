@@ -6,17 +6,13 @@ import by.library.yavlash.entity.Book;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.BookRepository;
 import by.library.yavlash.service.BookService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
+@RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
-
-    @Autowired
-    public BookServiceImpl(BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
-    }
 
     @Override
     public boolean addBook(BookSaveDto bookSaveDto) throws ServiceException {

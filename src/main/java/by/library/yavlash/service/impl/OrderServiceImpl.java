@@ -9,19 +9,15 @@ import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.OrderRepository;
 import by.library.yavlash.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+@Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
-
-    @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
 
     @Override
     public OrderDto findOrderById(Long orderId) throws ServiceException {

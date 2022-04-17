@@ -9,10 +9,12 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
 @Component
+@Transactional
 public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements BookRepository {
     private static final String BOOK_COPY_ID_COLUMN = "bookCopyId";
     private static final String TITLE_COLUMN = "title";
