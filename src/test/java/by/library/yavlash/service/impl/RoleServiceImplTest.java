@@ -1,32 +1,32 @@
 package by.library.yavlash.service.impl;
 
+import by.library.yavlash.config.TestServiceConfiguration;
 import by.library.yavlash.dto.RoleDto;
 import by.library.yavlash.entity.Role;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.RoleRepository;
-import by.library.yavlash.repository.impl.RoleRepositoryImpl;
-import by.library.yavlash.service.RoleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@ContextConfiguration(classes = TestServiceConfiguration.class)
 class RoleServiceImplTest {
-    private final RoleRepository roleRepository;
-    private final RoleService roleService;
+    @Mock
+    private RoleRepository roleRepository;
 
-    public RoleServiceImplTest() {
-        roleRepository = mock(RoleRepositoryImpl.class);
-        roleService = new RoleServiceImpl(roleRepository);
-    }
+    @InjectMocks
+    private RoleServiceImpl roleService;
 
     @Test
     void findAllRoles() throws RepositoryException, ServiceException {

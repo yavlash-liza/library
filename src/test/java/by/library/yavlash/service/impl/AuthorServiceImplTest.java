@@ -1,58 +1,55 @@
 package by.library.yavlash.service.impl;
 
+import by.library.yavlash.config.TestServiceConfiguration;
 import by.library.yavlash.dto.AuthorDto;
 import by.library.yavlash.dto.AuthorListDto;
 import by.library.yavlash.dto.AuthorSaveDto;
 import by.library.yavlash.dto.BookCopyListDto;
-import by.library.yavlash.dto.GenreDto;
 import by.library.yavlash.entity.Author;
 import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
-import by.library.yavlash.entity.Genre;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.AuthorRepository;
-import by.library.yavlash.repository.impl.AuthorRepositoryImpl;
-import by.library.yavlash.service.AuthorService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@ContextConfiguration(classes = TestServiceConfiguration.class)
 class AuthorServiceImplTest {
-    private final AuthorRepository authorRepository;
-    private final AuthorService authorService;
+    @Mock
+    private AuthorRepository authorRepository;
 
-    public AuthorServiceImplTest() {
-        authorRepository = mock(AuthorRepositoryImpl.class);
-        authorService = new AuthorServiceImpl(authorRepository);
-    }
+    @InjectMocks
+    private AuthorServiceImpl authorService;
 
     @Test
     void findById_shouldReturnAuthorDto() throws ServiceException, RepositoryException {
         //given
         Long id = 1L;
-        List<GenreDto> genreDtos = new ArrayList<>(){{add(GenreDto.builder().id(1L).build());}};
-        Set<Genre> genres = new HashSet<>(){{add(Genre.builder().id(1L).build());}};
+
         Set<Book> books = new HashSet<>() {{
             add(Book.builder().id(1L)
                     .bookCopies(new HashSet<>() {{
                         add(BookCopy.builder().id(1L)
-                                .book(Book.builder().id(1L).genres(genres).build()).build());
+                                .book(Book.builder().id(1L).build()).build());
                     }}).build());
         }};
         AuthorDto expected = AuthorDto.builder().id(id).firstName("Liza")
                 .books(new ArrayList<>() {{
-                    add(BookCopyListDto.builder().id(1L).genres(genreDtos).build());
+                    add(BookCopyListDto.builder().id(1L).build());
                 }}).build();
 
         //when

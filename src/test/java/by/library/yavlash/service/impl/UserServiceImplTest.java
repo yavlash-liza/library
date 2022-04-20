@@ -1,5 +1,6 @@
 package by.library.yavlash.service.impl;
 
+import by.library.yavlash.config.TestServiceConfiguration;
 import by.library.yavlash.dto.OrderListDto;
 import by.library.yavlash.dto.UserDto;
 import by.library.yavlash.dto.UserListDto;
@@ -10,30 +11,29 @@ import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.UserRepository;
-import by.library.yavlash.repository.impl.UserRepositoryImpl;
-import by.library.yavlash.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@ContextConfiguration(classes = TestServiceConfiguration.class)
 class UserServiceImplTest {
-    private final UserRepository userRepository;
-    private final UserService userService;
+    @Mock
+    private UserRepository userRepository;
 
-    public UserServiceImplTest() {
-        userRepository = mock(UserRepositoryImpl.class);
-        userService = new UserServiceImpl(userRepository);
-    }
+    @InjectMocks
+    private UserServiceImpl userService;
 
     @Test
     void findUserById() throws RepositoryException, ServiceException {

@@ -1,5 +1,6 @@
 package by.library.yavlash.service.impl;
 
+import by.library.yavlash.config.TestServiceConfiguration;
 import by.library.yavlash.dto.AuthorListDto;
 import by.library.yavlash.dto.BookCopyDto;
 import by.library.yavlash.dto.BookCopyListDto;
@@ -13,30 +14,29 @@ import by.library.yavlash.entity.Genre;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.BookCopyRepository;
-import by.library.yavlash.repository.impl.BookCopyRepositoryImpl;
-import by.library.yavlash.service.BookCopyService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@ContextConfiguration(classes = TestServiceConfiguration.class)
 class BookCopyServiceImplTest {
-    private final BookCopyRepository bookCopyRepository;
-    private final BookCopyService bookCopyService;
+    @Mock
+    private BookCopyRepository bookCopyRepository;
 
-    public BookCopyServiceImplTest() {
-        bookCopyRepository = mock(BookCopyRepositoryImpl.class);
-        bookCopyService = new BookCopyServiceImpl(bookCopyRepository);
-    }
+    @InjectMocks
+    private BookCopyServiceImpl bookCopyService;
 
     @Test
     void findBookCopyById() throws RepositoryException, ServiceException {
@@ -81,17 +81,15 @@ class BookCopyServiceImplTest {
     @Test
     void findAllBookCopies() throws RepositoryException, ServiceException {
         //given
-        List<GenreDto> genreDtos = new ArrayList<>(){{add(GenreDto.builder().id(1L).build());}};
-        Set<Genre> genres = new HashSet<>(){{add(Genre.builder().id(1L).build());}};
         List<BookCopyListDto> expected = new ArrayList<>() {{
-            add(BookCopyListDto.builder().id(1L).genres(genreDtos).build());
-            add(BookCopyListDto.builder().id(2L).genres(genreDtos).build());
+            add(BookCopyListDto.builder().id(1L).build());
+            add(BookCopyListDto.builder().id(2L).build());
         }};
 
         //when
         when(bookCopyRepository.findAll()).thenReturn(new ArrayList<>() {{
-            add(BookCopy.builder().id(1L).book(Book.builder().id(1L).genres(genres).build()).build());
-            add(BookCopy.builder().id(2L).book(Book.builder().id(1L).genres(genres).build()).build());
+            add(BookCopy.builder().id(1L).book(Book.builder().id(1L).build()).build());
+            add(BookCopy.builder().id(2L).book(Book.builder().id(1L).build()).build());
         }});
         List<BookCopyListDto> actual = bookCopyService.findAllBookCopies();
 
