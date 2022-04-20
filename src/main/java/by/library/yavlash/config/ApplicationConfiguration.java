@@ -15,18 +15,20 @@ import javax.sql.DataSource;
 @Configuration
 @PersistenceContext
 @ComponentScan("by.library.yavlash")
-@PropertySource("classpath:db/migration")
+@PropertySource("classpath:/application.properties")
 public class ApplicationConfiguration {
-    @Value("jdbc:h2:mem:library;DB_CLOSE_DELAY=-1")
+    @Value("${datasource.url}")
     private String url;
-    @Value("sa")
+    @Value("${datasource.username}")
     private String user;
-    @Value("")
+    @Value("${datasource.password}")
     private String password;
-    @Value("db/migration")
+    @Value("${flyway.locations}")
     private String migrationLocation;
-    @Value("org.h2.Driver")
+    @Value("${datasource.driver-class-name}")
     private String driverClassName;
+    @Value("${entity.path}")
+    private String entityPath;
 
     @Bean(initMethod = "migrate")
     public Flyway flyway() {
@@ -41,11 +43,11 @@ public class ApplicationConfiguration {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan("by.library.yavlash.entity");
+        sessionFactory.setPackagesToScan(entityPath);
         return sessionFactory;
     }
 
-    @Bean(name = "dataSource")
+    @Bean
     public DataSource dataSource() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName(driverClassName);
