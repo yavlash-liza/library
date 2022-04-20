@@ -9,11 +9,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
-import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
 @Configuration
-@PersistenceContext
 @ComponentScan("by.library.yavlash")
 @PropertySource("classpath:/application.properties")
 public class ApplicationConfiguration {
