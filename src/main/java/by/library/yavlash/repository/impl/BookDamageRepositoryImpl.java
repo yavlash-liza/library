@@ -6,12 +6,9 @@ import by.library.yavlash.repository.BookDamageRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
-@Component
-@Transactional
+@Repository
 public class BookDamageRepositoryImpl extends AbstractRepositoryImpl<BookDamage> implements BookDamageRepository {
     private static final String IMAGE_PATH_COLUMN = "imagePath";
     private static final String DAMAGE_DESCRIPTION_COLUMN = "damageDescription";
@@ -23,17 +20,13 @@ public class BookDamageRepositoryImpl extends AbstractRepositoryImpl<BookDamage>
             "update BookDamage set imagePath=:imagePath, damageDescription=:damageDescription " +
                     " where id=:id";
 
-    @Autowired
-    protected SessionFactory sessionFactory;
-
-    @Autowired
-    public BookDamageRepositoryImpl() {
-        super(BookDamage.class);
+    public BookDamageRepositoryImpl(SessionFactory sessionFactory) {
+        super(BookDamage.class, sessionFactory);
     }
 
     @Override
     public BookDamage findById(Long id) throws RepositoryException {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             return session.createQuery(SELECT_BY_ID, BookDamage.class)
                     .setParameter(ID_COLUMN, id)
                     .getSingleResult();

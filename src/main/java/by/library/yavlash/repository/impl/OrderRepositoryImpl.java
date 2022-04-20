@@ -10,14 +10,11 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
 import java.util.Set;
 
-@Component
-@Transactional
+@Repository
 public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implements OrderRepository {
     private static final String ORDER_STATUS_COLUMN = "orderStatus";
     private static final String START_DATE_COLUMN = "startDate";
@@ -38,17 +35,13 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
 
     private static final String DELETE_BOOK_DAMAGE_QUERY = "delete BookDamage bd where bd.order.id=:orderId";
 
-    @Autowired
-    protected SessionFactory sessionFactory;
-
-    @Autowired
-    public OrderRepositoryImpl() {
-        super(Order.class);
+    public OrderRepositoryImpl(SessionFactory sessionFactory) {
+        super(Order.class, sessionFactory);
     }
 
     @Override
     public Order findById(Long id) throws RepositoryException {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             return session.createQuery(SELECT_BY_ID, Order.class)
                     .setParameter(ID_COLUMN, id)
                     .getSingleResult();
@@ -59,7 +52,7 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
 
     @Override
     public User findUserByOrderId(Long orderId) throws RepositoryException {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             Order order = session.get(Order.class, orderId);
             Hibernate.initialize(order.getUser());
             return order.getUser();
@@ -70,7 +63,7 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
 
     @Override
     public Set<BookCopy> findBookCopiesByOrderId(Long orderId) throws RepositoryException {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             Order order = session.get(Order.class, orderId);
             Hibernate.initialize(order.getBookCopies());
             return order.getBookCopies();
@@ -81,7 +74,7 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
 
     @Override
     public Set<BookDamage> findBookDamagesByOrderId(Long orderId) throws RepositoryException {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             Order order = session.get(Order.class, orderId);
             Hibernate.initialize(order.getBookDamages());
             return order.getBookDamages();

@@ -101,7 +101,6 @@ public class BookCopyConverter {
                 .id(bookCopy.getId())
                 .imagePath(bookCopy.getImagePath())
                 .pricePerDay(bookCopy.getPricePerDay())
-                .genres(GenreConverter.toListDto(new ArrayList<>(bookCopy.getBook().getGenres())))
                 .build();
     }
 }

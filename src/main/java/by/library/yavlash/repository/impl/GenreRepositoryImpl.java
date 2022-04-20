@@ -8,31 +8,24 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
 import java.util.Set;
 
-@Component
-@Transactional
+@Repository
 public class GenreRepositoryImpl extends AbstractRepositoryImpl<Genre> implements GenreRepository {
     private static final String GENRE_NAME_COLUMN = "genreName";
 
     private static final String SELECT_ALL_QUERY = "from Genre";
     private static final String UPDATE_QUERY = "update Genre set genreName=:genreName where id=:id";
 
-    @Autowired
-    protected SessionFactory sessionFactory;
-
-    @Autowired
-    public GenreRepositoryImpl() {
-        super(Genre.class);
+    public GenreRepositoryImpl(SessionFactory sessionFactory) {
+        super(Genre.class, sessionFactory);
     }
 
     @Override
     public Set<Book> findBooksByGenreId(Long genreId) throws RepositoryException {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             Genre genre = session.get(Genre.class, genreId);
             Hibernate.initialize(genre.getBooks());
             return genre.getBooks();

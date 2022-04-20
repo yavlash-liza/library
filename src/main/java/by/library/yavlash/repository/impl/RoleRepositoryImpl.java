@@ -4,24 +4,21 @@ import by.library.yavlash.entity.Role;
 import by.library.yavlash.entity.User;
 import by.library.yavlash.repository.RoleRepository;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
 import java.util.Set;
 
-@Component
-@Transactional
+@Repository
 public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements RoleRepository {
     private static final String ROLE_NAME_COLUMN = "roleName";
 
     private static final String SELECT_ALL_QUERY = "from Role";
     private static final String UPDATE_QUERY = "update Role set roleName=:roleName where id=:id";
 
-    @Autowired
-    public RoleRepositoryImpl() {
-        super(Role.class);
+    public RoleRepositoryImpl(SessionFactory sessionFactory) {
+        super(Role.class, sessionFactory);
     }
 
     @Override

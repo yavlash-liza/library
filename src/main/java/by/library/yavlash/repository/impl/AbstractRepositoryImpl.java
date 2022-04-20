@@ -3,23 +3,23 @@ package by.library.yavlash.repository.impl;
 import by.library.yavlash.entity.BaseEntity;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.BaseRepository;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-@Transactional
+@Getter
+@Setter
 public abstract class AbstractRepositoryImpl<E extends BaseEntity> implements BaseRepository<E> {
     protected static final String ID_COLUMN = "id";
     private final Class<E> clazz;
 
-    @Autowired
-    protected SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     @Override
     public E findById(Long id) throws RepositoryException {

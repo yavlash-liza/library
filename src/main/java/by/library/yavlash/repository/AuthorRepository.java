@@ -6,9 +6,6 @@ import by.library.yavlash.exception.RepositoryException;
 
 import java.util.Set;
 
-//public interface AuthorRepository extends JpaRepository<Author,Long> {
-//    Set<Book> findByIdIs(Long id) throws RepositoryException;
-//}
 public interface AuthorRepository extends BaseRepository<Author>{
-    Set<Book> findByIdIs(Long id) throws RepositoryException;
+    Set<Book> findBooksByAuthorId(Long id) throws RepositoryException;
 }
