@@ -1,32 +1,32 @@
 package by.library.yavlash.service.impl;
 
+import by.library.yavlash.config.TestServiceConfiguration;
 import by.library.yavlash.dto.GenreDto;
 import by.library.yavlash.entity.Genre;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.GenreRepository;
-import by.library.yavlash.repository.impl.GenreRepositoryImpl;
-import by.library.yavlash.service.GenreService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@ContextConfiguration(classes = TestServiceConfiguration.class)
 class GenreServiceImplTest {
-    private final GenreRepository genreRepository;
-    private final GenreService genreService;
+    @Mock
+    private GenreRepository genreRepository;
 
-    public GenreServiceImplTest() {
-        genreRepository = mock(GenreRepositoryImpl.class);
-        genreService = new GenreServiceImpl(genreRepository);
-    }
+    @InjectMocks
+    private GenreServiceImpl genreService;
 
     @Test
     void findAllGenres() throws RepositoryException, ServiceException {

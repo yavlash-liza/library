@@ -1,5 +1,6 @@
 package by.library.yavlash.repository;
 
+import by.library.yavlash.config.TestApplicationContextConfiguration;
 import by.library.yavlash.entity.Author;
 import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
@@ -8,22 +9,18 @@ import by.library.yavlash.entity.Genre;
 import by.library.yavlash.entity.Order;
 import by.library.yavlash.entity.Role;
 import by.library.yavlash.entity.User;
-import by.library.yavlash.service.FlywayService;
-import org.h2.jdbcx.JdbcConnectionPool;
+import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import javax.sql.DataSource;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static by.library.yavlash.property.Property.*;
-
+@SpringJUnitConfig(TestApplicationContextConfiguration.class)
 public abstract class BaseRepositoryTest {
-    private final DataSource dataSource;
-    private final FlywayService flywayService;
-
     private List<User> users;
     private List<Role> roles;
     private List<Order> orders;
@@ -33,9 +30,10 @@ public abstract class BaseRepositoryTest {
     private List<BookCopy> bookCopies;
     private List<Author> authors;
 
+    @Autowired
+    private Flyway flyway;
+
     public BaseRepositoryTest() {
-        dataSource = JdbcConnectionPool.create(H2_URL, H2_USER, H2_PASSWORD);
-        flywayService = new FlywayService(H2_URL, H2_USER, H2_PASSWORD, MIGRATION_LOCATION);
         fillUsers();
         fillRoles();
         fillOrders();
@@ -46,18 +44,14 @@ public abstract class BaseRepositoryTest {
         fillAuthors();
     }
 
-    public DataSource getDataSource() {
-        return dataSource;
-    }
-
     @BeforeEach
     public void migrate() {
-        flywayService.migrate();
+        flyway.migrate();
     }
 
     @AfterEach
     public void clean() {
-        flywayService.clean();
+        flyway.clean();
     }
 
     private void fillUsers() {
@@ -201,5 +195,4 @@ public abstract class BaseRepositoryTest {
     public List<Author> findAuthorsForFindAll() {
         return authors;
     }
-
 }

@@ -1,35 +1,24 @@
 package by.library.yavlash;
 
-import by.library.yavlash.service.FlywayService;
-import org.h2.jdbcx.JdbcConnectionPool;
+import by.library.yavlash.config.ApplicationConfiguration;
+import by.library.yavlash.dto.BookCopyListDto;
+import by.library.yavlash.dto.UserListDto;
+import by.library.yavlash.service.BookCopyService;
+import by.library.yavlash.service.UserService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import javax.sql.DataSource;
-
-import static by.library.yavlash.service.Property.*;
+import java.util.List;
 
 public class Runner {
     public static void main(String[] args) throws Exception {
-        DataSource dataSource = JdbcConnectionPool.create(H2_URL, H2_USER, H2_PASSWORD);
-        FlywayService flywayService = new FlywayService(H2_URL, H2_USER, H2_PASSWORD, MIGRATION_LOCATION);
-        flywayService.migrate();
+        ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
+        UserService userService = context.getBean(UserService.class);
+        List<UserListDto> allUsers = userService.findAllUsers();
+        System.out.println("All USERS: " + allUsers);
 
-
-
-//        BookRepository bookRepository = new BookRepositoryImpl(dataSource);
-//        GenreRepositoryImpl genreRepository = new GenreRepositoryImpl(dataSource);
-//        UserRepository userRepository = new UserRepositoryImpl(dataSource);
-//        AuthorRepositoryImpl authorRepository = new AuthorRepositoryImpl(dataSource);
-//        OrderRepository orderRepository = new OrderRepositoryImpl(dataSource);
-//        BookCopyRepository bookCopyRepository = new BookCopyRepositoryImpl(dataSource);
-//        BookDamageRepository bookDamageRepository = new BookDamageRepositoryImpl(dataSource);
-//        RoleRepository roleRepository = new RoleRepositoryImpl(dataSource);
-//
-//        System.out.println(bookDamageRepository.findAll());
-//        bookRepository.delete(2L);
-//        System.out.println(bookDamageRepository.findAll());
-//        System.out.println(bookCopyRepository.findAll());
-//        System.out.println(genreRepository.findAll());
-//        genreRepository.add(Genre.builder().genreName("tale").build());
-//        System.out.println(genreRepository.findAll());
+        BookCopyService bookCopyService = context.getBean(BookCopyService.class);
+        List<BookCopyListDto> bookCopies = bookCopyService.findAllBookCopies();
+        System.out.println("All BOOKS: " + bookCopies);
     }
 }

@@ -3,10 +3,12 @@ package by.library.yavlash.repository.impl;
 import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.BookDamageRepository;
-import by.library.yavlash.util.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class BookDamageRepositoryImpl extends AbstractRepositoryImpl<BookDamage> implements BookDamageRepository {
     private static final String IMAGE_PATH_COLUMN = "imagePath";
     private static final String DAMAGE_DESCRIPTION_COLUMN = "damageDescription";
@@ -18,13 +20,13 @@ public class BookDamageRepositoryImpl extends AbstractRepositoryImpl<BookDamage>
             "update BookDamage set imagePath=:imagePath, damageDescription=:damageDescription " +
                     " where id=:id";
 
-    public BookDamageRepositoryImpl() {
-        super(BookDamage.class);
+    public BookDamageRepositoryImpl(SessionFactory sessionFactory) {
+        super(BookDamage.class, sessionFactory);
     }
 
     @Override
     public BookDamage findById(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             return session.createQuery(SELECT_BY_ID, BookDamage.class)
                     .setParameter(ID_COLUMN, id)
                     .getSingleResult();

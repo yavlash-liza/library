@@ -10,9 +10,11 @@ import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.OrderRepository;
 import by.library.yavlash.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;

@@ -8,25 +8,22 @@ import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.BookDamageRepository;
-import by.library.yavlash.repository.impl.BookDamageRepositoryImpl;
-import by.library.yavlash.service.BookDamageService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BookDamageServiceImplTest {
-    private final BookDamageRepository bookDamageRepository;
-    private final BookDamageService bookDamageService;
+    @Mock
+    private BookDamageRepository bookDamageRepository;
 
-    public BookDamageServiceImplTest() {
-        bookDamageRepository = mock(BookDamageRepositoryImpl.class);
-        bookDamageService = new BookDamageServiceImpl(bookDamageRepository);
-    }
+    @InjectMocks
+    private BookDamageServiceImpl bookDamageService;
 
     @Test
     void findBookDamageById() throws RepositoryException, ServiceException {
@@ -59,7 +56,7 @@ class BookDamageServiceImplTest {
         // when
         when(bookDamageRepository.add(bookDamage))
                 .thenReturn(true);
-        boolean actual = bookDamageService.addBookDamage(BookDamageDto.builder().id(3L).bookCopyId(1L).orderId(1L).userId(1L).build());
+        boolean actual = bookDamageService.addBookDamage(BookDamageDto.builder().bookCopyId(1L).orderId(1L).userId(1L).build());
 
         //then
         Assertions.assertTrue(actual);

@@ -8,15 +8,13 @@ import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 class BookDamageRepositoryImplTest extends BaseRepositoryTest {
-    private final BookDamageRepositoryImpl bookDamageRepository;
-
-    public BookDamageRepositoryImplTest() {
-        bookDamageRepository = new BookDamageRepositoryImpl();
-    }
+    @Autowired
+    private BookDamageRepositoryImpl bookDamageRepository;
 
     @Test
     public void findByIdTest_shouldReturnTheFirstBookDamageInDB() throws RepositoryException {

@@ -4,13 +4,15 @@ import by.library.yavlash.entity.Author;
 import by.library.yavlash.entity.Book;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.AuthorRepository;
-import by.library.yavlash.util.HibernateUtil;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.Set;
 
+@Repository
 public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> implements AuthorRepository {
     private static final String FIRST_NAME_COLUMN = "firstName";
     private static final String LAST_NAME_COLUMN = "lastName";
@@ -23,13 +25,13 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
             " update Author set firstName=:firstName, lastName=:lastName, birthDate=:birthDate, imagePath=:imagePath " +
                     " where id=:id ";
 
-    public AuthorRepositoryImpl() {
-        super(Author.class);
+    public AuthorRepositoryImpl(SessionFactory sessionFactory) {
+        super(Author.class, sessionFactory);
     }
 
     @Override
     public Author findById(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             return session.createQuery(SELECT_BY_ID, Author.class)
                     .setParameter(ID_COLUMN, id)
                     .getSingleResult();
@@ -40,7 +42,7 @@ public class AuthorRepositoryImpl extends AbstractRepositoryImpl<Author> impleme
 
     @Override
     public Set<Book> findBooksByAuthorId(Long id) throws RepositoryException {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             Author author = session.get(Author.class, id);
             Hibernate.initialize(author.getBooks());
             return author.getBooks();

@@ -2,19 +2,18 @@ package by.library.yavlash.repository.impl;
 
 import by.library.yavlash.entity.Author;
 import by.library.yavlash.exception.RepositoryException;
+import by.library.yavlash.repository.AuthorRepository;
 import by.library.yavlash.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
 
 class AuthorRepositoryImplTest extends BaseRepositoryTest {
-    private final AuthorRepositoryImpl authorRepository;
-
-    public AuthorRepositoryImplTest() {
-        authorRepository = new AuthorRepositoryImpl();
-    }
+    @Autowired
+    private AuthorRepository authorRepository;
 
     @Test
     public void findByIdTest_shouldReturnTheFirstAuthorInDB() throws RepositoryException {

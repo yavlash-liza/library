@@ -5,15 +5,13 @@ import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 class GenreRepositoryImplTest extends BaseRepositoryTest {
-    private final GenreRepositoryImpl genreRepository;
-
-    public GenreRepositoryImplTest() {
-        genreRepository = new GenreRepositoryImpl();
-    }
+    @Autowired
+    private GenreRepositoryImpl genreRepository;
 
     @Test
     public void findByIdTest_shouldReturnTheFirstGenreInDB() throws RepositoryException {

@@ -4,18 +4,17 @@ import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.BaseRepositoryTest;
+import by.library.yavlash.repository.BookCopyRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
 
 class BookCopyRepositoryImplTest extends BaseRepositoryTest {
-    private final BookCopyRepositoryImpl bookCopyRepository;
-
-    public BookCopyRepositoryImplTest() {
-        bookCopyRepository = new BookCopyRepositoryImpl();
-    }
+    @Autowired
+    private BookCopyRepository bookCopyRepository;
 
     @Test
     public void findByIdTest_shouldReturnTheFirstBookCopyInDB() throws RepositoryException {

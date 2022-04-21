@@ -6,10 +6,13 @@ import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.Genre;
 import by.library.yavlash.repository.BookRepository;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.Set;
 
+@Repository
 public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements BookRepository {
     private static final String BOOK_COPY_ID_COLUMN = "bookCopyId";
     private static final String TITLE_COLUMN = "title";
@@ -25,8 +28,8 @@ public class BookRepositoryImpl extends AbstractRepositoryImpl<Book> implements 
     private static final String DELETE_BOOK_COPY_QUERY = "delete BookCopy bc where bc.book.id=:bookId";
     private static final String DELETE_BOOK_DAMAGE_QUERY = "DELETE BookDamage bd WHERE bd.bookCopy.id=:bookCopyId";
 
-    public BookRepositoryImpl() {
-        super(Book.class);
+    public BookRepositoryImpl(SessionFactory sessionFactory) {
+        super(Book.class, sessionFactory);
     }
 
     protected String obtainSelectAllQuery() {

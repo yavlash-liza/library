@@ -5,15 +5,13 @@ import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 class RoleRepositoryImplTest extends BaseRepositoryTest {
-    private final RoleRepositoryImpl roleRepository;
-
-    public RoleRepositoryImplTest() {
-        roleRepository = new RoleRepositoryImpl();
-    }
+    @Autowired
+    private RoleRepositoryImpl roleRepository;
 
     @Test
     void findByIdTest_shouldReturnTheFirstRoleInDB() throws RepositoryException {

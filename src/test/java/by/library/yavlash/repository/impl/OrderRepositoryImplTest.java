@@ -6,16 +6,14 @@ import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
 
 class OrderRepositoryImplTest extends BaseRepositoryTest {
-    private final OrderRepositoryImpl orderRepository;
-
-    public OrderRepositoryImplTest() {
-        orderRepository = new OrderRepositoryImpl();
-    }
+    @Autowired
+    private OrderRepositoryImpl orderRepository;
 
     @Test
     public void findByIdTest_shouldReturnTheFirstOrderInDB() throws RepositoryException {
