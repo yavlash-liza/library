@@ -1,18 +1,18 @@
 package by.library.yavlash.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import lombok.AllArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.persistence.Column;
-import javax.persistence.ManyToOne;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Data
 @NoArgsConstructor
@@ -28,6 +28,9 @@ public class BookDamage extends BaseEntity {
 
     @Column(name = "damage_description")
     private String damageDescription;
+
+    @Column(name = "deleted")
+    private boolean deleted;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
