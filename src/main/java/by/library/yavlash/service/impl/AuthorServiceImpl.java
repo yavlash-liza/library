@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,12 +21,9 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public AuthorDto findAuthorById(Long authorId) throws ServiceException {
-        try {
-            Author author = authorRepository.findById(authorId);
-            return AuthorConverter.toDto(author);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
-        }
+        Optional<Author> author = authorRepository.findById(authorId);
+        return author.map(AuthorConverter::toDto)
+                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
     @Override
@@ -34,7 +32,7 @@ public class AuthorServiceImpl implements AuthorService {
             List<Author> authors = authorRepository.findAll();
             return AuthorConverter.toAuthorListDtos(authors);
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s were not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "));
         }
     }
 
@@ -42,20 +40,21 @@ public class AuthorServiceImpl implements AuthorService {
     public boolean addAuthor(AuthorSaveDto authorSaveDto) throws ServiceException {
         try {
             Author author = AuthorConverter.fromSaveDto(authorSaveDto);
-            authorRepository.add(author);
+            authorRepository.save(author);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "));
         }
     }
 
     @Override
     public boolean deleteAuthor(Long authorId) throws ServiceException {
         try {
-            authorRepository.delete(authorId);
+            Optional<Author> author = authorRepository.findById(authorId);
+            author.ifPresent(value -> value.setDeleted(true));
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
         }
     }
 }

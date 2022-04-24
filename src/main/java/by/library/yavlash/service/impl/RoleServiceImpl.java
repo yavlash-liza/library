@@ -22,7 +22,7 @@ public class RoleServiceImpl implements RoleService {
             List<Role> roles = roleRepository.findAll();
             return RoleConverter.toListDto(roles);
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s were not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "));
         }
     }
 }

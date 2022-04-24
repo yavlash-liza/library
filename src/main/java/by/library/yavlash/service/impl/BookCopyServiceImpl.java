@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,12 +22,9 @@ public class BookCopyServiceImpl implements BookCopyService {
 
     @Override
     public BookCopyDto findBookCopyById(Long bookCopyId) throws ServiceException {
-        try {
-            BookCopy bookCopy = bookCopyRepository.findById(bookCopyId);
-            return BookCopyConverter.toDto(bookCopy);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
-        }
+        Optional<BookCopy> bookCopy = bookCopyRepository.findById(bookCopyId);
+        return bookCopy.map(BookCopyConverter::toDto)
+                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
     @Override
@@ -35,7 +33,7 @@ public class BookCopyServiceImpl implements BookCopyService {
             List<BookCopy> bookCopies = bookCopyRepository.findAll();
             return BookCopyConverter.toBookCopyListDtos(bookCopies);
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s were not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "));
         }
     }
 
@@ -44,11 +42,10 @@ public class BookCopyServiceImpl implements BookCopyService {
         try {
             BookCopy bookCopy = BookCopyConverter.fromSaveDto(bookCopySaveDto);
             bookCopy.setBook(Book.builder().id(bookCopySaveDto.getBookId()).build());
-            bookCopyRepository.add(bookCopy);
+            bookCopyRepository.save(bookCopy);
             return true;
-
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "));
         }
     }
 
@@ -56,20 +53,21 @@ public class BookCopyServiceImpl implements BookCopyService {
     public boolean updateBookCopy(BookCopyDto bookCopyDto) throws ServiceException {
         try {
             BookCopy bookCopy = BookCopyConverter.fromDto(bookCopyDto);
-            bookCopyRepository.update(bookCopy);
+            bookCopyRepository.save(bookCopy);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not updated: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not updated "));
         }
     }
 
     @Override
     public boolean deleteBookCopy(Long bookCopyId) throws ServiceException {
         try {
-            bookCopyRepository.delete(bookCopyId);
+            Optional<BookCopy> bookCopy = bookCopyRepository.findById(bookCopyId);
+            bookCopy.ifPresent(value -> value.setDeleted(true));
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
         }
     }
 }

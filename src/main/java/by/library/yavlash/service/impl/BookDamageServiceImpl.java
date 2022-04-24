@@ -12,6 +12,8 @@ import by.library.yavlash.service.BookDamageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class BookDamageServiceImpl implements BookDamageService {
@@ -19,12 +21,9 @@ public class BookDamageServiceImpl implements BookDamageService {
 
     @Override
     public BookDamageDto findBookDamageById(Long bookDamageId) throws ServiceException {
-        try {
-            BookDamage bookDamage = bookDamageRepository.findById(bookDamageId);
-            return BookDamageConverter.toDto(bookDamage);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
-        }
+        Optional<BookDamage> bookDamage = bookDamageRepository.findById(bookDamageId);
+        return bookDamage.map(BookDamageConverter::toDto)
+                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
     @Override
@@ -34,20 +33,21 @@ public class BookDamageServiceImpl implements BookDamageService {
             bookDamage.setUser(User.builder().id(bookDamageDto.getUserId()).build());
             bookDamage.setOrder(Order.builder().id(bookDamageDto.getOrderId()).build());
             bookDamage.setBookCopy(BookCopy.builder().id(bookDamageDto.getBookCopyId()).build());
-            bookDamageRepository.add(bookDamage);
+            bookDamageRepository.save(bookDamage);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "));
         }
     }
 
     @Override
     public boolean deleteBookDamage(Long bookDamageId) throws ServiceException {
         try {
-            bookDamageRepository.delete(bookDamageId);
+            Optional<BookDamage> bookDamage = bookDamageRepository.findById(bookDamageId);
+            bookDamage.ifPresent(value -> value.setDeleted(true));
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
         }
     }
 }

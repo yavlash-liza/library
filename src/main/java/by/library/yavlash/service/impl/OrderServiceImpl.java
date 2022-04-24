@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,12 +22,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto findOrderById(Long orderId) throws ServiceException {
-        try {
-            Order order = orderRepository.findById(orderId);
-            return OrderConverter.toDto(order);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
-        }
+        Optional<Order> order = orderRepository.findById(orderId);
+        return order.map(OrderConverter::toDto)
+                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
     @Override
@@ -35,7 +33,7 @@ public class OrderServiceImpl implements OrderService {
             List<Order> orders = orderRepository.findAll();
             return OrderConverter.toOrderListDtos(orders);
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s were not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "));
         }
     }
 
@@ -44,20 +42,21 @@ public class OrderServiceImpl implements OrderService {
         try {
             Order order = OrderConverter.fromSaveDto(orderSaveDto);
             order.setUser(User.builder().id(orderSaveDto.getUserId()).build());
-            orderRepository.add(order);
+            orderRepository.save(order);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "));
         }
     }
 
     @Override
     public boolean deleteOrder(Long orderId) throws ServiceException {
         try {
-            orderRepository.delete(orderId);
+            Optional<Order> order = orderRepository.findById(orderId);
+            order.ifPresent(value -> value.setDeleted(true));
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
         }
     }
 
@@ -65,10 +64,10 @@ public class OrderServiceImpl implements OrderService {
     public boolean updateOrder(OrderDto orderDto) throws ServiceException {
         try {
             Order order = OrderConverter.fromDto(orderDto);
-            orderRepository.update(order);
+            orderRepository.save(order);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not updated: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not updated "));
         }
     }
 }

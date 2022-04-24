@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class GenreServiceImpl implements GenreService {
             List<Genre> genres = genreRepository.findAll();
             return GenreConverter.toListDto(genres);
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s were not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "));
         }
     }
 
@@ -30,20 +31,21 @@ public class GenreServiceImpl implements GenreService {
     public boolean addGenre(GenreDto genreDto) throws ServiceException {
         try {
             Genre genre = GenreConverter.fromSaveDto(genreDto);
-            genreRepository.add(genre);
+            genreRepository.save(genre);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "));
         }
     }
 
     @Override
     public boolean deleteGenre(Long genreId) throws ServiceException {
         try {
-            genreRepository.delete(genreId);
+            Optional<Genre> genre = genreRepository.findById(genreId);
+            genre.ifPresent(value -> value.setDeleted(true));
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
         }
     }
 }

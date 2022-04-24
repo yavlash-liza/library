@@ -9,6 +9,8 @@ import by.library.yavlash.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
@@ -18,20 +20,21 @@ public class BookServiceImpl implements BookService {
     public boolean addBook(BookSaveDto bookSaveDto) throws ServiceException {
         try {
             Book book = BookConverter.fromSaveDto(bookSaveDto);
-            bookRepository.add(book);
+            bookRepository.save(book);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "));
         }
     }
 
     @Override
     public boolean deleteBook(Long bookId) throws ServiceException {
         try {
-            bookRepository.delete(bookId);
+            Optional<Book> book = bookRepository.findById(bookId);
+            book.ifPresent(value -> value.setDeleted(true));
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
         }
     }
 }
