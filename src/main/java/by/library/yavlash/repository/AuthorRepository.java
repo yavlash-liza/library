@@ -1,11 +1,13 @@
 package by.library.yavlash.repository;
 
 import by.library.yavlash.entity.Author;
-import by.library.yavlash.entity.Book;
-import by.library.yavlash.exception.RepositoryException;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import java.util.Set;
+import java.util.Optional;
 
-public interface AuthorRepository extends BaseRepository<Author>{
-    Set<Book> findBooksByAuthorId(Long id) throws RepositoryException;
+public interface AuthorRepository extends JpaRepository<Author, Long> {
+    @Query("from Author a left join fetch a.books b left join fetch b.bookCopies bc where a.id=:id")
+    Optional<Author> findById(@Param("id") Long id);
 }

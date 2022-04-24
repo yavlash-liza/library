@@ -1,15 +1,13 @@
 package by.library.yavlash.repository;
 
-import by.library.yavlash.entity.BookCopy;
-import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Order;
-import by.library.yavlash.entity.User;
-import by.library.yavlash.exception.RepositoryException;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import java.util.Set;
+import java.util.Optional;
 
-public interface OrderRepository extends BaseRepository<Order> {
-    User findUserByOrderId(Long orderId) throws RepositoryException;
-    Set<BookCopy> findBookCopiesByOrderId(Long orderId) throws RepositoryException;
-    Set<BookDamage> findBookDamagesByOrderId(Long orderId) throws RepositoryException;
+public interface OrderRepository extends JpaRepository<Order, Long> {
+    @Query("from Order o left join fetch o.bookCopies left join fetch o.bookDamages left join fetch o.user where o.id=:id")
+    Optional<Order> findById(@Param("id") Long id);
 }
