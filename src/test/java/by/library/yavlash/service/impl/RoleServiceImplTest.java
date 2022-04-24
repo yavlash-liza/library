@@ -1,6 +1,5 @@
 package by.library.yavlash.service.impl;
 
-import by.library.yavlash.config.TestServiceConfiguration;
 import by.library.yavlash.dto.RoleDto;
 import by.library.yavlash.entity.Role;
 import by.library.yavlash.exception.RepositoryException;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +18,10 @@ import java.util.List;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes = TestServiceConfiguration.class)
 class RoleServiceImplTest {
     @Mock
     private RoleRepository roleRepository;
-
+// этот работает
     @InjectMocks
     private RoleServiceImpl roleService;
 

@@ -1,6 +1,5 @@
 package by.library.yavlash.service.impl;
 
-import by.library.yavlash.config.TestServiceConfiguration;
 import by.library.yavlash.dto.AuthorListDto;
 import by.library.yavlash.dto.BookCopyDto;
 import by.library.yavlash.dto.BookCopyListDto;
@@ -20,17 +19,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes = TestServiceConfiguration.class)
 class BookCopyServiceImplTest {
     @Mock
     private BookCopyRepository bookCopyRepository;
@@ -39,7 +37,7 @@ class BookCopyServiceImplTest {
     private BookCopyServiceImpl bookCopyService;
 
     @Test
-    void findBookCopyById() throws RepositoryException, ServiceException {
+    void findBookCopyById() throws ServiceException {
         //given
         Long id = 1L;
         Set<Book> books = new HashSet<>() {{add(Book.builder().id(id).build());}};
@@ -70,7 +68,7 @@ class BookCopyServiceImplTest {
                 }}).build();
 
         //when
-        when(bookCopyRepository.findById(id)).thenReturn(BookCopy.builder().id(id).book(book).bookDamages(bookDamages).build());
+        when(bookCopyRepository.findById(id)).thenReturn(Optional.of(BookCopy.builder().id(id).book(book).bookDamages(bookDamages).build()));
 
         BookCopyDto actual = bookCopyService.findBookCopyById(id);
 
@@ -79,7 +77,7 @@ class BookCopyServiceImplTest {
     }
 
     @Test
-    void findAllBookCopies() throws RepositoryException, ServiceException {
+    void findAllBookCopies() throws ServiceException {
         //given
         List<BookCopyListDto> expected = new ArrayList<>() {{
             add(BookCopyListDto.builder().id(1L).build());
@@ -98,10 +96,8 @@ class BookCopyServiceImplTest {
     }
 
     @Test
-    void addBookCopy() throws RepositoryException, ServiceException {
+    void addBookCopy() throws ServiceException {
         //given && when
-        when(bookCopyRepository.add(BookCopy.builder().book(Book.builder().id(1L).build()).build()))
-                .thenReturn(true);
         boolean actual = bookCopyService.addBookCopy(BookCopySaveDto.builder().build());
 
         //then
@@ -112,11 +108,9 @@ class BookCopyServiceImplTest {
     void updateBookCopy() throws RepositoryException, ServiceException {
         //given
         List<Long> list = new ArrayList(){{add(2L);}};
-        Set<BookDamage> bookDamages = new HashSet<>(){{add(BookDamage.builder().id(2L).build());}};
         BookCopyDto expected = BookCopyDto.builder().id(4L).imagePath("image").bookDamagesId(list).build();
 
         //when
-        when(bookCopyRepository.update(BookCopy.builder().id(4L).imagePath("image").bookDamages(bookDamages).build())).thenReturn(true);
         boolean actual = bookCopyService.updateBookCopy(expected);
 
         //then
@@ -124,12 +118,11 @@ class BookCopyServiceImplTest {
     }
 
     @Test
-    void deleteBookCopy() throws RepositoryException, ServiceException {
+    void deleteBookCopy() throws ServiceException {
         //given
         Long id = 3L;
 
         //when
-        when(bookCopyRepository.delete(id)).thenReturn(true);
         boolean actual = bookCopyService.deleteBookCopy(id);
 
         //then

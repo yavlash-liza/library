@@ -1,6 +1,5 @@
 package by.library.yavlash.service.impl;
 
-import by.library.yavlash.config.TestServiceConfiguration;
 import by.library.yavlash.dto.OrderListDto;
 import by.library.yavlash.dto.UserDto;
 import by.library.yavlash.dto.UserListDto;
@@ -8,7 +7,6 @@ import by.library.yavlash.dto.UserSaveDto;
 import by.library.yavlash.entity.Order;
 import by.library.yavlash.entity.Role;
 import by.library.yavlash.entity.User;
-import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -17,17 +15,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes = TestServiceConfiguration.class)
 class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
@@ -36,7 +33,7 @@ class UserServiceImplTest {
     private UserServiceImpl userService;
 
     @Test
-    void findUserById() throws RepositoryException, ServiceException {
+    void findUserById() throws ServiceException {
         //given
         Long id = 1L;
         UserDto expected = UserDto.builder().id(id)
@@ -47,7 +44,7 @@ class UserServiceImplTest {
         Set<Role> roles = new HashSet<>() {{add(Role.builder().id(2L).build());}};
 
         //when
-        when(userRepository.findById(id)).thenReturn(User.builder().id(id).roles(roles).orders(orders).build());
+        when(userRepository.findById(id)).thenReturn(Optional.of(User.builder().id(id).roles(roles).orders(orders).build()));
         UserDto actual = userService.findUserById(id);
 
         //then
@@ -55,7 +52,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void findAllUsers() throws RepositoryException, ServiceException {
+    void findAllUsers() throws ServiceException {
         //given
         List<UserListDto> expected = new ArrayList<>() {{
             add(UserListDto.builder().id(1L).build());
@@ -74,12 +71,8 @@ class UserServiceImplTest {
     }
 
     @Test
-    void addUser() throws RepositoryException, ServiceException {
-        //given
-        Set<Role> roles = new HashSet<>() {{add(Role.builder().id(1L).build());}};
-
-        // when
-        when(userRepository.add(User.builder().roles(roles).build())).thenReturn(true);
+    void addUser() throws ServiceException {
+        //given && when
         boolean actual = userService.addUser(UserSaveDto.builder().roleId(new ArrayList<>() {{add(1L);}}).build());
 
         //then
@@ -87,14 +80,12 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateUser() throws RepositoryException, ServiceException {
+    void updateUser() throws ServiceException {
         //given
-        Set<Role> roles = new HashSet<>() {{add(Role.builder().id(1L).build());}};
         List<Long> roleList = new ArrayList<>() {{add(1L);}};
         UserDto expected = UserDto.builder().id(4L).firstName("Sergei").lastName("Smirnov").rolesId(roleList).build();
 
         //when
-        when(userRepository.update(User.builder().id(4L).firstName("Sergei").lastName("Smirnov").roles(roles).build())).thenReturn(true);
         boolean actual = userService.updateUser(expected);
 
         //then
@@ -102,12 +93,11 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteUser() throws RepositoryException, ServiceException {
+    void deleteUser() throws ServiceException {
         //given
         Long id = 3L;
 
         //when
-        when(userRepository.delete(id)).thenReturn(true);
         boolean actual = userService.deleteUser(id);
 
         //then

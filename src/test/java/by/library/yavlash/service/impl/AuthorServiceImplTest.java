@@ -1,6 +1,5 @@
 package by.library.yavlash.service.impl;
 
-import by.library.yavlash.config.TestServiceConfiguration;
 import by.library.yavlash.dto.AuthorDto;
 import by.library.yavlash.dto.AuthorListDto;
 import by.library.yavlash.dto.AuthorSaveDto;
@@ -8,7 +7,6 @@ import by.library.yavlash.dto.BookCopyListDto;
 import by.library.yavlash.entity.Author;
 import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
-import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.AuthorRepository;
 import org.junit.jupiter.api.Assertions;
@@ -17,17 +15,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes = TestServiceConfiguration.class)
 class AuthorServiceImplTest {
     @Mock
     private AuthorRepository authorRepository;
@@ -36,7 +33,7 @@ class AuthorServiceImplTest {
     private AuthorServiceImpl authorService;
 
     @Test
-    void findById_shouldReturnAuthorDto() throws ServiceException, RepositoryException {
+    void findById_shouldReturnAuthorDto() throws ServiceException {
         //given
         Long id = 1L;
 
@@ -53,7 +50,7 @@ class AuthorServiceImplTest {
                 }}).build();
 
         //when
-        when(authorRepository.findById(id)).thenReturn(Author.builder().id(id).firstName("Liza").books(books).build());
+        when(authorRepository.findById(id)).thenReturn(Optional.of(Author.builder().id(id).firstName("Liza").books(books).build()));
         AuthorDto actual = authorService.findAuthorById(id);
 
         //then
@@ -61,7 +58,7 @@ class AuthorServiceImplTest {
     }
 
     @Test
-    void findAll_shouldReturnListOfAuthorListDto() throws RepositoryException, ServiceException {
+    void findAll_shouldReturnListOfAuthorListDto() throws ServiceException {
         //given
         List<AuthorListDto> expected = new ArrayList<>() {{
             add(AuthorListDto.builder().id(1L).build());
@@ -80,10 +77,8 @@ class AuthorServiceImplTest {
     }
 
     @Test
-    void add_shouldAddAuthor() throws RepositoryException, ServiceException {
+    void add_shouldAddAuthor() throws ServiceException {
         //given && when
-        when(authorRepository.add(Author.builder().firstName("Liza").build()))
-                .thenReturn(true);
         boolean actual = authorService.addAuthor(AuthorSaveDto.builder().firstName("Liza").build());
 
         //then
@@ -91,12 +86,11 @@ class AuthorServiceImplTest {
     }
 
     @Test
-    void delete_shouldDeleteAuthor() throws RepositoryException, ServiceException {
+    void delete_shouldDeleteAuthor() throws ServiceException {
         //given
         Long id = 3L;
 
         //when
-        when(authorRepository.delete(id)).thenReturn(true);
         boolean actual = authorService.deleteAuthor(id);
 
         //then
