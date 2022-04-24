@@ -2,33 +2,35 @@ package by.library.yavlash.repository.impl;
 
 import by.library.yavlash.entity.Order;
 import by.library.yavlash.entity.User;
-import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.BaseRepositoryTest;
+import by.library.yavlash.repository.OrderRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-class OrderRepositoryImplTest extends BaseRepositoryTest {
+class OrderRepositoryTest extends BaseRepositoryTest {
     @Autowired
-    private OrderRepositoryImpl orderRepository;
+    private OrderRepository orderRepository;
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstOrderInDB() throws RepositoryException {
+    public void findByIdTest_shouldReturnTheFirstOrderInDB() {
         //given
-        Order expected = findOrderForFindById();
+        Order order = findOrderForFindById();
+        Optional<Order> expected = Optional.of(order);
 
         //when
-        Order actual = orderRepository.findById(expected.getId());
+        Optional<Order> actual = orderRepository.findById(order.getId());
 
         //then
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllOrders() throws RepositoryException {
+    void findAllTest_shouldReturnListOfAllOrders() {
         //given
         List<Order> expected = findOrdersForFindAll();
 
@@ -40,46 +42,33 @@ class OrderRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedOrder() throws RepositoryException {
+    void addTest_shouldReturnAddedOrder() {
         //given
         List<Order> expected = findOrdersForFindAll();
         Assertions.assertEquals(5, expected.size());
 
         //when
         Order newOrderActual = Order.builder().orderStatus("NEW").startDate(LocalDate.of(1999, 7, 6)).endDate(LocalDate.of(1988, 5, 6)).price(223).user(User.builder().id(4L).build()).build();
-        boolean isAdded = orderRepository.add(newOrderActual);
+        Order isAdded = orderRepository.save(newOrderActual);
         Order newOrderExpected = Order.builder().id(6L).orderStatus("NEW").startDate(LocalDate.of(1999, 7, 6)).endDate(LocalDate.of(1988, 5, 6)).price(223).user(User.builder().id(4L).build()).build();
         expected.add(newOrderExpected);
 
         //then
-        Assertions.assertTrue(isAdded);
+        Assertions.assertNotNull(isAdded);
         Assertions.assertEquals(newOrderExpected, newOrderActual);
-        Assertions.assertEquals(newOrderExpected, orderRepository.findById(newOrderActual.getId()));
+        Assertions.assertEquals(Optional.of(newOrderExpected), orderRepository.findById(newOrderActual.getId()));
     }
 
     @Test
-    void updateTest_shouldUpdateOrder() throws RepositoryException {
+    void updateTest_shouldUpdateOrder() {
         //given
         Order order = Order.builder().id(2L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(243).user(User.builder().id(1L).build()).build();
 
         // when
-        boolean isUpdated = orderRepository.update(order);
+        Order isUpdated = orderRepository.save(order);
 
         //then
-        Assertions.assertTrue(isUpdated);
-        Assertions.assertEquals(order, orderRepository.findById(order.getId()));
-    }
-
-    @Test
-    public void deleteTest_shouldDeleteOrder() throws RepositoryException {
-        //given
-        Order expected = Order.builder().id(2L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(243).user(User.builder().id(1L).build()).build();
-
-        // when
-        boolean isDeleted = orderRepository.delete(expected.getId());
-
-        //then
-        Assertions.assertTrue(isDeleted);
-        Assertions.assertThrows(RepositoryException.class, () -> orderRepository.findById(expected.getId()));
+        Assertions.assertNotNull(isUpdated);
+        Assertions.assertEquals(Optional.of(order), orderRepository.findById(order.getId()));
     }
 }

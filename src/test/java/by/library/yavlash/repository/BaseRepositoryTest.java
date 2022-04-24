@@ -1,6 +1,6 @@
 package by.library.yavlash.repository;
 
-import by.library.yavlash.config.TestApplicationContextConfiguration;
+import by.library.yavlash.config.ApplicationContextConfigurationTest;
 import by.library.yavlash.entity.Author;
 import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
@@ -12,14 +12,17 @@ import by.library.yavlash.entity.User;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringJUnitConfig(TestApplicationContextConfiguration.class)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = ApplicationContextConfigurationTest.class)
 public abstract class BaseRepositoryTest {
     private List<User> users;
     private List<Role> roles;
@@ -107,13 +110,13 @@ public abstract class BaseRepositoryTest {
 
     private void fillGenres() {
         genres = new ArrayList<>() {{
+            add(Genre.builder().id(1L).genreName("NOVEL").build());
             add(Genre.builder().id(2L).genreName("ADVENTURE").build());
             add(Genre.builder().id(3L).genreName("COMEDY").build());
             add(Genre.builder().id(4L).genreName("CRIME").build());
             add(Genre.builder().id(5L).genreName("HORROR").build());
-            add(Genre.builder().id(1L).genreName("NOVEL").build());
-            add(Genre.builder().id(7L).genreName("ROMANCE").build());
             add(Genre.builder().id(6L).genreName("SCIENCE FICTION").build());
+            add(Genre.builder().id(7L).genreName("ROMANCE").build());
         }};
     }
 
