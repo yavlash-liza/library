@@ -2,7 +2,6 @@ package by.library.yavlash.service.impl;
 
 import by.library.yavlash.dto.RoleDto;
 import by.library.yavlash.entity.Role;
-import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.RoleRepository;
 import org.junit.jupiter.api.Assertions;
@@ -21,12 +20,12 @@ import static org.mockito.Mockito.when;
 class RoleServiceImplTest {
     @Mock
     private RoleRepository roleRepository;
-// этот работает
+
     @InjectMocks
     private RoleServiceImpl roleService;
 
     @Test
-    void findAllRoles() throws RepositoryException, ServiceException {
+    void findAllTest_shouldReturnListOfAllRoles() throws ServiceException {
         //given
         List<RoleDto> expected = new ArrayList<>() {{
             add(RoleDto.builder().id(1L).build());
@@ -38,7 +37,7 @@ class RoleServiceImplTest {
             add(Role.builder().id(1L).build());
             add(Role.builder().id(2L).build());
         }});
-        List<RoleDto> actual = roleService.findAllRoles();
+        List<RoleDto> actual = roleService.findAll();
 
         //then
         Assertions.assertEquals(expected, actual);

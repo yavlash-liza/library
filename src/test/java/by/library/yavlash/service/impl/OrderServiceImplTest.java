@@ -35,7 +35,7 @@ class OrderServiceImplTest {
     private OrderServiceImpl orderService;
 
     @Test
-    void findOrderById() throws ServiceException {
+    void findByIdTest_shouldReturnTheFirstOrderInDB() throws ServiceException {
         Long id = 1L;
         Set<BookCopy> bookCopies = new HashSet<>() {{add(BookCopy.builder().id(2L).book(Book.builder().id(1L).build()).build());}};
         Set<BookDamage> bookDamages = new HashSet<>() {{add(BookDamage.builder().id(2L).build());}};
@@ -50,14 +50,14 @@ class OrderServiceImplTest {
                 .bookDamages(bookDamages)
                 .bookCopies(bookCopies)
                 .build()));
-        OrderDto actual = orderService.findOrderById(id);
+        OrderDto actual = orderService.findById(id);
 
         //then
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void findAllOrders() throws ServiceException {
+    void findAllTest_shouldFindAllOrders() throws ServiceException {
         //given
         List<OrderListDto> expected = new ArrayList<>() {{
             add(OrderListDto.builder().id(1L).build());
@@ -69,14 +69,14 @@ class OrderServiceImplTest {
             add(Order.builder().id(1L).build());
             add(Order.builder().id(2L).build());
         }});
-        List<OrderListDto> actual = orderService.findAllOrders();
+        List<OrderListDto> actual = orderService.findAll();
 
         //then
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void addOrder() throws ServiceException {
+    void addTest_shouldAddOrder() throws ServiceException {
         //given
         OrderSaveDto orderSaveDto = OrderSaveDto.builder()
                 .price(13)
@@ -86,32 +86,39 @@ class OrderServiceImplTest {
                 }}).build();
 
         // when
-        boolean actual = orderService.addOrder(orderSaveDto);
+        boolean actual = orderService.add(orderSaveDto);
 
         //then
         Assertions.assertTrue(actual);
     }
 
     @Test
-    void updateOrder() throws ServiceException {
+    void updateTest_shouldUpdateOrder() throws ServiceException {
         //given
         List<Long> bookDamageList = new ArrayList<>() {{add(2L);}};
         OrderDto expected = OrderDto.builder().id(4L).orderStatus("ACCEPTED").bookDamages(bookDamageList).build();
 
         //when
-        boolean actual = orderService.updateOrder(expected);
+        boolean actual = orderService.update(expected);
 
         //then
         Assertions.assertTrue(actual);
     }
 
     @Test
-    void deleteOrder() throws ServiceException {
+    void deleteTest_shouldDeleteOrder() throws ServiceException {
         //given
         Long id = 3L;
+        Order expected = Order.builder()
+                .id(id)
+                .user(User.builder().build())
+                .bookDamages(new HashSet<>())
+                .bookCopies(new HashSet<>()).build();
 
         //when
-        boolean actual = orderService.deleteOrder(id);
+        when(orderRepository.findById(id)).thenReturn(Optional.of(expected));
+        when(orderRepository.save(expected)).thenReturn(expected);
+        boolean actual = orderService.delete(id);
 
         //then
         Assertions.assertTrue(actual);

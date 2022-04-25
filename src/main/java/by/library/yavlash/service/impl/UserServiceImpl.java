@@ -20,14 +20,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDto findUserById(Long userId) throws ServiceException {
-        Optional<User> user = userRepository.findById(userId);
-        return user.map(UserConverter::toDto)
+    public UserDto findById(Long userId) throws ServiceException {
+        return userRepository.findById(userId).map(UserConverter::toDto)
                 .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
     @Override
-    public List<UserListDto> findAllUsers() throws ServiceException {
+    public List<UserListDto> findAll() throws ServiceException {
         try {
             List<User> users = userRepository.findAll();
             return UserConverter.toListDtos(users);
@@ -37,7 +36,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean addUser(UserSaveDto userSaveDto) throws ServiceException {
+    public boolean add(UserSaveDto userSaveDto) throws ServiceException {
         try {
             User user = UserConverter.fromSaveDto(userSaveDto);
             userRepository.save(user);
@@ -48,7 +47,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateUser(UserDto userDto) throws ServiceException {
+    public boolean update(UserDto userDto) throws ServiceException {
         try {
             User user = UserConverter.fromDto(userDto);
             userRepository.save(user);
@@ -59,12 +58,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean deleteUser(Long userId) throws ServiceException {
-        try {
-            Optional<User> user = userRepository.findById(userId);
-            user.ifPresent(value -> value.setDeleted(true));
+    public boolean delete(Long userId) throws ServiceException {
+        Optional<User> optional = userRepository.findById(userId);
+        if (optional.isPresent()) {
+            User user = optional.get();
+            user.setDeleted(true);
+            userRepository.save(user);
             return true;
-        } catch (Exception exception) {
+        } else {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
         }
     }

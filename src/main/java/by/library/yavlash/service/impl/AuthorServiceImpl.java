@@ -20,14 +20,13 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
 
     @Override
-    public AuthorDto findAuthorById(Long authorId) throws ServiceException {
-        Optional<Author> author = authorRepository.findById(authorId);
-        return author.map(AuthorConverter::toDto)
+    public AuthorDto findById(Long authorId) throws ServiceException {
+        return authorRepository.findById(authorId).map(AuthorConverter::toDto)
                 .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
     @Override
-    public List<AuthorListDto> findAllAuthors() throws ServiceException {
+    public List<AuthorListDto> findAll() throws ServiceException {
         try {
             List<Author> authors = authorRepository.findAll();
             return AuthorConverter.toAuthorListDtos(authors);
@@ -37,7 +36,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public boolean addAuthor(AuthorSaveDto authorSaveDto) throws ServiceException {
+    public boolean add(AuthorSaveDto authorSaveDto) throws ServiceException {
         try {
             Author author = AuthorConverter.fromSaveDto(authorSaveDto);
             authorRepository.save(author);
@@ -48,12 +47,14 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public boolean deleteAuthor(Long authorId) throws ServiceException {
-        try {
-            Optional<Author> author = authorRepository.findById(authorId);
-            author.ifPresent(value -> value.setDeleted(true));
+    public boolean delete(Long authorId) throws ServiceException {
+        Optional<Author> optional = authorRepository.findById(authorId);
+        if (optional.isPresent()) {
+            Author author = optional.get();
+            author.setDeleted(true);
+            authorRepository.save(author);
             return true;
-        } catch (Exception exception) {
+        } else {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
         }
     }

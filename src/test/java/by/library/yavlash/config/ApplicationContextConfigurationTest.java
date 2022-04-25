@@ -33,12 +33,6 @@ public class ApplicationContextConfigurationTest {
     private String entityPath;
     @Value("${database.driver}")
     private String driver;
-    @Value("${hibernate.dialect}")
-    private String dialect;
-    @Value("${hibernate.show_sql}")
-    private String showSql;
-    @Value("${hibernate.format_sql}")
-    private String formatSql;
 
     @Bean(initMethod = "migrate")
     public Flyway flyway() {
@@ -47,15 +41,6 @@ public class ApplicationContextConfigurationTest {
                 .locations(migrationLocation)
                 .load();
     }
-
-//    @Bean
-//    public LocalSessionFactoryBean sessionFactory() {
-//        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-//        sessionFactory.setDataSource(dataSource());
-//        sessionFactory.setPackagesToScan(entityPath);
-//        sessionFactory.setHibernateProperties(hibernateProperties());
-//        return sessionFactory;
-//    }
 
     @Bean
     public DataSource dataSource() {
@@ -66,19 +51,6 @@ public class ApplicationContextConfigurationTest {
         dataSource.setPassword(password);
         return dataSource;
     }
-
-//        @Bean
-//    public Properties hibernateProperties() {
-//        Properties properties= new Properties();
-//        properties.setProperty("hibernate.connection.url", url);
-//        properties.setProperty("hibernate.connection.driver_class", driver);
-//        properties.setProperty("hibernate.connection.username", user);
-//        properties.setProperty("hibernate.connection.password", password);
-//        properties.setProperty("dialect", dialect);
-//        properties.setProperty("show_sql", showSql);
-//        properties.setProperty("format_sql", formatSql);
-//        return properties;
-//    }
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {

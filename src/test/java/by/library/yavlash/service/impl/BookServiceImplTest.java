@@ -1,6 +1,7 @@
 package by.library.yavlash.service.impl;
 
 import by.library.yavlash.dto.BookSaveDto;
+import by.library.yavlash.entity.Book;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.BookRepository;
 import org.junit.jupiter.api.Assertions;
@@ -11,6 +12,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Optional;
+
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceImplTest {
@@ -21,7 +26,7 @@ class BookServiceImplTest {
     private BookServiceImpl bookService;
 
     @Test
-    void addBook() throws ServiceException {
+    void addTest_shouldAddBook() throws ServiceException {
         //given
         BookSaveDto bookSaveDto = BookSaveDto.builder()
                 .genresId(new ArrayList<>() {{
@@ -34,19 +39,22 @@ class BookServiceImplTest {
                 .build();
 
         // when
-        boolean actual = bookService.addBook(bookSaveDto);
+        boolean actual = bookService.add(bookSaveDto);
 
         //then
         Assertions.assertTrue(actual);
     }
 
     @Test
-    void deleteBook() throws ServiceException {
+    void deleteTest_shouldDeleteBook() throws ServiceException {
         //given
         Long id = 3L;
+        Book expected = Book.builder().id(id).genres(new HashSet<>()).authors(new HashSet<>()).bookCopies(new HashSet<>()).build();
 
         //when
-        boolean actual = bookService.deleteBook(id);
+        when(bookRepository.findById(id)).thenReturn(Optional.of(expected));
+        when(bookRepository.save(expected)).thenReturn(expected);
+        boolean actual = bookService.delete(id);
 
         //then
         Assertions.assertTrue(actual);

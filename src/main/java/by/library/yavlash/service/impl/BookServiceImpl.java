@@ -17,7 +17,7 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
 
     @Override
-    public boolean addBook(BookSaveDto bookSaveDto) throws ServiceException {
+    public boolean add(BookSaveDto bookSaveDto) throws ServiceException {
         try {
             Book book = BookConverter.fromSaveDto(bookSaveDto);
             bookRepository.save(book);
@@ -28,12 +28,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public boolean deleteBook(Long bookId) throws ServiceException {
-        try {
-            Optional<Book> book = bookRepository.findById(bookId);
-            book.ifPresent(value -> value.setDeleted(true));
+    public boolean delete(Long bookId) throws ServiceException {
+        Optional<Book> optional = bookRepository.findById(bookId);
+        if (optional.isPresent()) {
+            Book book = optional.get();
+            book.setDeleted(true);
+            bookRepository.save(book);
             return true;
-        } catch (Exception exception) {
+        } else {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
         }
     }

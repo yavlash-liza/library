@@ -12,7 +12,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 
@@ -25,7 +27,7 @@ class GenreServiceImplTest {
     private GenreServiceImpl genreService;
 
     @Test
-    void findAllGenres() throws ServiceException {
+    void findAllTest_shouldReturnListOfAllGenres() throws ServiceException {
         //given
         List<GenreDto> expected = new ArrayList<>() {{
             add(GenreDto.builder().id(1L).build());
@@ -37,28 +39,31 @@ class GenreServiceImplTest {
             add(Genre.builder().id(1L).build());
             add(Genre.builder().id(2L).build());
         }});
-        List<GenreDto> actual = genreService.findAllGenres();
+        List<GenreDto> actual = genreService.findAll();
 
         //then
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void addGenre() throws ServiceException {
+    void addTest_shouldAddGenre() throws ServiceException {
         //given && when
-        boolean actual = genreService.addGenre(GenreDto.builder().genreName("fantasy").build());
+        boolean actual = genreService.add(GenreDto.builder().genreName("fantasy").build());
 
         //then
         Assertions.assertTrue(actual);
     }
 
     @Test
-    void deleteGenre() throws ServiceException {
+    void deleteTest_shouldDeleteGenre() throws ServiceException {
         //given
         Long id = 3L;
+        Genre expected = Genre.builder().id(id).books(new HashSet<>()).build();
 
         //when
-        boolean actual = genreService.deleteGenre(id);
+        when(genreRepository.findById(id)).thenReturn(Optional.of(expected));
+        when(genreRepository.save(expected)).thenReturn(expected);
+        boolean actual = genreService.delete(id);
 
         //then
         Assertions.assertTrue(actual);

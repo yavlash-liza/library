@@ -33,7 +33,7 @@ class AuthorServiceImplTest {
     private AuthorServiceImpl authorService;
 
     @Test
-    void findById_shouldReturnAuthorDto() throws ServiceException {
+    void findByIdTest_shouldReturnTheFirstAuthorInDB() throws ServiceException {
         //given
         Long id = 1L;
 
@@ -51,14 +51,14 @@ class AuthorServiceImplTest {
 
         //when
         when(authorRepository.findById(id)).thenReturn(Optional.of(Author.builder().id(id).firstName("Liza").books(books).build()));
-        AuthorDto actual = authorService.findAuthorById(id);
+        AuthorDto actual = authorService.findById(id);
 
         //then
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void findAll_shouldReturnListOfAuthorListDto() throws ServiceException {
+    void findAllTest_shouldReturnListOfAllAuthors() throws ServiceException {
         //given
         List<AuthorListDto> expected = new ArrayList<>() {{
             add(AuthorListDto.builder().id(1L).build());
@@ -70,28 +70,31 @@ class AuthorServiceImplTest {
             add(Author.builder().id(1L).build());
             add(Author.builder().id(2L).build());
         }});
-        List<AuthorListDto> actual = authorService.findAllAuthors();
+        List<AuthorListDto> actual = authorService.findAll();
 
         //then
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void add_shouldAddAuthor() throws ServiceException {
+    void addTest_shouldAddAuthor() throws ServiceException {
         //given && when
-        boolean actual = authorService.addAuthor(AuthorSaveDto.builder().firstName("Liza").build());
+        boolean actual = authorService.add(AuthorSaveDto.builder().firstName("Liza").build());
 
         //then
         Assertions.assertTrue(actual);
     }
 
     @Test
-    void delete_shouldDeleteAuthor() throws ServiceException {
+    void deleteTest_shouldDeleteAuthor() throws ServiceException {
         //given
         Long id = 3L;
+        Author expected = Author.builder().id(id).firstName("Liza").books(new HashSet<>()).build();
 
         //when
-        boolean actual = authorService.deleteAuthor(id);
+        when(authorRepository.findById(id)).thenReturn(Optional.of(expected));
+        when(authorRepository.save(expected)).thenReturn(expected);
+        boolean actual = authorService.delete(id);
 
         //then
         Assertions.assertTrue(actual);

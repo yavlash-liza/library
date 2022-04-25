@@ -8,9 +8,9 @@ import by.library.yavlash.exception.ServiceException;
 import java.util.List;
 
 public interface OrderService {
-    OrderDto findOrderById(Long orderId) throws ServiceException;
-    List<OrderListDto> findAllOrders() throws ServiceException;
-    boolean addOrder(OrderSaveDto orderSaveDto) throws ServiceException;
-    boolean updateOrder(OrderDto orderDto) throws ServiceException;
-    boolean deleteOrder(Long orderId) throws ServiceException;
+    OrderDto findById(Long orderId) throws ServiceException;
+    List<OrderListDto> findAll() throws ServiceException;
+    boolean add(OrderSaveDto orderSaveDto) throws ServiceException;
+    boolean update(OrderDto orderDto) throws ServiceException;
+    boolean delete(Long orderId) throws ServiceException;
 }

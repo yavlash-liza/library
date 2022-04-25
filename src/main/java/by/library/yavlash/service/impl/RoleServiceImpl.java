@@ -17,7 +17,7 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
 
     @Override
-    public List<RoleDto> findAllRoles() throws ServiceException {
+    public List<RoleDto> findAll() throws ServiceException {
         try {
             List<Role> roles = roleRepository.findAll();
             return RoleConverter.toListDto(roles);

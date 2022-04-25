@@ -18,7 +18,7 @@ public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
 
     @Override
-    public List<GenreDto> findAllGenres() throws ServiceException {
+    public List<GenreDto> findAll() throws ServiceException {
         try {
             List<Genre> genres = genreRepository.findAll();
             return GenreConverter.toListDto(genres);
@@ -28,7 +28,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public boolean addGenre(GenreDto genreDto) throws ServiceException {
+    public boolean add(GenreDto genreDto) throws ServiceException {
         try {
             Genre genre = GenreConverter.fromSaveDto(genreDto);
             genreRepository.save(genre);
@@ -39,12 +39,14 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public boolean deleteGenre(Long genreId) throws ServiceException {
-        try {
-            Optional<Genre> genre = genreRepository.findById(genreId);
-            genre.ifPresent(value -> value.setDeleted(true));
+    public boolean delete(Long genreId) throws ServiceException {
+        Optional<Genre> optional = genreRepository.findById(genreId);
+        if (optional.isPresent()) {
+            Genre genre = optional.get();
+            genre.setDeleted(true);
+            genreRepository.save(genre);
             return true;
-        } catch (Exception exception) {
+        } else {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
         }
     }

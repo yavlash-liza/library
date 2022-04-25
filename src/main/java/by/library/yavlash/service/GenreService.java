@@ -6,7 +6,7 @@ import by.library.yavlash.exception.ServiceException;
 import java.util.List;
 
 public interface GenreService {
-    List<GenreDto> findAllGenres() throws ServiceException;
-    boolean addGenre(GenreDto genreDto) throws ServiceException;
-    boolean deleteGenre(Long genreId) throws ServiceException;
+    List<GenreDto> findAll() throws ServiceException;
+    boolean add(GenreDto genreDto) throws ServiceException;
+    boolean delete(Long genreId) throws ServiceException;
 }

@@ -6,5 +6,5 @@ import by.library.yavlash.exception.ServiceException;
 import java.util.List;
 
 public interface RoleService {
-    List<RoleDto> findAllRoles() throws ServiceException;
+    List<RoleDto> findAll() throws ServiceException;
 }

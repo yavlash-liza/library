@@ -33,7 +33,7 @@ class UserServiceImplTest {
     private UserServiceImpl userService;
 
     @Test
-    void findUserById() throws ServiceException {
+    void findByIdTest_shouldReturnTheFirstUserInDB() throws ServiceException {
         //given
         Long id = 1L;
         UserDto expected = UserDto.builder().id(id)
@@ -45,14 +45,14 @@ class UserServiceImplTest {
 
         //when
         when(userRepository.findById(id)).thenReturn(Optional.of(User.builder().id(id).roles(roles).orders(orders).build()));
-        UserDto actual = userService.findUserById(id);
+        UserDto actual = userService.findById(id);
 
         //then
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void findAllUsers() throws ServiceException {
+    void findAllTest_shouldReturnListOfAllUsers() throws ServiceException {
         //given
         List<UserListDto> expected = new ArrayList<>() {{
             add(UserListDto.builder().id(1L).build());
@@ -64,41 +64,44 @@ class UserServiceImplTest {
             add(User.builder().id(1L).build());
             add(User.builder().id(2L).build());
         }});
-        List<UserListDto> actual = userService.findAllUsers();
+        List<UserListDto> actual = userService.findAll();
 
         //then
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void addUser() throws ServiceException {
+    void addTest_shouldAddUser() throws ServiceException {
         //given && when
-        boolean actual = userService.addUser(UserSaveDto.builder().roleId(new ArrayList<>() {{add(1L);}}).build());
+        boolean actual = userService.add(UserSaveDto.builder().roleId(new ArrayList<>() {{add(1L);}}).build());
 
         //then
         Assertions.assertTrue(actual);
     }
 
     @Test
-    void updateUser() throws ServiceException {
+    void updateTest_shouldUpdateUser() throws ServiceException {
         //given
         List<Long> roleList = new ArrayList<>() {{add(1L);}};
         UserDto expected = UserDto.builder().id(4L).firstName("Sergei").lastName("Smirnov").rolesId(roleList).build();
 
         //when
-        boolean actual = userService.updateUser(expected);
+        boolean actual = userService.update(expected);
 
         //then
         Assertions.assertTrue(actual);
     }
 
     @Test
-    void deleteUser() throws ServiceException {
+    void deleteTest_shouldDeleteUser() throws ServiceException {
         //given
         Long id = 3L;
+        User expected = User.builder().id(id).orders(new HashSet<>()).bookDamages(new HashSet<>()).build();
 
         //when
-        boolean actual = userService.deleteUser(id);
+        when(userRepository.findById(id)).thenReturn(Optional.of(expected));
+        when(userRepository.save(expected)).thenReturn(expected);
+        boolean actual = userService.delete(id);
 
         //then
         Assertions.assertTrue(actual);
