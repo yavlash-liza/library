@@ -2,7 +2,6 @@ package by.library.yavlash.repository.impl;
 
 import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
-import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.repository.BaseRepositoryTest;
 import by.library.yavlash.repository.BookCopyRepository;
 import org.junit.jupiter.api.Assertions;
@@ -11,25 +10,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-class BookCopyRepositoryImplTest extends BaseRepositoryTest {
+class BookCopyRepositoryTest extends BaseRepositoryTest {
     @Autowired
     private BookCopyRepository bookCopyRepository;
 
     @Test
-    public void findByIdTest_shouldReturnTheFirstBookCopyInDB() throws RepositoryException {
+    public void findByIdTest_shouldReturnTheFirstBookCopyInDB() {
         //given
-        BookCopy expected = findBookCopyForFindById();
+        BookCopy bookCopy = findBookCopyForFindById();
+        Optional<BookCopy> expected = Optional.of(bookCopy);
 
         //when
-        BookCopy actual = bookCopyRepository.findById(expected.getId());
+        Optional<BookCopy> actual = bookCopyRepository.findById(bookCopy.getId());
 
         //then
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllBookCopy() throws RepositoryException {
+    void findAllTest_shouldReturnListOfAllBookCopy() {
         //given
         List<BookCopy> expected = findBookCopiesForFindAll();
 
@@ -41,46 +42,33 @@ class BookCopyRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void addTest_shouldReturnAddedBookCopy() throws RepositoryException {
+    void addTest_shouldReturnAddedBookCopy() {
         //given
         List<BookCopy> expected = findBookCopiesForFindAll();
         Assertions.assertEquals(5, expected.size());
 
         //when
         BookCopy newBookCopyActual = BookCopy.builder().status("AVAILABLE").imagePath("image path").registrationDate(LocalDate.of(2000, 1, 1)).pricePerDay(13).book(Book.builder().id(1L).build()).build();
-        boolean isAdded = bookCopyRepository.add(newBookCopyActual);
+        BookCopy isAdded = bookCopyRepository.save(newBookCopyActual);
         BookCopy newBookCopyExpected = BookCopy.builder().id(6L).status("AVAILABLE").imagePath("image path").registrationDate(LocalDate.of(2000, 1, 1)).pricePerDay(13).book(Book.builder().id(1L).build()).build();
         expected.add(newBookCopyExpected);
 
         //then
-        Assertions.assertTrue(isAdded);
+        Assertions.assertNotNull(isAdded);
         Assertions.assertEquals(newBookCopyExpected, newBookCopyActual);
-        Assertions.assertEquals(newBookCopyExpected, bookCopyRepository.findById(newBookCopyActual.getId()));
+        Assertions.assertEquals(Optional.of(newBookCopyExpected), bookCopyRepository.findById(newBookCopyActual.getId()));
     }
 
     @Test
-    void updateTest_shouldUpdateBookCopy() throws RepositoryException {
+    void updateTest_shouldUpdateBookCopy() {
         //given
         BookCopy bookCopy = BookCopy.builder().id(2L).status("AVAILABLE").imagePath("image path").registrationDate(LocalDate.of(2000, 1, 1)).pricePerDay(13).book(Book.builder().id(2L).build()).build();
 
         // when
-        boolean isUpdated = bookCopyRepository.update(bookCopy);
+        BookCopy isUpdated = bookCopyRepository.save(bookCopy);
 
         //then
-        Assertions.assertTrue(isUpdated);
-        Assertions.assertEquals(bookCopy, bookCopyRepository.findById(bookCopy.getId()));
-    }
-
-    @Test
-    public void deleteTest_shouldDeleteBookCopy() throws RepositoryException {
-        //given
-        BookCopy expected = BookCopy.builder().id(2L).status("AVAILABLE").imagePath("image path").registrationDate(LocalDate.of(2000, 1, 1)).pricePerDay(13).book(Book.builder().id(2L).build()).build();
-
-        // when
-        boolean isDeleted = bookCopyRepository.delete(expected.getId());
-
-        //then
-        Assertions.assertTrue(isDeleted);
-        Assertions.assertThrows(RepositoryException.class, () -> bookCopyRepository.findById(expected.getId()));
+        Assertions.assertNotNull(isUpdated);
+        Assertions.assertEquals(Optional.of(bookCopy), bookCopyRepository.findById(bookCopy.getId()));
     }
 }

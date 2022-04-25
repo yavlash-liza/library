@@ -9,29 +9,34 @@ import by.library.yavlash.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
 
     @Override
-    public boolean addBook(BookSaveDto bookSaveDto) throws ServiceException {
+    public boolean add(BookSaveDto bookSaveDto) throws ServiceException {
         try {
             Book book = BookConverter.fromSaveDto(bookSaveDto);
-            bookRepository.add(book);
+            bookRepository.save(book);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "));
         }
     }
 
     @Override
-    public boolean deleteBook(Long bookId) throws ServiceException {
-        try {
-            bookRepository.delete(bookId);
+    public boolean delete(Long bookId) throws ServiceException {
+        Optional<Book> optional = bookRepository.findById(bookId);
+        if (optional.isPresent()) {
+            Book book = optional.get();
+            book.setDeleted(true);
+            bookRepository.save(book);
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
+        } else {
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
         }
     }
 }

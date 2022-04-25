@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,54 +20,53 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDto findUserById(Long userId) throws ServiceException {
-        try {
-            User user = userRepository.findById(userId);
-            return UserConverter.toDto(user);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
-        }
+    public UserDto findById(Long userId) throws ServiceException {
+        return userRepository.findById(userId).map(UserConverter::toDto)
+                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
     @Override
-    public List<UserListDto> findAllUsers() throws ServiceException {
+    public List<UserListDto> findAll() throws ServiceException {
         try {
             List<User> users = userRepository.findAll();
             return UserConverter.toListDtos(users);
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s were not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "));
         }
     }
 
     @Override
-    public boolean addUser(UserSaveDto userSaveDto) throws ServiceException {
+    public boolean add(UserSaveDto userSaveDto) throws ServiceException {
         try {
             User user = UserConverter.fromSaveDto(userSaveDto);
-            userRepository.add(user);
+            userRepository.save(user);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "));
         }
     }
 
     @Override
-    public boolean updateUser(UserDto userDto) throws ServiceException {
+    public boolean update(UserDto userDto) throws ServiceException {
         try {
             User user = UserConverter.fromDto(userDto);
-            userRepository.update(user);
+            userRepository.save(user);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not updated: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not updated "));
         }
     }
 
     @Override
-    public boolean deleteUser(Long userId) throws ServiceException {
-        try {
-            userRepository.delete(userId);
+    public boolean delete(Long userId) throws ServiceException {
+        Optional<User> optional = userRepository.findById(userId);
+        if (optional.isPresent()) {
+            User user = optional.get();
+            user.setDeleted(true);
+            userRepository.save(user);
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
+        } else {
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
         }
     }
 }

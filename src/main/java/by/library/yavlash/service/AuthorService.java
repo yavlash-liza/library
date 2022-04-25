@@ -8,8 +8,8 @@ import by.library.yavlash.exception.ServiceException;
 import java.util.List;
 
 public interface AuthorService {
-    AuthorDto findAuthorById(Long authorId) throws ServiceException;
-    List<AuthorListDto> findAllAuthors() throws ServiceException;
-    boolean addAuthor(AuthorSaveDto authorSaveDto) throws ServiceException;
-    boolean deleteAuthor(Long authorId) throws ServiceException;
+    AuthorDto findById(Long authorId) throws ServiceException;
+    List<AuthorListDto> findAll() throws ServiceException;
+    boolean add(AuthorSaveDto authorSaveDto) throws ServiceException;
+    boolean delete(Long authorId) throws ServiceException;
 }

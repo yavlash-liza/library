@@ -1,17 +1,17 @@
 package by.library.yavlash.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import lombok.AllArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.persistence.Column;
-import javax.persistence.ManyToMany;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,6 +26,9 @@ import java.util.Set;
 public class Role extends BaseEntity {
     @Column(name = "role_name")
     private String roleName;
+
+    @Column(name = "deleted")
+    private boolean deleted;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

@@ -4,7 +4,6 @@ import by.library.yavlash.converter.BookCopyConverter;
 import by.library.yavlash.dto.BookCopyDto;
 import by.library.yavlash.dto.BookCopyListDto;
 import by.library.yavlash.dto.BookCopySaveDto;
-import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.BookCopyRepository;
@@ -13,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,56 +20,53 @@ public class BookCopyServiceImpl implements BookCopyService {
     private final BookCopyRepository bookCopyRepository;
 
     @Override
-    public BookCopyDto findBookCopyById(Long bookCopyId) throws ServiceException {
-        try {
-            BookCopy bookCopy = bookCopyRepository.findById(bookCopyId);
-            return BookCopyConverter.toDto(bookCopy);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
-        }
+    public BookCopyDto findById(Long bookCopyId) throws ServiceException {
+        return bookCopyRepository.findById(bookCopyId).map(BookCopyConverter::toDto)
+                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
     @Override
-    public List<BookCopyListDto> findAllBookCopies() throws ServiceException {
+    public List<BookCopyListDto> findAll() throws ServiceException {
         try {
             List<BookCopy> bookCopies = bookCopyRepository.findAll();
             return BookCopyConverter.toBookCopyListDtos(bookCopies);
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s were not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "));
         }
     }
 
     @Override
-    public boolean addBookCopy(BookCopySaveDto bookCopySaveDto) throws ServiceException {
+    public boolean add(BookCopySaveDto bookCopySaveDto) throws ServiceException {
         try {
             BookCopy bookCopy = BookCopyConverter.fromSaveDto(bookCopySaveDto);
-            bookCopy.setBook(Book.builder().id(bookCopySaveDto.getBookId()).build());
-            bookCopyRepository.add(bookCopy);
+            bookCopyRepository.save(bookCopy);
             return true;
-
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "));
         }
     }
 
     @Override
-    public boolean updateBookCopy(BookCopyDto bookCopyDto) throws ServiceException {
+    public boolean update(BookCopyDto bookCopyDto) throws ServiceException {
         try {
             BookCopy bookCopy = BookCopyConverter.fromDto(bookCopyDto);
-            bookCopyRepository.update(bookCopy);
+            bookCopyRepository.save(bookCopy);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not updated: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not updated "));
         }
     }
 
     @Override
-    public boolean deleteBookCopy(Long bookCopyId) throws ServiceException {
-        try {
-            bookCopyRepository.delete(bookCopyId);
+    public boolean delete(Long bookCopyId) throws ServiceException {
+        Optional<BookCopy> optional = bookCopyRepository.findById(bookCopyId);
+        if (optional.isPresent()) {
+            BookCopy bookCopy = optional.get();
+            bookCopy.setDeleted(true);
+            bookCopyRepository.save(bookCopy);
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
+        } else {
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
         }
     }
 }

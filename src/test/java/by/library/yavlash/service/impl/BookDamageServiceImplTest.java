@@ -5,7 +5,6 @@ import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Order;
 import by.library.yavlash.entity.User;
-import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.BookDamageRepository;
 import org.junit.jupiter.api.Assertions;
@@ -14,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 
@@ -26,7 +27,7 @@ class BookDamageServiceImplTest {
     private BookDamageServiceImpl bookDamageService;
 
     @Test
-    void findBookDamageById() throws RepositoryException, ServiceException {
+    void findByIdTest_shouldReturnTheFirstBookDamageInDB() throws ServiceException {
         //given
         Long id = 1L;
         BookDamage bookDamage = BookDamage.builder()
@@ -38,38 +39,36 @@ class BookDamageServiceImplTest {
         BookDamageDto expected = BookDamageDto.builder().id(id).userId(1L).bookCopyId(1L).orderId(1L).build();
 
         //when
-        when(bookDamageRepository.findById(id)).thenReturn(bookDamage);
-        BookDamageDto actual = bookDamageService.findBookDamageById(id);
+        when(bookDamageRepository.findById(id)).thenReturn(Optional.of(bookDamage));
+        BookDamageDto actual = bookDamageService.findById(id);
 
         //then
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void addBookDamage() throws RepositoryException, ServiceException {
-        //given
-        BookDamage bookDamage = BookDamage.builder()
-                .bookCopy(BookCopy.builder().id(1L).build())
-                .order(Order.builder().id(1L).build())
-                .user(User.builder().id(1L).build()).build();
-
-        // when
-        when(bookDamageRepository.add(bookDamage))
-                .thenReturn(true);
-        boolean actual = bookDamageService.addBookDamage(BookDamageDto.builder().bookCopyId(1L).orderId(1L).userId(1L).build());
+    void addTest_shouldAddBookDamage() throws ServiceException {
+        //given && when
+        boolean actual = bookDamageService.add(BookDamageDto.builder().bookCopyId(1L).orderId(1L).userId(1L).build());
 
         //then
         Assertions.assertTrue(actual);
     }
 
     @Test
-    void deleteBookDamage() throws RepositoryException, ServiceException {
+    void deleteTest_shouldDeleteBookDamage() throws ServiceException {
         //given
         Long id = 3L;
+        BookDamage expected = BookDamage.builder()
+                .id(id)
+                .bookCopy(BookCopy.builder().id(1L).build())
+                .order(Order.builder().id(1L).build())
+                .user(User.builder().id(1L).build()).build();
 
         //when
-        when(bookDamageRepository.delete(id)).thenReturn(true);
-        boolean actual = bookDamageService.deleteBookDamage(id);
+        when(bookDamageRepository.findById(id)).thenReturn(Optional.of(expected));
+        when(bookDamageRepository.save(expected)).thenReturn(expected);
+        boolean actual = bookDamageService.delete(id);
 
         //then
         Assertions.assertTrue(actual);

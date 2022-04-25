@@ -2,15 +2,14 @@ package by.library.yavlash.service.impl;
 
 import by.library.yavlash.converter.BookDamageConverter;
 import by.library.yavlash.dto.BookDamageDto;
-import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.BookDamage;
-import by.library.yavlash.entity.Order;
-import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.BookDamageRepository;
 import by.library.yavlash.service.BookDamageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,36 +17,32 @@ public class BookDamageServiceImpl implements BookDamageService {
     private final BookDamageRepository bookDamageRepository;
 
     @Override
-    public BookDamageDto findBookDamageById(Long bookDamageId) throws ServiceException {
-        try {
-            BookDamage bookDamage = bookDamageRepository.findById(bookDamageId);
-            return BookDamageConverter.toDto(bookDamage);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
-        }
+    public BookDamageDto findById(Long bookDamageId) throws ServiceException {
+        return bookDamageRepository.findById(bookDamageId).map(BookDamageConverter::toDto)
+                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
     @Override
-    public boolean addBookDamage(BookDamageDto bookDamageDto) throws ServiceException {
+    public boolean add(BookDamageDto bookDamageDto) throws ServiceException {
         try {
             BookDamage bookDamage = BookDamageConverter.fromSaveDto(bookDamageDto);
-            bookDamage.setUser(User.builder().id(bookDamageDto.getUserId()).build());
-            bookDamage.setOrder(Order.builder().id(bookDamageDto.getOrderId()).build());
-            bookDamage.setBookCopy(BookCopy.builder().id(bookDamageDto.getBookCopyId()).build());
-            bookDamageRepository.add(bookDamage);
+            bookDamageRepository.save(bookDamage);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "));
         }
     }
 
     @Override
-    public boolean deleteBookDamage(Long bookDamageId) throws ServiceException {
-        try {
-            bookDamageRepository.delete(bookDamageId);
+    public boolean delete(Long bookDamageId) throws ServiceException {
+        Optional<BookDamage> optional = bookDamageRepository.findById(bookDamageId);
+        if (optional.isPresent()) {
+            BookDamage bookDamage = optional.get();
+            bookDamage.setDeleted(true);
+            bookDamageRepository.save(bookDamage);
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
+        } else {
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
         }
     }
 }

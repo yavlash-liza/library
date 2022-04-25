@@ -8,9 +8,9 @@ import by.library.yavlash.exception.ServiceException;
 import java.util.List;
 
 public interface BookCopyService {
-    BookCopyDto findBookCopyById(Long bookCopyId) throws ServiceException;
-    List<BookCopyListDto> findAllBookCopies() throws ServiceException;
-    boolean addBookCopy(BookCopySaveDto bookCopySaveDto) throws ServiceException;
-    boolean updateBookCopy(BookCopyDto bookCopyDto) throws ServiceException;
-    boolean deleteBookCopy(Long bookCopyId) throws ServiceException;
+    BookCopyDto findById(Long bookCopyId) throws ServiceException;
+    List<BookCopyListDto> findAll() throws ServiceException;
+    boolean add(BookCopySaveDto bookCopySaveDto) throws ServiceException;
+    boolean update(BookCopyDto bookCopyDto) throws ServiceException;
+    boolean delete(Long bookCopyId) throws ServiceException;
 }

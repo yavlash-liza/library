@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users
     email      VARCHAR(128) NOT NULL,
     address    VARCHAR(128) NOT NULL,
     birth_date DATETIME     NOT NULL,
+    deleted    TINYINT      NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     CONSTRAINT login_unique UNIQUE (passport),
     CONSTRAINT email_unique UNIQUE (email)
@@ -16,6 +17,7 @@ CREATE TABLE IF NOT EXISTS roles
 (
     id        BIGINT      NOT NULL AUTO_INCREMENT,
     role_name VARCHAR(64) NOT NULL,
+    deleted   TINYINT     NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     CONSTRAINT role_name_unique UNIQUE (role_name)
 );
@@ -40,6 +42,7 @@ CREATE TABLE IF NOT EXISTS orders
     price        INT                                   NOT NULL,
     user_id      BIGINT                                NOT NULL,
     end_date     DATETIME                              NOT NULL,
+    deleted      TINYINT                               NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     CONSTRAINT user_order_fk
         FOREIGN KEY (user_id)
@@ -52,6 +55,7 @@ CREATE TABLE IF NOT EXISTS books
     title      VARCHAR(128) NOT NULL,
     pages      INT          NOT NULL,
     image_path VARCHAR(512) NOT NULL,
+    deleted    TINYINT      NOT NULL DEFAULT 0,
     PRIMARY KEY (id)
 );
 
@@ -63,6 +67,7 @@ CREATE TABLE IF NOT EXISTS book_copies
     image_path        VARCHAR(512)                  NOT NULL,
     price_per_day     INT                           NOT NULL,
     book_id           BIGINT                        NOT NULL,
+    deleted           TINYINT                       NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     CONSTRAINT book_copy_link_book
         FOREIGN KEY (book_id)
@@ -88,6 +93,7 @@ CREATE TABLE IF NOT EXISTS authors
     last_name  VARCHAR(64)  NOT NULL,
     birth_date DATETIME     NOT NULL,
     image_path VARCHAR(512) NOT NULL,
+    deleted    TINYINT      NOT NULL DEFAULT 0,
     PRIMARY KEY (id)
 );
 
@@ -107,6 +113,7 @@ CREATE TABLE IF NOT EXISTS genres
 (
     id         BIGINT      NOT NULL AUTO_INCREMENT,
     genre_name VARCHAR(64) NOT NULL,
+    deleted    TINYINT     NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     CONSTRAINT genre_name_unique UNIQUE (genre_name)
 );
@@ -131,6 +138,7 @@ CREATE TABLE IF NOT EXISTS book_damage
     user_id            BIGINT        NOT NULL,
     order_id           BIGINT        NOT NULL,
     book_copy_id       BIGINT        NOT NULL,
+    deleted            TINYINT       NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     CONSTRAINT fk_table1_users1
         FOREIGN KEY (user_id)

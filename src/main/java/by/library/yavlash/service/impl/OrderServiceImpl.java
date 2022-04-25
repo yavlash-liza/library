@@ -5,7 +5,6 @@ import by.library.yavlash.dto.OrderDto;
 import by.library.yavlash.dto.OrderListDto;
 import by.library.yavlash.dto.OrderSaveDto;
 import by.library.yavlash.entity.Order;
-import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.OrderRepository;
 import by.library.yavlash.service.OrderService;
@@ -13,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,55 +20,53 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
 
     @Override
-    public OrderDto findOrderById(Long orderId) throws ServiceException {
-        try {
-            Order order = orderRepository.findById(orderId);
-            return OrderConverter.toDto(order);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
-        }
+    public OrderDto findById(Long orderId) throws ServiceException {
+        return orderRepository.findById(orderId).map(OrderConverter::toDto)
+                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
     @Override
-    public List<OrderListDto> findAllOrders() throws ServiceException {
+    public List<OrderListDto> findAll() throws ServiceException {
         try {
             List<Order> orders = orderRepository.findAll();
             return OrderConverter.toOrderListDtos(orders);
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s were not found: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "));
         }
     }
 
     @Override
-    public boolean addOrder(OrderSaveDto orderSaveDto) throws ServiceException {
+    public boolean add(OrderSaveDto orderSaveDto) throws ServiceException {
         try {
             Order order = OrderConverter.fromSaveDto(orderSaveDto);
-            order.setUser(User.builder().id(orderSaveDto.getUserId()).build());
-            orderRepository.add(order);
+            orderRepository.save(order);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not added: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "));
         }
     }
 
     @Override
-    public boolean deleteOrder(Long orderId) throws ServiceException {
-        try {
-            orderRepository.delete(orderId);
-            return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not deleted: {%s}", getClass().getSimpleName(), exception.getMessage()));
-        }
-    }
-
-    @Override
-    public boolean updateOrder(OrderDto orderDto) throws ServiceException {
+    public boolean update(OrderDto orderDto) throws ServiceException {
         try {
             Order order = OrderConverter.fromDto(orderDto);
-            orderRepository.update(order);
+            orderRepository.save(order);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s was not updated: {%s}", getClass().getSimpleName(), exception.getMessage()));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not updated "));
+        }
+    }
+
+    @Override
+    public boolean delete(Long orderId) throws ServiceException {
+        Optional<Order> optional = orderRepository.findById(orderId);
+        if (optional.isPresent()) {
+            Order order = optional.get();
+            order.setDeleted(true);
+            orderRepository.save(order);
+            return true;
+        } else {
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
         }
     }
 }
