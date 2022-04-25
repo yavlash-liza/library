@@ -1,6 +1,5 @@
 package by.library.yavlash.repository;
 
-import by.library.yavlash.config.ApplicationContextConfigurationTest;
 import by.library.yavlash.entity.Author;
 import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
@@ -12,17 +11,14 @@ import by.library.yavlash.entity.User;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = ApplicationContextConfigurationTest.class)
+@SpringBootTest
 public abstract class BaseRepositoryTest {
     private List<User> users;
     private List<Role> roles;
