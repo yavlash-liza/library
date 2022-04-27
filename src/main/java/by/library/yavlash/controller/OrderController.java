@@ -6,8 +6,6 @@ import by.library.yavlash.dto.OrderSaveDto;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,57 +18,33 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOrderById(@PathVariable Long id) {
-        try {
-            return new ResponseEntity<>(orderService.findById(id), HttpStatus.OK);
-        } catch (ServiceException exception) {
-            return getResponseEntityForException(exception);
-        }
+    public OrderDto getOrderById(@PathVariable Long id) throws ServiceException {
+        return orderService.findById(id);
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderListDto>> findAll() throws ServiceException {
-        List<OrderListDto> orderListDtos = orderService.findAll();
-        return orderListDtos != null ? new ResponseEntity<>(orderListDtos, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public List<OrderListDto> findAll() throws ServiceException {
+        return orderService.findAll();
     }
 
     @PostMapping
-    public ResponseEntity<?> addOrder(@RequestBody OrderSaveDto order) {
-        try {
-            return new ResponseEntity<>(orderService.add(order), HttpStatus.OK);
-        } catch (ServiceException exception) {
-            return getResponseEntityForException(exception);
-        }
+    public boolean addOrder(@RequestBody OrderSaveDto order) throws ServiceException {
+        return orderService.add(order);
     }
 
     @PutMapping
-    public ResponseEntity<?> updateOrder(@RequestBody OrderDto orderDto) {
-        try {
-            return new ResponseEntity<>(orderService.update(orderDto), HttpStatus.OK);
-        } catch (ServiceException exception) {
-            return getResponseEntityForException(exception);
-        }
+    public boolean updateOrder(@RequestBody OrderDto orderDto) throws ServiceException {
+        return orderService.update(orderDto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
-        try {
-            return new ResponseEntity<>(orderService.delete(id), HttpStatus.OK);
-        } catch (ServiceException exception) {
-            return getResponseEntityForException(exception);
-        }
-    }
-
-    private ResponseEntity<?> getResponseEntityForException(ServiceException exception) {
-        return exception.getMessage() != null
-                ? new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST)
-                : new ResponseEntity<>("Nothing is found", HttpStatus.NOT_FOUND);
+    public boolean deleteOrder(@PathVariable Long id) throws ServiceException {
+        return orderService.delete(id);
     }
 }

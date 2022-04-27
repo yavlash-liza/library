@@ -1,12 +1,11 @@
 package by.library.yavlash.controller;
 
+import by.library.yavlash.dto.AuthorDto;
 import by.library.yavlash.dto.AuthorListDto;
 import by.library.yavlash.dto.AuthorSaveDto;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.service.AuthorService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,48 +17,30 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/author")
+@RequestMapping("/authors")
 @RequiredArgsConstructor
 public class AuthorController {
     private final AuthorService authorService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getAuthorById(@PathVariable Long id) {
-        try {
-            return new ResponseEntity<>(authorService.findById(id), HttpStatus.OK);
-        } catch (ServiceException exception) {
-            return getResponseEntityForException(exception);
-        }
+    public AuthorDto findById(@PathVariable Long id) throws ServiceException {
+        return authorService.findById(id);
     }
 
     @GetMapping
-    public ResponseEntity<List<AuthorListDto>> findAll() throws ServiceException {
-        List<AuthorListDto> authors = authorService.findAll();
-        return authors != null ? new ResponseEntity<>(authors, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public List<AuthorListDto> findAll() throws ServiceException {
+        return authorService.findAll();
     }
 
     @PostMapping
-    public ResponseEntity<?> addAuthor(@RequestBody AuthorSaveDto authorSaveDto) {
-        try {
-            return new ResponseEntity<>(authorService.add(authorSaveDto), HttpStatus.OK);
-        } catch (ServiceException exception) {
-            return getResponseEntityForException(exception);
-        }
+    public boolean add(
+            @RequestBody AuthorSaveDto authorSaveDto
+    ) throws ServiceException {
+        return authorService.add(authorSaveDto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteAuthor(@PathVariable Long id) {
-        try {
-            return new ResponseEntity<>(authorService.delete(id), HttpStatus.OK);
-        } catch (ServiceException exception) {
-            return getResponseEntityForException(exception);
-        }
-    }
-
-    private ResponseEntity<?> getResponseEntityForException(ServiceException exception) {
-        return exception.getMessage() != null
-                ? new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST)
-                : new ResponseEntity<>("Nothing is found", HttpStatus.NOT_FOUND);
+    public boolean delete(@PathVariable Long id) throws ServiceException {
+        return authorService.delete(id);
     }
 }
