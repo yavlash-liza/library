@@ -10,7 +10,6 @@ import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Genre;
-import by.library.yavlash.exception.RepositoryException;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.repository.BookCopyRepository;
 import org.junit.jupiter.api.Assertions;
@@ -104,7 +103,7 @@ class BookCopyServiceImplTest {
     }
 
     @Test
-    void updateTest_shouldUpdateBookCopy() throws RepositoryException, ServiceException {
+    void updateTest_shouldUpdateBookCopy() throws ServiceException {
         //given
         List<Long> list = new ArrayList(){{add(2L);}};
         BookCopyDto expected = BookCopyDto.builder().id(4L).imagePath("image").bookDamagesId(list).build();
