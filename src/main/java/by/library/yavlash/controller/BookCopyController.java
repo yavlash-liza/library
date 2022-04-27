@@ -26,16 +26,6 @@ public class BookCopyController {
     private final BookCopyService bookCopyService;
     private final BookService bookService;
 
-    @PostMapping
-    public boolean add(@RequestBody BookSaveDto order) throws ServiceException {
-        return bookService.add(order);
-    }
-
-    @DeleteMapping("/{id}")
-    public boolean deleteBook(@PathVariable Long id) throws ServiceException {
-        return bookService.delete(id);
-    }
-
     @GetMapping("/copies/{id}")
     public BookCopyDto findById(@PathVariable Long id) throws ServiceException {
         return bookCopyService.findById(id);
@@ -46,9 +36,14 @@ public class BookCopyController {
         return bookCopyService.findAll();
     }
 
-    @PostMapping
+    @PostMapping("/copies")
     public boolean add(@RequestBody BookCopySaveDto bookCopySaveDto) throws ServiceException {
         return bookCopyService.add(bookCopySaveDto);
+    }
+
+    @PostMapping
+    public boolean add(@RequestBody BookSaveDto order) throws ServiceException {
+        return bookService.add(order);
     }
 
     @PutMapping
@@ -59,5 +54,10 @@ public class BookCopyController {
     @DeleteMapping("/copies/delete/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
         return bookCopyService.delete(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public boolean deleteBook(@PathVariable Long id) throws ServiceException {
+        return bookService.delete(id);
     }
 }
