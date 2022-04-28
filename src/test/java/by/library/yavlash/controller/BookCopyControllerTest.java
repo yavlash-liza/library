@@ -66,7 +66,7 @@ class BookCopyControllerTest {
 
         //when
         when(bookCopyService.findById(id)).thenReturn(bookCopyDto);
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/books/copies/3"))
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/books/3"))
                 .andExpect(jsonPath("$.title").value("War and peace"))
                 .andExpect(jsonPath("$.pagesNumber").value(290))
                 .andExpect(jsonPath("$.status").value("AVAILABLE"))
@@ -196,23 +196,7 @@ class BookCopyControllerTest {
 
         //when
         when(bookCopyService.delete(id)).thenReturn(true);
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/books/copies/delete/3"))
-                .andExpect(jsonPath("$").value(true))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        //then
-        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
-    }
-
-    @Test
-    void deleteBook_shouldReturnHttpStatusOk() throws Exception {
-        //given
-        Long id = 3L;
-
-        //when
-        when(bookService.delete(id)).thenReturn(true);
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/books/3"))
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/books/copies/3"))
                 .andExpect(jsonPath("$").value(true))
                 .andExpect(status().isOk())
                 .andReturn();

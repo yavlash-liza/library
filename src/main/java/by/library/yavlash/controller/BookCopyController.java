@@ -26,7 +26,7 @@ public class BookCopyController {
     private final BookCopyService bookCopyService;
     private final BookService bookService;
 
-    @GetMapping("/copies/{id}")
+    @GetMapping("/{id}")
     public BookCopyDto findById(@PathVariable Long id) throws ServiceException {
         return bookCopyService.findById(id);
     }
@@ -51,13 +51,8 @@ public class BookCopyController {
         return bookCopyService.update(bookCopyDto);
     }
 
-    @DeleteMapping("/copies/delete/{id}")
+    @DeleteMapping("/copies/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
         return bookCopyService.delete(id);
-    }
-
-    @DeleteMapping("/{id}")
-    public boolean deleteBook(@PathVariable Long id) throws ServiceException {
-        return bookService.delete(id);
     }
 }
