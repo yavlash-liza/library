@@ -47,9 +47,9 @@ class UserRepositoryTest extends BaseRepositoryTest {
         Assertions.assertEquals(5, expected.size());
 
         //when
-        User newUserActual = User.builder().firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).build();
+        User newUserActual = User.builder().firstName("sergei").lastName("take").passportNumber("1645").email("email235@mail.com").password("$2a$12$puiOOWl2E7oexBqiw3WnL.dbvpef2.tmrhBtw6116hS.uP61poDk2").address("address123").birthDate(LocalDate.of(2002, 5, 5)).build();
         User isAdded = userRepository.save(newUserActual);
-        User newUserExpected = User.builder().id(6L).firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).build();
+        User newUserExpected = User.builder().id(6L).firstName("sergei").lastName("take").passportNumber("1645").email("email235@mail.com").address("address123").password("$2a$12$puiOOWl2E7oexBqiw3WnL.dbvpef2.tmrhBtw6116hS.uP61poDk2").birthDate(LocalDate.of(2002, 5, 5)).build();
         expected.add(newUserExpected);
 
         //then
@@ -61,7 +61,7 @@ class UserRepositoryTest extends BaseRepositoryTest {
     @Test
     void updateTest_shouldUpdateUser() {
         //given
-        User user = User.builder().id(2L).firstName("sergei").lastName("take").passportNumber("1645").email("email235").address("address123").birthDate(LocalDate.of(2002, 5, 5)).build();
+        User user = User.builder().id(2L).firstName("sergei").lastName("take").passportNumber("1645").email("email235@mail.com").address("address123").password("$2a$12$puiOOWl2E7oexBqiw3WnL.dbvpef2.tmrhBtw6116hS.uP61poDk2").birthDate(LocalDate.of(2002, 5, 5)).build();
 
         // when
         User isUpdated = userRepository.save(user);
