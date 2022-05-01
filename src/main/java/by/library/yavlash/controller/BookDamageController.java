@@ -24,7 +24,7 @@ public class BookDamageController {
         return bookDamageService.findById(id);
     }
 
-    @PreAuthorize("hasRole(('admin'))")
+    @PreAuthorize("hasRole('admin') or hasRole('user')")
     @PostMapping
     public boolean add(@RequestBody BookDamageDto bookDamageDto) throws ServiceException {
         return bookDamageService.add(bookDamageDto);
