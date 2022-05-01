@@ -1,9 +1,9 @@
-INSERT INTO users (first_name, last_name, passport, email, address, birth_date)
-VALUES ('vlad', 'kaliaha', '1111', 'email1', 'address1', '2005-06-06'),
-       ('andrei', 'yurueu', '2222', 'email2', 'address2', '2001-06-06'),
-       ('yaroslav', 'vasilevski', '3333', 'email3', 'address3', '1998-06-06'),
-       ('anastasiya', 'yurkova', '4444', 'email4', 'address4', '1999-06-06'),
-       ('alexander', 'kupriyanenko', '5555', 'email5', 'address5', '1996-06-06');
+INSERT INTO users (first_name, last_name, passport, email, address, password, birth_date)
+VALUES ('vlad', 'kaliaha', '1111', 'email1@mail.com', 'address1', '$2a$12$puiOOWl2E7oexBqiw3WnL.dbvpef2.tmrhBtw6116hS.uP61poDk2', '2005-06-06'),
+       ('andrei', 'yurueu', '2222', 'email2@mail.com', 'address2', '$2a$12$puiOOWl2E7oexBqiw3WnL.dbvpef2.tmrhBtw6116hS.uP61poDk2', '2001-06-06'),
+       ('yaroslav', 'vasilevski', '3333', 'email3@mail.com', 'address3', '$2a$12$puiOOWl2E7oexBqiw3WnL.dbvpef2.tmrhBtw6116hS.uP61poDk2', '1998-06-06'),
+       ('anastasiya', 'yurkova', '4444', 'email4@mail.com', 'address4', '$2a$12$puiOOWl2E7oexBqiw3WnL.dbvpef2.tmrhBtw6116hS.uP61poDk2', '1999-06-06'),
+       ('alexander', 'kupriyanenko', '5555', 'email5@mail.com', 'address5', '$2a$12$puiOOWl2E7oexBqiw3WnL.dbvpef2.tmrhBtw6116hS.uP61poDk2', '1996-06-06');
 
 INSERT INTO roles (role_name)
 VALUES ('admin'),

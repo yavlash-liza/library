@@ -43,6 +43,9 @@ public class User extends BaseEntity {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "password")
+    private String password;
+
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
