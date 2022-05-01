@@ -6,6 +6,7 @@ import by.library.yavlash.dto.AuthorSaveDto;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.service.AuthorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +33,7 @@ public class AuthorController {
         return authorService.findAll();
     }
 
+    @PreAuthorize("hasRole(('admin'))")
     @PostMapping
     public boolean add(
             @RequestBody AuthorSaveDto authorSaveDto
@@ -39,6 +41,7 @@ public class AuthorController {
         return authorService.add(authorSaveDto);
     }
 
+    @PreAuthorize("hasRole(('admin'))")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
         return authorService.delete(id);

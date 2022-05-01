@@ -6,6 +6,7 @@ import by.library.yavlash.dto.OrderSaveDto;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,16 +34,19 @@ public class OrderController {
         return orderService.findAll();
     }
 
+    @PreAuthorize("hasRole(('admin'))")
     @PostMapping
     public boolean addOrder(@RequestBody OrderSaveDto order) throws ServiceException {
         return orderService.add(order);
     }
 
+    @PreAuthorize("hasRole(('admin'))")
     @PutMapping
     public boolean updateOrder(@RequestBody OrderDto orderDto) throws ServiceException {
         return orderService.update(orderDto);
     }
 
+    @PreAuthorize("hasRole(('admin'))")
     @DeleteMapping("/{id}")
     public boolean deleteOrder(@PathVariable Long id) throws ServiceException {
         return orderService.delete(id);

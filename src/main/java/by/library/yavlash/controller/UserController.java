@@ -6,6 +6,7 @@ import by.library.yavlash.dto.UserSaveDto;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,16 +34,19 @@ public class UserController {
         return userService.findAll();
     }
 
+    @PreAuthorize("hasRole(('admin'))")
     @PostMapping
     public boolean addUser(@RequestBody UserSaveDto user) throws ServiceException {
         return userService.add(user);
     }
 
+    @PreAuthorize("hasRole(('admin'))")
     @PutMapping
     public boolean updateUser(@RequestBody UserDto userDto) throws ServiceException {
         return userService.update(userDto);
     }
 
+    @PreAuthorize("hasRole(('admin'))")
     @DeleteMapping("/{id}")
     public boolean deleteUser(@PathVariable Long id) throws ServiceException {
         return userService.delete(id);
