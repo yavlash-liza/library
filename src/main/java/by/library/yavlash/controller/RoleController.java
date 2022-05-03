@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@PreAuthorize("hasRole(('admin'))")
+@PreAuthorize("hasRole({'admin'})")
 @RequestMapping("/roles")
 @RequiredArgsConstructor
 public class RoleController {

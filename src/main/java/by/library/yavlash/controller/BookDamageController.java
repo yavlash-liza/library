@@ -24,13 +24,13 @@ public class BookDamageController {
         return bookDamageService.findById(id);
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('user')")
+    @PreAuthorize("hasRole({'admin'})")
     @PostMapping
     public boolean add(@RequestBody BookDamageDto bookDamageDto) throws ServiceException {
         return bookDamageService.add(bookDamageDto);
     }
 
-    @PreAuthorize("hasRole(('admin'))")
+    @PreAuthorize("hasRole({'admin'})")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
         return bookDamageService.delete(id);

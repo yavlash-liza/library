@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-@WithMockUser(username = "user", authorities = "admin")
 class UserControllerTest {
 
     @Autowired
@@ -41,7 +40,8 @@ class UserControllerTest {
     private UserService userService;
 
     @Test
-    void findById_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_findById_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
         UserDto userDto = UserDto.builder()
@@ -129,7 +129,8 @@ class UserControllerTest {
     }
 
     @Test
-    void findAll_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_findAll_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<UserListDto> userListDtos = new ArrayList<>() {{
             add(UserListDto.builder().id(1L).firstName("Sergei").lastName("Smirnov").email("email1").address("address1").build());
@@ -176,7 +177,8 @@ class UserControllerTest {
     }
 
     @Test
-    void add_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_add_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<Long> roleList = new ArrayList<>() {{
             add(1L);
@@ -268,7 +270,8 @@ class UserControllerTest {
     }
 
     @Test
-    void update_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_update_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<Long> roleList = new ArrayList<>() {{
             add(1L);
@@ -356,7 +359,8 @@ class UserControllerTest {
     }
 
     @Test
-    void delete_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_delete_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
 

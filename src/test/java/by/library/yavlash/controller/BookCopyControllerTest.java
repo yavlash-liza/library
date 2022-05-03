@@ -34,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-@WithMockUser(username = "user", authorities = "admin")
 class BookCopyControllerTest {
 
     @Autowired
@@ -47,7 +46,8 @@ class BookCopyControllerTest {
     private BookService bookService;
 
     @Test
-    void findById_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_findById_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
         BookCopyDto bookCopyDto = BookCopyDto.builder().id(id)
@@ -172,7 +172,8 @@ class BookCopyControllerTest {
     }
 
     @Test
-    void findAll_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_findAll_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<BookCopyListDto> bookCopyListDtos = new ArrayList<>() {{
             add(BookCopyListDto.builder().id(1L).title("War and peace").imagePath("image path").pricePerDay(2).build());
@@ -255,7 +256,8 @@ class BookCopyControllerTest {
     }
 
     @Test
-    void addBookCopy_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_addBookCopy_shouldReturnHttpStatusOk() throws Exception {
         //given
         BookCopySaveDto bookCopySaveDto = BookCopySaveDto.builder()
                 .status("AVAILABLE")
@@ -329,7 +331,8 @@ class BookCopyControllerTest {
     }
 
     @Test
-    void addBook_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_addBook_shouldReturnHttpStatusOk() throws Exception {
         //given
         BookSaveDto bookSaveDto = BookSaveDto.builder()
                 .title("Hamlet")
@@ -409,7 +412,8 @@ class BookCopyControllerTest {
     }
 
     @Test
-    void updateBookCopy_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_updateBookCopy_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<Long> list = new ArrayList() {{
             add(2L);
@@ -481,7 +485,8 @@ class BookCopyControllerTest {
     }
 
     @Test
-    void deleteBookCopy_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_deleteBookCopy_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
 

@@ -25,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-@WithMockUser(username = "user", authorities = "admin")
 class GenreControllerTest {
 
     @Autowired
@@ -35,7 +34,8 @@ class GenreControllerTest {
     private GenreService genreService;
 
     @Test
-    void findAll_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_findAll_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<GenreDto> genres = new ArrayList<>() {{
             add(GenreDto.builder().id(1L).genreName("NOVEL").build());
@@ -106,7 +106,8 @@ class GenreControllerTest {
     }
 
     @Test
-    void add_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_add_shouldReturnHttpStatusOk() throws Exception {
         //given
         GenreDto genreDto = GenreDto.builder().id(1L).genreName("NOVEL").build();
 
@@ -156,7 +157,8 @@ class GenreControllerTest {
     }
 
     @Test
-    void delete_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_delete_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
 

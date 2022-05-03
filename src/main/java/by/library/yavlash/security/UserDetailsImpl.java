@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Builder
-public class JwtUser implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
     private Long id;
     private String username;
     private String password;

@@ -20,13 +20,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
-@PreAuthorize("hasRole('admin') or hasRole('user')")
+@PreAuthorize("hasAnyRole('admin', 'user')")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/{id}")
-    public OrderDto getOrderById(@PathVariable Long id) throws ServiceException {
+    public OrderDto findById(@PathVariable Long id) throws ServiceException {
         return orderService.findById(id);
     }
 
@@ -36,17 +36,17 @@ public class OrderController {
     }
 
     @PostMapping
-    public boolean addOrder(@RequestBody OrderSaveDto order) throws ServiceException {
+    public boolean add(@RequestBody OrderSaveDto order) throws ServiceException {
         return orderService.add(order);
     }
 
     @PutMapping
-    public boolean updateOrder(@RequestBody OrderDto orderDto) throws ServiceException {
+    public boolean update(@RequestBody OrderDto orderDto) throws ServiceException {
         return orderService.update(orderDto);
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteOrder(@PathVariable Long id) throws ServiceException {
+    public boolean delete(@PathVariable Long id) throws ServiceException {
         return orderService.delete(id);
     }
 }

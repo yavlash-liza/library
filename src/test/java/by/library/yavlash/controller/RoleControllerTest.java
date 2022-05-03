@@ -23,7 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-@WithMockUser(username = "user", authorities = "admin")
 class RoleControllerTest {
 
     @Autowired
@@ -33,7 +32,8 @@ class RoleControllerTest {
     private RoleService roleService;
 
     @Test
-    void findAll_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_findAll_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<RoleDto> authors = new ArrayList<>() {{
             add(RoleDto.builder().id(1L).roleName("user").build());

@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-@WithMockUser(username = "user", authorities = "admin")
 class OrderControllerTest {
 
     @Autowired
@@ -41,7 +40,8 @@ class OrderControllerTest {
     private OrderService orderService;
 
     @Test
-    void findById_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_findById_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
         OrderDto orderDto = OrderDto.builder().id(id)
@@ -123,7 +123,8 @@ class OrderControllerTest {
     }
 
     @Test
-    void findAll_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_findAll_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<OrderListDto> orderListDtos = new ArrayList<>() {{
             add(OrderListDto.builder().id(1L).orderStatus("NEW").startDate(LocalDate.of(2003, 4, 1)).endDate(LocalDate.of(2003, 4, 1)).price(20).build());
@@ -191,7 +192,8 @@ class OrderControllerTest {
     }
 
     @Test
-    void add_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_add_shouldReturnHttpStatusOk() throws Exception {
         //given
         OrderSaveDto orderSaveDto = OrderSaveDto.builder()
                 .startDate(LocalDate.of(2003, 3, 1))
@@ -271,7 +273,8 @@ class OrderControllerTest {
     }
 
     @Test
-    void update_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_update_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<Long> bookDamageList = new ArrayList<>() {{
             add(2L);
@@ -341,7 +344,8 @@ class OrderControllerTest {
     }
 
     @Test
-    void delete_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_delete_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
 

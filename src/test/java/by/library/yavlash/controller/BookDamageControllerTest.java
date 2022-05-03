@@ -22,7 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-@WithMockUser(username = "user", authorities = "admin")
 class BookDamageControllerTest {
 
     @Autowired
@@ -32,7 +31,8 @@ class BookDamageControllerTest {
     private BookDamageService bookDamageService;
 
     @Test
-    void findById_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_findById_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
         BookDamageDto bookDamage = BookDamageDto.builder().id(id).imagePath("imagePath").damageDescription("broken").userId(1L).bookCopyId(1L).orderId(1L).build();
@@ -86,7 +86,8 @@ class BookDamageControllerTest {
     }
 
     @Test
-    void add_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_add_shouldReturnHttpStatusOk() throws Exception {
         //given
         BookDamageDto bookDamageDto = BookDamageDto.builder().imagePath("imagePath").damageDescription("broken").userId(1L).bookCopyId(1L).orderId(1L).build();
 
@@ -121,25 +122,23 @@ class BookDamageControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "user")
-    void givenUser_add_shouldReturnHttpStatusOk() throws Exception {
+    void givenUser_add_shouldReturnHttpStatusForbidden() throws Exception {
         //given
         BookDamageDto bookDamageDto = BookDamageDto.builder().imagePath("imagePath").damageDescription("broken").userId(1L).bookCopyId(1L).orderId(1L).build();
 
         ObjectMapper mapper = new ObjectMapper();
 
-        //when
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/damages")
+        //when && then
+        mockMvc.perform(MockMvcRequestBuilders.post("/damages")
                         .content(mapper.writeValueAsString(bookDamageDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isForbidden())
                 .andReturn();
-
-        //then
-        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
     }
 
     @Test
-    void delete_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_delete_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
 

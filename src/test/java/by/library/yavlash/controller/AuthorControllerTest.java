@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-@WithMockUser(username = "user", authorities = "admin")
 class AuthorControllerTest {
 
     @Autowired
@@ -41,7 +40,8 @@ class AuthorControllerTest {
     private AuthorService authorService;
 
     @Test
-    void findById_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_findById_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
         List<BookCopyListDto> books = new ArrayList<>() {{
@@ -121,6 +121,7 @@ class AuthorControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user", authorities = "admin")
     void findAll_shouldReturnHttpStatusOk() throws Exception {
         //given
         AuthorListDto author1 = AuthorListDto.builder().id(1L).firstName("Alexander").lastName("Pushkin").build();
@@ -204,7 +205,8 @@ class AuthorControllerTest {
     }
 
     @Test
-    void add_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_add_shouldReturnHttpStatusOk() throws Exception {
         //given
         AuthorSaveDto authorWithoutId = AuthorSaveDto.builder().firstName("Alexander").lastName("Pushkin").birthDate(LocalDate.of(2002, 1, 3)).imagePath("path").build();
 
@@ -260,7 +262,8 @@ class AuthorControllerTest {
     }
 
     @Test
-    void delete_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_delete_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
 
