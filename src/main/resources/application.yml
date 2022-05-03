@@ -10,3 +10,8 @@ spring:
   flyway:
     locations: classpath:db/migration
     baselineOnMigrate: true
+
+  jwt:
+    secret: zdtlD3JK56m6wTTgsNFhqzjqP
+    issuer: library.by
+    expiration: 604800000

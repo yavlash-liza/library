@@ -8,6 +8,7 @@ import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.service.BookCopyService;
 import by.library.yavlash.service.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/books")
 @RequiredArgsConstructor
+@RequestMapping("/books")
 public class BookCopyController {
     private final BookCopyService bookCopyService;
     private final BookService bookService;
@@ -36,21 +37,25 @@ public class BookCopyController {
         return bookCopyService.findAll();
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @PostMapping("/copies")
     public boolean add(@RequestBody BookCopySaveDto bookCopySaveDto) throws ServiceException {
         return bookCopyService.add(bookCopySaveDto);
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @PostMapping
     public boolean add(@RequestBody BookSaveDto order) throws ServiceException {
         return bookService.add(order);
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @PutMapping
     public boolean update(@RequestBody BookCopyDto bookCopyDto) throws ServiceException {
         return bookCopyService.update(bookCopyDto);
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @DeleteMapping("/copies/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
         return bookCopyService.delete(id);

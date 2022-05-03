@@ -4,6 +4,7 @@ import by.library.yavlash.dto.GenreDto;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.service.GenreService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/genres")
 @RequiredArgsConstructor
+@RequestMapping("/genres")
 public class GenreController {
     private final GenreService genreService;
 
@@ -25,11 +26,13 @@ public class GenreController {
         return genreService.findAll();
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @PostMapping
     public boolean add(@RequestBody GenreDto genreDto) throws ServiceException {
         return genreService.add(genreDto);
     }
 
+    @PreAuthorize("hasRole({'admin'})")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
         return genreService.delete(id);

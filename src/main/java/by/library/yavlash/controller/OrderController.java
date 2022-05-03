@@ -6,6 +6,7 @@ import by.library.yavlash.dto.OrderSaveDto;
 import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,13 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/orders")
 @RequiredArgsConstructor
+@PreAuthorize("hasAnyRole('admin', 'user')")
+@RequestMapping("/orders")
 public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/{id}")
-    public OrderDto getOrderById(@PathVariable Long id) throws ServiceException {
+    public OrderDto findById(@PathVariable Long id) throws ServiceException {
         return orderService.findById(id);
     }
 
@@ -34,17 +36,17 @@ public class OrderController {
     }
 
     @PostMapping
-    public boolean addOrder(@RequestBody OrderSaveDto order) throws ServiceException {
+    public boolean add(@RequestBody OrderSaveDto order) throws ServiceException {
         return orderService.add(order);
     }
 
     @PutMapping
-    public boolean updateOrder(@RequestBody OrderDto orderDto) throws ServiceException {
+    public boolean update(@RequestBody OrderDto orderDto) throws ServiceException {
         return orderService.update(orderDto);
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteOrder(@PathVariable Long id) throws ServiceException {
+    public boolean delete(@PathVariable Long id) throws ServiceException {
         return orderService.delete(id);
     }
 }

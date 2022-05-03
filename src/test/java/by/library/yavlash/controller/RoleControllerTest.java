@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -30,7 +32,8 @@ class RoleControllerTest {
     private RoleService roleService;
 
     @Test
-    void findAll_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "admin")
+    void givenAdmin_findAll_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<RoleDto> authors = new ArrayList<>() {{
             add(RoleDto.builder().id(1L).roleName("user").build());
@@ -50,5 +53,23 @@ class RoleControllerTest {
 
         //then
         Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void givenAnonymousUser_findAll_shouldReturnHttpStatusUnauthorized() throws Exception {
+        //given && when & then
+        mockMvc.perform(MockMvcRequestBuilders.get("/roles"))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = "user", authorities = "user")
+    void givenUser_findAll_shouldReturnHttpStatusForbidden() throws Exception {
+        //given && when & then
+        mockMvc.perform(MockMvcRequestBuilders.get("/roles"))
+                .andExpect(status().isForbidden())
+                .andReturn();
     }
 }

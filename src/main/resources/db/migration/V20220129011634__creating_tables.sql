@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users
     passport   VARCHAR(128) NOT NULL,
     email      VARCHAR(128) NOT NULL,
     address    VARCHAR(128) NOT NULL,
+    password   VARCHAR(64)  NOT NULL,
     birth_date DATETIME     NOT NULL,
     deleted    TINYINT      NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
