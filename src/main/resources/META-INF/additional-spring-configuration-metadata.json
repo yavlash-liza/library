@@ -1,0 +1,23 @@
+{
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "Description for jwt.secret."
+    },
+    {
+      "name": "spring.jwt.secret",
+      "type": "java.lang.String",
+      "description": "Description for spring.jwt.secret."
+    },
+    {
+      "name": "spring.jwt.millisInWeek",
+      "type": "java.lang.Integer",
+      "description": "Description for spring.jwt.millisInWeek."
+    },
+    {
+      "name": "spring.jwt.issuer",
+      "type": "java.lang.String",
+      "description": "Description for spring.jwt.issuer."
+    }
+  ] }

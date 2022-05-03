@@ -14,4 +14,4 @@ spring:
   jwt:
     secret: zdtlD3JK56m6wTTgsNFhqzjqP
     issuer: library.by
-    millisInWeek: 604800000
+    expiration: 604800000

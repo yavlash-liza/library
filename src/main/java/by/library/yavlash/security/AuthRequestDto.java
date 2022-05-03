@@ -4,7 +4,7 @@ package by.library.yavlash.security;
 import lombok.Data;
 
 @Data
-public class AuthRequest {
+public class AuthRequestDto {
     String username;
     String password;
 }

@@ -21,15 +21,15 @@ public class JwtTokenUtil {
     private String jwtSecret;
     @Value("${spring.jwt.issuer}")
     private String jwtIssuer;
-    @Value("${spring.jwt.millisInWeek}")
-    private int millisInWeek;
+    @Value("${spring.jwt.expiration}")
+    private int expiration;
 
     public String generateAccessToken(UserDetailsImpl user) {
         return "Bearer " + Jwts.builder()
                 .setSubject(format("%s,%s", user.getId(), user.getUsername()))
                 .setIssuer(jwtIssuer)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + millisInWeek))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
