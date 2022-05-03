@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/authors")
 @RequiredArgsConstructor
+@RequestMapping("/authors")
 public class AuthorController {
     private final AuthorService authorService;
 

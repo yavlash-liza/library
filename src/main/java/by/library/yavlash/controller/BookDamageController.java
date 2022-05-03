@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/damages")
 @RequiredArgsConstructor
+@RequestMapping("/damages")
 public class BookDamageController {
     private final BookDamageService bookDamageService;
 

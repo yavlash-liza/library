@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/books")
 @RequiredArgsConstructor
+@RequestMapping("/books")
 public class BookCopyController {
     private final BookCopyService bookCopyService;
     private final BookService bookService;
