@@ -17,13 +17,13 @@ public interface BookMapper {
     @Mapping(target = "genres", source = "bookSaveDto.genresId")
     Book fromSaveDto(BookSaveDto bookSaveDto);
 
-    default Set<Genre> constructGenres(List<Long> genresId) {
+    default Set<Genre> toLongGenreSet(List<Long> genresId) {
         return genresId.stream()
                 .map(id -> Genre.builder().id(id).build())
                 .collect(Collectors.toSet());
     }
 
-    default Set<Author> constructAuthors(List<Long> authorsId) {
+    default Set<Author> toLongAuthorSet(List<Long> authorsId) {
         return authorsId.stream()
                 .map(id -> Author.builder().id(id).build())
                 .collect(Collectors.toSet());

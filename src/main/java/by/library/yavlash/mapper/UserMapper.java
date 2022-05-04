@@ -23,12 +23,12 @@ public interface UserMapper {
 
     List<UserListDto> toListDto(List<User> user);
 
-    default List<Long> toListLong(Set<Role> roles) {
+    default List<Long> toLongList(Set<Role> roles) {
         return roles.stream().map(BaseEntity::getId)
                 .collect(Collectors.toList());
     }
 
-    default Set<Role> fromLongToSetRoles(List<Long> roleId) {
+    default Set<Role> fromLongList(List<Long> roleId) {
         return roleId.stream().map(id -> Role.builder().id(id).build())
                 .collect(Collectors.toSet());
     }

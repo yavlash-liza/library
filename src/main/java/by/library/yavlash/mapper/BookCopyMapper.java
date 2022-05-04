@@ -27,13 +27,8 @@ public interface BookCopyMapper {
 
     List<BookCopyListDto> toListDto(List<BookCopy> bookCopies);
 
-    default List<Long> toDto(Set<BookDamage> bookDamages) {
+    default List<Long> toLongList(Set<BookDamage> bookDamages) {
         return bookDamages.stream().map(BaseEntity::getId)
                 .collect(Collectors.toList());
-    }
-
-    default Set<BookDamage> constructBookDamage(List<Long> bookDamagesId) {
-        return bookDamagesId.stream().map(id -> BookDamage.builder().id(id).build())
-                .collect(Collectors.toSet());
     }
 }

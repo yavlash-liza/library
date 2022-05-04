@@ -30,7 +30,7 @@ public class AuthorServiceImpl implements AuthorService {
     public List<AuthorListDto> findAll() throws ServiceException {
         try {
             List<Author> authors = authorRepository.findAll();
-            return authorMapper.toAuthorListDto(authors);
+            return authorMapper.toListDto(authors);
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "));
         }

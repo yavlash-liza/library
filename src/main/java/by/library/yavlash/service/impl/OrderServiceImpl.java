@@ -30,7 +30,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderListDto> findAll() throws ServiceException {
         try {
             List<Order> orders = orderRepository.findAll();
-            return orderMapper.toOrderListDto(orders);
+            return orderMapper.toListDto(orders);
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "));
         }

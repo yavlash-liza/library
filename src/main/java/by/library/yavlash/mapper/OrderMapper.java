@@ -25,14 +25,14 @@ public interface OrderMapper {
     @Mapping(target = "bookCopies", source = "orderSaveDto.bookCopiesId")
     Order fromSaveDto(OrderSaveDto orderSaveDto);
 
-    List<OrderListDto> toOrderListDto(List<Order> order);
+    List<OrderListDto> toListDto(List<Order> order);
 
-    default List<Long> listLongFromBookDamages(Set<BookDamage> bookDamages) {
+    default List<Long> toLongList(Set<BookDamage> bookDamages) {
         return bookDamages.stream().map(BaseEntity::getId)
                 .collect(Collectors.toList());
     }
 
-    default Set<BookCopy> constructBookCopies(List<Long> bookCopiesId) {
+    default Set<BookCopy> fromLongList(List<Long> bookCopiesId) {
         return bookCopiesId.stream().map(bookCopyId -> BookCopy.builder().id(bookCopyId).build())
                 .collect(Collectors.toSet());
     }
