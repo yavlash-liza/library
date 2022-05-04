@@ -10,11 +10,14 @@ import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Order;
 import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.ServiceException;
+import by.library.yavlash.mapper.OrderMapper;
 import by.library.yavlash.repository.OrderRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -29,6 +32,9 @@ import static org.mockito.Mockito.when;
 class OrderServiceImplTest {
     @Mock
     private OrderRepository orderRepository;
+
+    @Spy
+    private OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
 
     @InjectMocks
     private OrderServiceImpl orderService;
@@ -94,8 +100,12 @@ class OrderServiceImplTest {
     @Test
     void updateTest_shouldUpdateOrder() throws ServiceException {
         //given
-        List<Long> bookDamageList = new ArrayList<>() {{add(2L);}};
-        OrderDto expected = OrderDto.builder().id(4L).orderStatus("ACCEPTED").bookDamages(bookDamageList).build();
+        OrderSaveDto expected = OrderSaveDto.builder()
+                .price(13)
+                .userId(1L)
+                .bookCopiesId(new ArrayList<>() {{
+                    add(2L);
+                }}).build();
 
         //when
         boolean actual = orderService.update(expected);

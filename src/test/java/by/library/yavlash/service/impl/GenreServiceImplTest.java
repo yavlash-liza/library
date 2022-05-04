@@ -3,11 +3,14 @@ package by.library.yavlash.service.impl;
 import by.library.yavlash.dto.GenreDto;
 import by.library.yavlash.entity.Genre;
 import by.library.yavlash.exception.ServiceException;
+import by.library.yavlash.mapper.GenreMapper;
 import by.library.yavlash.repository.GenreRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -21,6 +24,9 @@ import static org.mockito.Mockito.when;
 class GenreServiceImplTest {
     @Mock
     private GenreRepository genreRepository;
+
+    @Spy
+    private GenreMapper genreMapper = Mappers.getMapper(GenreMapper.class);
 
     @InjectMocks
     private GenreServiceImpl genreService;

@@ -6,11 +6,14 @@ import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Order;
 import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.ServiceException;
+import by.library.yavlash.mapper.BookDamageMapper;
 import by.library.yavlash.repository.BookDamageRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
@@ -21,6 +24,9 @@ import static org.mockito.Mockito.when;
 class BookDamageServiceImplTest {
     @Mock
     private BookDamageRepository bookDamageRepository;
+
+    @Spy
+    private BookDamageMapper bookDamageMapper = Mappers.getMapper(BookDamageMapper.class);
 
     @InjectMocks
     private BookDamageServiceImpl bookDamageService;

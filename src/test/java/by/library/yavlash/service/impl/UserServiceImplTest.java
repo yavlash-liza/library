@@ -8,11 +8,14 @@ import by.library.yavlash.entity.Order;
 import by.library.yavlash.entity.Role;
 import by.library.yavlash.entity.User;
 import by.library.yavlash.exception.ServiceException;
+import by.library.yavlash.mapper.UserMapper;
 import by.library.yavlash.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -27,6 +30,9 @@ import static org.mockito.Mockito.when;
 class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
+
+    @Spy
+    private UserMapper userMapper = Mappers.getMapper(UserMapper.class);
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -82,7 +88,7 @@ class UserServiceImplTest {
     void updateTest_shouldUpdateUser() throws ServiceException {
         //given
         List<Long> roleList = new ArrayList<>() {{add(1L);}};
-        UserDto expected = UserDto.builder().id(4L).firstName("Sergei").lastName("Smirnov").rolesId(roleList).build();
+        UserSaveDto expected = UserSaveDto.builder().id(4L).firstName("Sergei").lastName("Smirnov").roleId(roleList).build();
 
         //when
         boolean actual = userService.update(expected);
