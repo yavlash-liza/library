@@ -1,11 +1,11 @@
 package by.library.yavlash.service.impl;
 
-import by.library.yavlash.converter.BookCopyConverter;
 import by.library.yavlash.dto.BookCopyDto;
 import by.library.yavlash.dto.BookCopyListDto;
 import by.library.yavlash.dto.BookCopySaveDto;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.exception.ServiceException;
+import by.library.yavlash.mapper.BookCopyMapper;
 import by.library.yavlash.repository.BookCopyRepository;
 import by.library.yavlash.service.BookCopyService;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +18,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BookCopyServiceImpl implements BookCopyService {
     private final BookCopyRepository bookCopyRepository;
+    private final BookCopyMapper bookCopyMapper;
 
     @Override
     public BookCopyDto findById(Long bookCopyId) throws ServiceException {
-        return bookCopyRepository.findById(bookCopyId).map(BookCopyConverter::toDto)
+        return bookCopyRepository.findById(bookCopyId).map(bookCopyMapper::toDto)
                 .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
@@ -29,7 +30,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     public List<BookCopyListDto> findAll() throws ServiceException {
         try {
             List<BookCopy> bookCopies = bookCopyRepository.findAll();
-            return BookCopyConverter.toBookCopyListDtos(bookCopies);
+            return bookCopyMapper.toListDto(bookCopies);
         } catch (Exception exception) {
             throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "));
         }
@@ -38,7 +39,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     @Override
     public boolean add(BookCopySaveDto bookCopySaveDto) throws ServiceException {
         try {
-            BookCopy bookCopy = BookCopyConverter.fromSaveDto(bookCopySaveDto);
+            BookCopy bookCopy = bookCopyMapper.fromSaveDto(bookCopySaveDto);
             bookCopyRepository.save(bookCopy);
             return true;
         } catch (Exception exception) {
@@ -47,9 +48,9 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
-    public boolean update(BookCopyDto bookCopyDto) throws ServiceException {
+    public boolean update(BookCopySaveDto bookCopySaveDto) throws ServiceException {
         try {
-            BookCopy bookCopy = BookCopyConverter.fromDto(bookCopyDto);
+            BookCopy bookCopy = bookCopyMapper.fromSaveDto(bookCopySaveDto);
             bookCopyRepository.save(bookCopy);
             return true;
         } catch (Exception exception) {

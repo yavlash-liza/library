@@ -1,9 +1,9 @@
 package by.library.yavlash.service.impl;
 
-import by.library.yavlash.converter.BookDamageConverter;
 import by.library.yavlash.dto.BookDamageDto;
 import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.exception.ServiceException;
+import by.library.yavlash.mapper.BookDamageMapper;
 import by.library.yavlash.repository.BookDamageRepository;
 import by.library.yavlash.service.BookDamageService;
 import lombok.RequiredArgsConstructor;
@@ -15,17 +15,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BookDamageServiceImpl implements BookDamageService {
     private final BookDamageRepository bookDamageRepository;
+    private final BookDamageMapper bookDamageMapper;
 
     @Override
     public BookDamageDto findById(Long bookDamageId) throws ServiceException {
-        return bookDamageRepository.findById(bookDamageId).map(BookDamageConverter::toDto)
+        return bookDamageRepository.findById(bookDamageId).map(bookDamageMapper::toDto)
                 .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
     @Override
     public boolean add(BookDamageDto bookDamageDto) throws ServiceException {
         try {
-            BookDamage bookDamage = BookDamageConverter.fromSaveDto(bookDamageDto);
+            BookDamage bookDamage = bookDamageMapper.fromSaveDto(bookDamageDto);
             bookDamageRepository.save(bookDamage);
             return true;
         } catch (Exception exception) {
