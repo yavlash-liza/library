@@ -41,8 +41,8 @@ public class OrderController {
     }
 
     @PutMapping
-    public boolean update(@RequestBody OrderDto orderDto) throws ServiceException {
-        return orderService.update(orderDto);
+    public boolean update(@RequestBody OrderSaveDto orderSaveDto) throws ServiceException {
+        return orderService.update(orderSaveDto);
     }
 
     @DeleteMapping("/{id}")
