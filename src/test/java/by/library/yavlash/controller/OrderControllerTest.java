@@ -276,19 +276,23 @@ class OrderControllerTest {
     @WithMockUser(username = "user", authorities = "admin")
     void givenAdmin_update_shouldReturnHttpStatusOk() throws Exception {
         //given
-        List<Long> bookDamageList = new ArrayList<>() {{
-            add(2L);
-        }};
-        OrderDto order = OrderDto.builder().id(4L).orderStatus("ACCEPTED").bookDamages(bookDamageList).build();
+        OrderSaveDto orderSaveDto = OrderSaveDto.builder()
+                .startDate(LocalDate.of(2003, 3, 1))
+                .endDate(LocalDate.of(2003, 4, 1))
+                .price(13)
+                .userId(1L)
+                .bookCopiesId(new ArrayList<>() {{
+                    add(2L);
+                }}).build();
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         //when
-        when(orderService.update(order)).thenReturn(true);
+        when(orderService.update(orderSaveDto)).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/orders")
-                        .content(mapper.writeValueAsString(order))
+                        .content(mapper.writeValueAsString(orderSaveDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -301,19 +305,23 @@ class OrderControllerTest {
     @WithMockUser(username = "user", authorities = "user")
     void givenUser_update_shouldReturnHttpStatusOk() throws Exception {
         //given
-        List<Long> bookDamageList = new ArrayList<>() {{
-            add(2L);
-        }};
-        OrderDto order = OrderDto.builder().id(4L).orderStatus("ACCEPTED").bookDamages(bookDamageList).build();
+        OrderSaveDto orderSaveDto = OrderSaveDto.builder()
+                .startDate(LocalDate.of(2003, 3, 1))
+                .endDate(LocalDate.of(2003, 4, 1))
+                .price(13)
+                .userId(1L)
+                .bookCopiesId(new ArrayList<>() {{
+                    add(2L);
+                }}).build();
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         //when
-        when(orderService.update(order)).thenReturn(true);
+        when(orderService.update(orderSaveDto)).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/orders")
-                        .content(mapper.writeValueAsString(order))
+                        .content(mapper.writeValueAsString(orderSaveDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -326,10 +334,14 @@ class OrderControllerTest {
     @WithAnonymousUser
     void givenAnonymousUser_update_shouldReturnHttpStatusUnauthorized() throws Exception {
         //given
-        List<Long> bookDamageList = new ArrayList<>() {{
-            add(2L);
-        }};
-        OrderDto order = OrderDto.builder().id(4L).orderStatus("ACCEPTED").bookDamages(bookDamageList).build();
+        OrderSaveDto orderSaveDto = OrderSaveDto.builder()
+                .startDate(LocalDate.of(2003, 3, 1))
+                .endDate(LocalDate.of(2003, 4, 1))
+                .price(13)
+                .userId(1L)
+                .bookCopiesId(new ArrayList<>() {{
+                    add(2L);
+                }}).build();
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -337,7 +349,7 @@ class OrderControllerTest {
 
         //when
         mockMvc.perform(MockMvcRequestBuilders.put("/orders")
-                        .content(mapper.writeValueAsString(order))
+                        .content(mapper.writeValueAsString(orderSaveDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andReturn();
