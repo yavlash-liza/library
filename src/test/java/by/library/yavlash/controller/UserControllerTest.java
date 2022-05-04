@@ -276,12 +276,12 @@ class UserControllerTest {
         List<Long> roleList = new ArrayList<>() {{
             add(1L);
         }};
-        UserDto userDto = UserDto.builder()
+        UserSaveDto userDto = UserSaveDto.builder()
                 .id(4L)
                 .firstName("Sergei")
                 .lastName("Smirnov")
                 .birthDate(LocalDate.of(2003, 4, 1))
-                .rolesId(roleList)
+                .roleId(roleList)
                 .build();
 
         ObjectMapper mapper = new ObjectMapper();
@@ -307,12 +307,12 @@ class UserControllerTest {
         List<Long> roleList = new ArrayList<>() {{
             add(1L);
         }};
-        UserDto userDto = UserDto.builder()
+        UserSaveDto userDto = UserSaveDto.builder()
                 .id(4L)
                 .firstName("Sergei")
                 .lastName("Smirnov")
                 .birthDate(LocalDate.of(2003, 4, 1))
-                .rolesId(roleList)
+                .roleId(roleList)
                 .build();
 
         ObjectMapper mapper = new ObjectMapper();
@@ -338,12 +338,12 @@ class UserControllerTest {
         List<Long> roleList = new ArrayList<>() {{
             add(1L);
         }};
-        UserDto userDto = UserDto.builder()
+        UserSaveDto userDto = UserSaveDto.builder()
                 .id(4L)
                 .firstName("Sergei")
                 .lastName("Smirnov")
                 .birthDate(LocalDate.of(2003, 4, 1))
-                .rolesId(roleList)
+                .roleId(roleList)
                 .build();
 
         ObjectMapper mapper = new ObjectMapper();

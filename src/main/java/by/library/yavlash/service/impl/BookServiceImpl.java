@@ -1,9 +1,9 @@
 package by.library.yavlash.service.impl;
 
-import by.library.yavlash.converter.BookConverter;
 import by.library.yavlash.dto.BookSaveDto;
 import by.library.yavlash.entity.Book;
 import by.library.yavlash.exception.ServiceException;
+import by.library.yavlash.mapper.BookMapper;
 import by.library.yavlash.repository.BookRepository;
 import by.library.yavlash.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +15,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
 
     @Override
     public boolean add(BookSaveDto bookSaveDto) throws ServiceException {
         try {
-            Book book = BookConverter.fromSaveDto(bookSaveDto);
+            Book book = bookMapper.fromSaveDto(bookSaveDto);
             bookRepository.save(book);
             return true;
         } catch (Exception exception) {

@@ -8,11 +8,14 @@ import by.library.yavlash.entity.Author;
 import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.exception.ServiceException;
+import by.library.yavlash.mapper.AuthorMapper;
 import by.library.yavlash.repository.AuthorRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -27,6 +30,9 @@ import static org.mockito.Mockito.when;
 class AuthorServiceImplTest {
     @Mock
     private AuthorRepository authorRepository;
+
+    @Spy
+    private AuthorMapper authorMapper = Mappers.getMapper(AuthorMapper.class);
 
     @InjectMocks
     private AuthorServiceImpl authorService;

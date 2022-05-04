@@ -11,11 +11,14 @@ import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Genre;
 import by.library.yavlash.exception.ServiceException;
+import by.library.yavlash.mapper.BookCopyMapper;
 import by.library.yavlash.repository.BookCopyRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -30,6 +33,9 @@ import static org.mockito.Mockito.when;
 class BookCopyServiceImplTest {
     @Mock
     private BookCopyRepository bookCopyRepository;
+
+    @Spy
+    private BookCopyMapper bookCopyMapper = Mappers.getMapper(BookCopyMapper.class);
 
     @InjectMocks
     private BookCopyServiceImpl bookCopyService;
@@ -105,8 +111,7 @@ class BookCopyServiceImplTest {
     @Test
     void updateTest_shouldUpdateBookCopy() throws ServiceException {
         //given
-        List<Long> list = new ArrayList(){{add(2L);}};
-        BookCopyDto expected = BookCopyDto.builder().id(4L).imagePath("image").bookDamagesId(list).build();
+        BookCopySaveDto expected = BookCopySaveDto.builder().id(4L).imagePath("image").build();
 
         //when
         boolean actual = bookCopyService.update(expected);

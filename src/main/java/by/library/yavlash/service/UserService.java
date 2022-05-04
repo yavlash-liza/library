@@ -11,6 +11,6 @@ public interface UserService {
     UserDto findById(Long userId) throws ServiceException;
     List<UserListDto> findAll() throws ServiceException;
     boolean add(UserSaveDto userSaveDto) throws ServiceException;
-    boolean update(UserDto userDto) throws ServiceException;
+    boolean update(UserSaveDto userSaveDto) throws ServiceException;
     boolean delete(Long userId) throws ServiceException;
 }

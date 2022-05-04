@@ -415,21 +415,17 @@ class BookCopyControllerTest {
     @WithMockUser(username = "user", authorities = "admin")
     void givenAdmin_updateBookCopy_shouldReturnHttpStatusOk() throws Exception {
         //given
-        List<Long> list = new ArrayList() {{
-            add(2L);
-        }};
-        BookCopyDto bookCopyDto = BookCopyDto.builder()
+        BookCopySaveDto bookCopySaveDto = BookCopySaveDto.builder()
                 .id(4L)
                 .imagePath("image")
-                .bookDamagesId(list)
                 .build();
 
         ObjectMapper mapper = new ObjectMapper();
 
         //when
-        when(bookCopyService.update(bookCopyDto)).thenReturn(true);
+        when(bookCopyService.update(bookCopySaveDto)).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/books")
-                        .content(mapper.writeValueAsString(bookCopyDto))
+                        .content(mapper.writeValueAsString(bookCopySaveDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -442,20 +438,16 @@ class BookCopyControllerTest {
     @WithAnonymousUser
     void givenAnonymousUser_updateBookCopy_shouldReturnHttpStatusUnauthorized() throws Exception {
         //given
-        List<Long> list = new ArrayList() {{
-            add(2L);
-        }};
-        BookCopyDto bookCopyDto = BookCopyDto.builder()
+        BookCopySaveDto bookCopySaveDto = BookCopySaveDto.builder()
                 .id(4L)
                 .imagePath("image")
-                .bookDamagesId(list)
                 .build();
 
         ObjectMapper mapper = new ObjectMapper();
 
         //when & then
         mockMvc.perform(MockMvcRequestBuilders.put("/books")
-                        .content(mapper.writeValueAsString(bookCopyDto))
+                        .content(mapper.writeValueAsString(bookCopySaveDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andReturn();
@@ -465,20 +457,16 @@ class BookCopyControllerTest {
     @WithMockUser(username = "user", authorities = "user")
     void givenUser_updateBookCopy_shouldReturnHttpStatusForbidden() throws Exception {
         //given
-        List<Long> list = new ArrayList() {{
-            add(2L);
-        }};
-        BookCopyDto bookCopyDto = BookCopyDto.builder()
+        BookCopySaveDto bookCopySaveDto = BookCopySaveDto.builder()
                 .id(4L)
                 .imagePath("image")
-                .bookDamagesId(list)
                 .build();
 
         ObjectMapper mapper = new ObjectMapper();
 
         //when & then
         mockMvc.perform(MockMvcRequestBuilders.put("/books")
-                        .content(mapper.writeValueAsString(bookCopyDto))
+                        .content(mapper.writeValueAsString(bookCopySaveDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
                 .andReturn();

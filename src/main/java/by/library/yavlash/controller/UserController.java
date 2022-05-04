@@ -43,8 +43,8 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('admin', 'user')")
     @PutMapping
-    public boolean updateUser(@RequestBody UserDto userDto) throws ServiceException {
-        return userService.update(userDto);
+    public boolean updateUser(@RequestBody UserSaveDto userSaveDto) throws ServiceException {
+        return userService.update(userSaveDto);
     }
 
     @PreAuthorize("hasRole({'admin'})")

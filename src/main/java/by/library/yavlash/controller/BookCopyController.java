@@ -51,8 +51,8 @@ public class BookCopyController {
 
     @PreAuthorize("hasRole({'admin'})")
     @PutMapping
-    public boolean update(@RequestBody BookCopyDto bookCopyDto) throws ServiceException {
-        return bookCopyService.update(bookCopyDto);
+    public boolean update(@RequestBody BookCopySaveDto bookCopySaveDto) throws ServiceException {
+        return bookCopyService.update(bookCopySaveDto);
     }
 
     @PreAuthorize("hasRole({'admin'})")
