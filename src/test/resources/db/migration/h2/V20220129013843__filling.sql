@@ -9,6 +9,69 @@ INSERT INTO roles (role_name)
 VALUES ('admin'),
        ('user');
 
+INSERT INTO role_authority (id, authority_name)
+VALUES (1, 'ROLE_READ'),
+
+       (2, 'USER_READ'),
+       (3, 'USER_DELETE'),
+       (4, 'USER_WRITE'),
+
+       (5, 'ORDER_READ'),
+       (6, 'ORDER_DELETE'),
+       (7, 'ORDER_WRITE'),
+
+       (8, 'GENRE_READ'),
+       (9, 'GENRE_DELETE'),
+       (10, 'GENRE_WRITE'),
+
+       (11, 'BOOK_DAMAGE_READ'),
+       (12, 'BOOK_DAMAGE_DELETE'),
+       (13, 'BOOK_DAMAGE_WRITE'),
+
+       (14, 'BOOK_READ'),
+       (15, 'BOOK_DELETE'),
+       (16, 'BOOK_WRITE'),
+
+       (17, 'AUTHOR_READ'),
+       (18, 'AUTHOR_DELETE'),
+       (19, 'AUTHOR_WRITE');
+
+INSERT INTO role_authority_links (authority_id, role_id)
+VALUES (1, 1),
+
+       (2, 1),
+       (2, 2),
+       (3, 1),
+       (4, 1),
+       (4, 2),
+
+       (5, 1),
+       (5, 2),
+       (6, 1),
+       (6, 2),
+       (7, 1),
+       (7, 2),
+
+       (8, 1),
+       (8, 2),
+       (9, 1),
+       (10, 1),
+
+       (11, 1),
+       (11, 2),
+       (12, 1),
+       (13, 1),
+
+       (14, 1),
+       (14, 2),
+       (15, 1),
+       (16, 1),
+
+       (17, 1),
+       (17, 2),
+       (18, 1),
+       (19, 1);
+
 INSERT INTO user_role_links (user_id, role_id)
 VALUES (1, 1),
        (2, 2),
