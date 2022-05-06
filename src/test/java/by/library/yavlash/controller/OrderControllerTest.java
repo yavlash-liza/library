@@ -41,7 +41,7 @@ class OrderControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "ORDER_READ")
-    void givenAdmin_findById_shouldReturnHttpStatusOk() throws Exception {
+    void findById_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
         OrderDto orderDto = OrderDto.builder().id(id)
@@ -87,7 +87,7 @@ class OrderControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "ORDER_READ")
-    void givenAdmin_findAll_shouldReturnHttpStatusOk() throws Exception {
+    void findAll_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<OrderListDto> orderListDtos = new ArrayList<>() {{
             add(OrderListDto.builder().id(1L).orderStatus("NEW").startDate(LocalDate.of(2003, 4, 1)).endDate(LocalDate.of(2003, 4, 1)).price(20).build());
@@ -126,7 +126,7 @@ class OrderControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "ORDER_WRITE")
-    void givenAdmin_add_shouldReturnHttpStatusOk() throws Exception {
+    void add_shouldReturnHttpStatusOk() throws Exception {
         //given
         OrderSaveDto orderSaveDto = OrderSaveDto.builder()
                 .startDate(LocalDate.of(2003, 3, 1))
@@ -179,7 +179,7 @@ class OrderControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "ORDER_WRITE")
-    void givenAdmin_update_shouldReturnHttpStatusOk() throws Exception {
+    void update_shouldReturnHttpStatusOk() throws Exception {
         //given
         OrderSaveDto orderSaveDto = OrderSaveDto.builder()
                 .startDate(LocalDate.of(2003, 3, 1))
@@ -233,7 +233,7 @@ class OrderControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "ORDER_DELETE")
-    void givenAdmin_delete_shouldReturnHttpStatusOk() throws Exception {
+    void delete_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
 

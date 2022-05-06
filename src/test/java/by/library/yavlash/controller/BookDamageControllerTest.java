@@ -32,7 +32,7 @@ class BookDamageControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "BOOK_DAMAGE_READ")
-    void givenAdmin_findById_shouldReturnHttpStatusOk() throws Exception {
+    void findById_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
         BookDamageDto bookDamage = BookDamageDto.builder().id(id).imagePath("imagePath").damageDescription("broken").userId(1L).bookCopyId(1L).orderId(1L).build();
@@ -64,7 +64,7 @@ class BookDamageControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "BOOK_DAMAGE_WRITE")
-    void givenAdmin_add_shouldReturnHttpStatusOk() throws Exception {
+    void add_shouldReturnHttpStatusOk() throws Exception {
         //given
         BookDamageDto bookDamageDto = BookDamageDto.builder().imagePath("imagePath").damageDescription("broken").userId(1L).bookCopyId(1L).orderId(1L).build();
 
@@ -99,7 +99,7 @@ class BookDamageControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "BOOK_DAMAGE_DELETE")
-    void givenAdmin_delete_shouldReturnHttpStatusOk() throws Exception {
+    void delete_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
 

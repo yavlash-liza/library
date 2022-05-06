@@ -41,7 +41,7 @@ class AuthorControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "AUTHOR_READ")
-    void givenAdmin_findById_shouldReturnHttpStatusOk() throws Exception {
+    void findById_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
         List<BookCopyListDto> books = new ArrayList<>() {{
@@ -151,7 +151,7 @@ class AuthorControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "AUTHOR_WRITE")
-    void givenAdmin_add_shouldReturnHttpStatusOk() throws Exception {
+    void add_shouldReturnHttpStatusOk() throws Exception {
         //given
         AuthorSaveDto authorWithoutId = AuthorSaveDto.builder().firstName("Alexander").lastName("Pushkin").birthDate(LocalDate.of(2002, 1, 3)).imagePath("path").build();
 
@@ -190,7 +190,7 @@ class AuthorControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "AUTHOR_DELETE")
-    void givenAdmin_delete_shouldReturnHttpStatusOk() throws Exception {
+    void delete_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
 

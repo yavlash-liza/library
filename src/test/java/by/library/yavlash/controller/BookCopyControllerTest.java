@@ -47,7 +47,7 @@ class BookCopyControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "BOOK_READ")
-    void givenAdmin_findById_shouldReturnHttpStatusOk() throws Exception {
+    void findById_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
         BookCopyDto bookCopyDto = BookCopyDto.builder().id(id)
@@ -131,7 +131,7 @@ class BookCopyControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "BOOK_READ")
-    void givenAdmin_findAll_shouldReturnHttpStatusOk() throws Exception {
+    void findAll_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<BookCopyListDto> bookCopyListDtos = new ArrayList<>() {{
             add(BookCopyListDto.builder().id(1L).title("War and peace").imagePath("image path").pricePerDay(2).build());
@@ -187,7 +187,7 @@ class BookCopyControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "BOOK_WRITE")
-    void givenAdmin_addBookCopy_shouldReturnHttpStatusOk() throws Exception {
+    void addBookCopy_shouldReturnHttpStatusOk() throws Exception {
         //given
         BookCopySaveDto bookCopySaveDto = BookCopySaveDto.builder()
                 .status("AVAILABLE")
@@ -238,7 +238,7 @@ class BookCopyControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "BOOK_WRITE")
-    void givenAdmin_addBook_shouldReturnHttpStatusOk() throws Exception {
+    void addBook_shouldReturnHttpStatusOk() throws Exception {
         //given
         BookSaveDto bookSaveDto = BookSaveDto.builder()
                 .title("Hamlet")
@@ -293,7 +293,7 @@ class BookCopyControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "BOOK_WRITE")
-    void givenAdmin_updateBookCopy_shouldReturnHttpStatusOk() throws Exception {
+    void updateBookCopy_shouldReturnHttpStatusOk() throws Exception {
         //given
         BookCopySaveDto bookCopySaveDto = BookCopySaveDto.builder()
                 .id(4L)
@@ -335,7 +335,7 @@ class BookCopyControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "BOOK_DELETE")
-    void givenAdmin_deleteBookCopy_shouldReturnHttpStatusOk() throws Exception {
+    void deleteBookCopy_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
 

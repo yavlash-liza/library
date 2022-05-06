@@ -33,7 +33,7 @@ class RoleControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "ROLE_READ")
-    void givenAdmin_findAll_shouldReturnHttpStatusOk() throws Exception {
+    void findAll_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<RoleDto> authors = new ArrayList<>() {{
             add(RoleDto.builder().id(1L).roleName("user").build());

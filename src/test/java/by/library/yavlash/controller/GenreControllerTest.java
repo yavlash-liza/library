@@ -35,7 +35,7 @@ class GenreControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "GENRE_READ")
-    void givenAdmin_findAll_shouldReturnHttpStatusOk() throws Exception {
+    void findAll_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<GenreDto> genres = new ArrayList<>() {{
             add(GenreDto.builder().id(1L).genreName("NOVEL").build());
@@ -83,7 +83,7 @@ class GenreControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "GENRE_WRITE")
-    void givenAdmin_add_shouldReturnHttpStatusOk() throws Exception {
+    void add_shouldReturnHttpStatusOk() throws Exception {
         //given
         GenreDto genreDto = GenreDto.builder().id(1L).genreName("NOVEL").build();
 
@@ -118,7 +118,7 @@ class GenreControllerTest {
 
     @Test
     @WithMockUser(username = "user", authorities = "GENRE_DELETE")
-    void givenAdmin_delete_shouldReturnHttpStatusOk() throws Exception {
+    void delete_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
 
