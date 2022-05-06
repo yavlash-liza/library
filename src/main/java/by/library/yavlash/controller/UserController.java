@@ -26,7 +26,7 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('admin', 'user')")
     @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable Long id) throws ServiceException {
+    public UserDto findById(@PathVariable Long id) throws ServiceException {
         return userService.findById(id);
     }
 
@@ -37,19 +37,19 @@ public class UserController {
     }
 
     @PostMapping
-    public boolean addUser(@RequestBody UserSaveDto user) throws ServiceException {
+    public boolean add(@RequestBody UserSaveDto user) throws ServiceException {
         return userService.add(user);
     }
 
     @PreAuthorize("hasAnyRole('admin', 'user')")
     @PutMapping
-    public boolean updateUser(@RequestBody UserSaveDto userSaveDto) throws ServiceException {
+    public boolean update(@RequestBody UserSaveDto userSaveDto) throws ServiceException {
         return userService.update(userSaveDto);
     }
 
     @PreAuthorize("hasRole({'admin'})")
     @DeleteMapping("/{id}")
-    public boolean deleteUser(@PathVariable Long id) throws ServiceException {
+    public boolean delete(@PathVariable Long id) throws ServiceException {
         return userService.delete(id);
     }
 }
