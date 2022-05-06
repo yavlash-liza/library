@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('admin', 'user')")
+@PreAuthorize("hasAnyAuthority('ORDER_READ', 'ORDER_WRITE', 'ORDER_DELETE')")
 @RequestMapping("/orders")
 public class OrderController {
     private final OrderService orderService;
