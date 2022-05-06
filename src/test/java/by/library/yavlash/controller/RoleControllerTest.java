@@ -32,7 +32,7 @@ class RoleControllerTest {
     private RoleService roleService;
 
     @Test
-    @WithMockUser(username = "user", authorities = "admin")
+    @WithMockUser(username = "user", authorities = "ROLE_READ")
     void givenAdmin_findAll_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<RoleDto> authors = new ArrayList<>() {{
@@ -61,15 +61,6 @@ class RoleControllerTest {
         //given && when & then
         mockMvc.perform(MockMvcRequestBuilders.get("/roles"))
                 .andExpect(status().isUnauthorized())
-                .andReturn();
-    }
-
-    @Test
-    @WithMockUser(username = "user", authorities = "user")
-    void givenUser_findAll_shouldReturnHttpStatusForbidden() throws Exception {
-        //given && when & then
-        mockMvc.perform(MockMvcRequestBuilders.get("/roles"))
-                .andExpect(status().isForbidden())
                 .andReturn();
     }
 }
