@@ -39,19 +39,25 @@ public class BookCopyController {
 
     @PreAuthorize("hasAuthority('BOOK_WRITE')")
     @PostMapping("/copies")
-    public boolean add(@RequestBody BookCopySaveDto bookCopySaveDto) throws ServiceException {
+    public boolean add(
+            @RequestBody BookCopySaveDto bookCopySaveDto
+    ) throws ServiceException {
         return bookCopyService.add(bookCopySaveDto);
     }
 
     @PreAuthorize("hasAuthority('BOOK_WRITE')")
     @PostMapping
-    public boolean add(@RequestBody BookSaveDto order) throws ServiceException {
+    public boolean add(
+            @RequestBody BookSaveDto order
+    ) throws ServiceException {
         return bookService.add(order);
     }
 
     @PreAuthorize("hasAuthority('BOOK_WRITE')")
     @PutMapping
-    public boolean update(@RequestBody BookCopySaveDto bookCopySaveDto) throws ServiceException {
+    public boolean update(
+            @RequestBody BookCopySaveDto bookCopySaveDto
+    ) throws ServiceException {
         return bookCopyService.update(bookCopySaveDto);
     }
 

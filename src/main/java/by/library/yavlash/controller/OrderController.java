@@ -38,13 +38,17 @@ public class OrderController {
 
     @PreAuthorize("hasAuthority('ORDER_WRITE')")
     @PostMapping
-    public boolean add(@RequestBody OrderSaveDto order) throws ServiceException {
+    public boolean add(
+            @RequestBody OrderSaveDto order
+    ) throws ServiceException {
         return orderService.add(order);
     }
 
     @PreAuthorize("hasAuthority('ORDER_WRITE')")
     @PutMapping
-    public boolean update(@RequestBody OrderSaveDto orderSaveDto) throws ServiceException {
+    public boolean update(
+            @RequestBody OrderSaveDto orderSaveDto
+    ) throws ServiceException {
         return orderService.update(orderSaveDto);
     }
 

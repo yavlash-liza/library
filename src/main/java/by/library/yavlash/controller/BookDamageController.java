@@ -26,7 +26,9 @@ public class BookDamageController {
 
     @PreAuthorize("hasAuthority('BOOK_DAMAGE_WRITE')")
     @PostMapping
-    public boolean add(@RequestBody BookDamageDto bookDamageDto) throws ServiceException {
+    public boolean add(
+            @RequestBody BookDamageDto bookDamageDto
+    ) throws ServiceException {
         return bookDamageService.add(bookDamageDto);
     }
 

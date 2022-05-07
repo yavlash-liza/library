@@ -37,13 +37,17 @@ public class UserController {
     }
 
     @PostMapping
-    public boolean addUser(@RequestBody UserSaveDto user) throws ServiceException {
+    public boolean addUser(
+            @RequestBody UserSaveDto user
+    ) throws ServiceException {
         return userService.add(user);
     }
 
     @PreAuthorize("hasAuthority('USER_WRITE')")
     @PutMapping
-    public boolean updateUser(@RequestBody UserSaveDto userSaveDto) throws ServiceException {
+    public boolean updateUser(
+            @RequestBody UserSaveDto userSaveDto
+    ) throws ServiceException {
         return userService.update(userSaveDto);
     }
 

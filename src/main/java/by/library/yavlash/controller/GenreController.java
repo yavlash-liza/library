@@ -28,7 +28,9 @@ public class GenreController {
 
     @PreAuthorize("hasAuthority('GENRE_WRITE')")
     @PostMapping
-    public boolean add(@RequestBody GenreDto genreDto) throws ServiceException {
+    public boolean add(
+            @RequestBody GenreDto genreDto
+    ) throws ServiceException {
         return genreService.add(genreDto);
     }
 
