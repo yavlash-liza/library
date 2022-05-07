@@ -1,22 +1,24 @@
 package by.library.yavlash.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
+@Jacksonized
 @Builder
+@Value
 public class BookCopyDto {
-    private Long id;
-    private String title;
-    private int pagesNumber;
-    private String status;
-    private LocalDate registrationDate;
-    private int pricePerDay;
-    private String imagePath;
-    private List<AuthorListDto> authors;
-    private List<GenreDto> genres;
-    private List<Long> bookDamagesId;
+     Long id;
+     String title;
+     int pagesNumber;
+     String status;
+     LocalDate registrationDate;
+     int pricePerDay;
+     String imagePath;
+     List<AuthorListDto> authors;
+     List<GenreDto> genres;
+     List<Long> bookDamagesId;
 }

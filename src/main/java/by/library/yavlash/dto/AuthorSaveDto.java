@@ -1,16 +1,18 @@
 package by.library.yavlash.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDate;
 
+@Jacksonized
 @Builder
-@Data
+@Value
 public class AuthorSaveDto {
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private LocalDate birthDate;
-    private String imagePath;
+     Long id;
+     String firstName;
+     String lastName;
+     LocalDate birthDate;
+     String imagePath;
 }

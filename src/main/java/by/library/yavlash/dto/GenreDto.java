@@ -1,11 +1,13 @@
 package by.library.yavlash.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
-@Data
+@Jacksonized
 @Builder
+@Value
 public class GenreDto {
-    private Long id;
-    private String genreName;
+     Long id;
+     String genreName;
 }

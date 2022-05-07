@@ -1,17 +1,19 @@
 package by.library.yavlash.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
 
-@Data
+@Jacksonized
 @Builder
+@Value
 public class BookSaveDto {
-    private Long id;
-    private String title;
-    private int pagesNumber;
-    private String imagePath;
-    private List<Long> authorsId;
-    private List<Long> genresId;
+     Long id;
+     String title;
+     int pagesNumber;
+     String imagePath;
+     List<Long> authorsId;
+     List<Long> genresId;
 }
