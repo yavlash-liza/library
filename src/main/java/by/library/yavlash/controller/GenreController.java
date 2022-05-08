@@ -35,6 +35,6 @@ public class GenreController {
     @PreAuthorize("hasRole({'admin'})")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
-        return genreService.delete(id);
+        return genreService.softDelete(id);
     }
 }

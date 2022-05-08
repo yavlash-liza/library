@@ -365,7 +365,7 @@ class UserControllerTest {
         Long id = 3L;
 
         //when
-        when(userService.delete(id)).thenReturn(true);
+        when(userService.softDelete(id)).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/users/3"))
                 .andExpect(jsonPath("$").value(true))
                 .andExpect(status().isOk())
