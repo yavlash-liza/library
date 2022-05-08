@@ -8,9 +8,9 @@ import by.library.yavlash.repository.GenreRepository;
 import by.library.yavlash.service.GenreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,36 +19,41 @@ public class GenreServiceImpl implements GenreService {
     private final GenreMapper genreMapper;
 
     @Override
+    @Transactional
     public List<GenreDto> findAll() throws ServiceException {
         try {
             List<Genre> genres = genreRepository.findAll();
             return genreMapper.toDto(genres);
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "), exception);
         }
     }
 
     @Override
+    @Transactional
     public boolean add(GenreDto genreDto) throws ServiceException {
         try {
             Genre genre = genreMapper.fromSaveDto(genreDto);
             genreRepository.save(genre);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "), exception);
         }
     }
 
     @Override
-    public boolean delete(Long genreId) throws ServiceException {
-        Optional<Genre> optional = genreRepository.findById(genreId);
-        if (optional.isPresent()) {
-            Genre genre = optional.get();
+    @Transactional
+    public boolean softDelete(Long genreId) throws ServiceException {
+        Genre genre = genreRepository.findById(genreId)
+                .orElseThrow(() -> new ServiceException(
+                        String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted and was not found.")
+                ));
+        try {
             genre.setDeleted(true);
-            genreRepository.save(genre);
+            genreRepository.flush();
             return true;
-        } else {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
+        } catch (Exception exception) {
+            throw new ServiceException(String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted."), exception);
         }
     }
 }

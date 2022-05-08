@@ -8,8 +8,7 @@ import by.library.yavlash.repository.BookDamageRepository;
 import by.library.yavlash.service.BookDamageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,32 +17,37 @@ public class BookDamageServiceImpl implements BookDamageService {
     private final BookDamageMapper bookDamageMapper;
 
     @Override
+    @Transactional
     public BookDamageDto findById(Long bookDamageId) throws ServiceException {
         return bookDamageRepository.findById(bookDamageId).map(bookDamageMapper::toDto)
                 .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
     @Override
+    @Transactional
     public boolean add(BookDamageDto bookDamageDto) throws ServiceException {
         try {
             BookDamage bookDamage = bookDamageMapper.fromSaveDto(bookDamageDto);
             bookDamageRepository.save(bookDamage);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "), exception);
         }
     }
 
     @Override
-    public boolean delete(Long bookDamageId) throws ServiceException {
-        Optional<BookDamage> optional = bookDamageRepository.findById(bookDamageId);
-        if (optional.isPresent()) {
-            BookDamage bookDamage = optional.get();
+    @Transactional
+    public boolean softDelete(Long bookDamageId) throws ServiceException {
+        BookDamage bookDamage = bookDamageRepository.findById(bookDamageId)
+                .orElseThrow(() -> new ServiceException(
+                        String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted and was not found.")
+                ));
+        try {
             bookDamage.setDeleted(true);
-            bookDamageRepository.save(bookDamage);
+            bookDamageRepository.flush();
             return true;
-        } else {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
+        } catch (Exception exception) {
+            throw new ServiceException(String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted."), exception);
         }
     }
 }

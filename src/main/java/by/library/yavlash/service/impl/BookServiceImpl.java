@@ -8,8 +8,7 @@ import by.library.yavlash.repository.BookRepository;
 import by.library.yavlash.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,26 +17,30 @@ public class BookServiceImpl implements BookService {
     private final BookMapper bookMapper;
 
     @Override
+    @Transactional
     public boolean add(BookSaveDto bookSaveDto) throws ServiceException {
         try {
             Book book = bookMapper.fromSaveDto(bookSaveDto);
             bookRepository.save(book);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "), exception);
         }
     }
 
     @Override
-    public boolean delete(Long bookId) throws ServiceException {
-        Optional<Book> optional = bookRepository.findById(bookId);
-        if (optional.isPresent()) {
-            Book book = optional.get();
+    @Transactional
+    public boolean softDelete(Long bookId) throws ServiceException {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new ServiceException(
+                        String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted and was not found.")
+                ));
+        try {
             book.setDeleted(true);
-            bookRepository.save(book);
+            bookRepository.flush();
             return true;
-        } else {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
+        } catch (Exception exception) {
+            throw new ServiceException(String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted."), exception);
         }
     }
 }

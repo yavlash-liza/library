@@ -8,5 +8,5 @@ import java.util.List;
 public interface GenreService {
     List<GenreDto> findAll() throws ServiceException;
     boolean add(GenreDto genreDto) throws ServiceException;
-    boolean delete(Long genreId) throws ServiceException;
+    boolean softDelete(Long genreId) throws ServiceException;
 }

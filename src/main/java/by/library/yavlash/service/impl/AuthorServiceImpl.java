@@ -10,9 +10,9 @@ import by.library.yavlash.repository.AuthorRepository;
 import by.library.yavlash.service.AuthorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,42 +21,48 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorMapper authorMapper;
 
     @Override
+    @Transactional
     public AuthorDto findById(Long authorId) throws ServiceException {
         return authorRepository.findById(authorId).map(authorMapper::toDto)
                 .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
     }
 
     @Override
+    @Transactional
     public List<AuthorListDto> findAll() throws ServiceException {
         try {
             List<Author> authors = authorRepository.findAll();
             return authorMapper.toListDto(authors);
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "), exception);
         }
     }
 
     @Override
+    @Transactional
     public boolean add(AuthorSaveDto authorSaveDto) throws ServiceException {
         try {
             Author author = authorMapper.fromSaveDto(authorSaveDto);
             authorRepository.save(author);
             return true;
         } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "));
+            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "), exception);
         }
     }
 
     @Override
-    public boolean delete(Long authorId) throws ServiceException {
-        Optional<Author> optional = authorRepository.findById(authorId);
-        if (optional.isPresent()) {
-            Author author = optional.get();
+    @Transactional
+    public boolean softDelete(Long authorId) throws ServiceException {
+        Author author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new ServiceException(
+                        String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted and was not found.")
+                ));
+        try {
             author.setDeleted(true);
-            authorRepository.save(author);
+            authorRepository.flush();
             return true;
-        } else {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not deleted "));
+        } catch (Exception exception) {
+            throw new ServiceException(String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted."), exception);
         }
     }
 }
