@@ -99,7 +99,7 @@ class AuthorServiceImplTest {
         //when
         when(authorRepository.findById(id)).thenReturn(Optional.of(expected));
         when(authorRepository.save(expected)).thenReturn(expected);
-        boolean actual = authorService.delete(id);
+        boolean actual = authorService.softDelete(id);
 
         //then
         Assertions.assertTrue(actual);
