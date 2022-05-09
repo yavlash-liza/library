@@ -6,16 +6,24 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 @Slf4j
 @Aspect
 @Component
 public class RepositoryExceptionAspect {
-    private static final String message = "Exception in {}.{}() with cause = {} : {}";
+    private static final String message = "Exception {} in method {}({}) in class {} with cause = {} ";
 
     @AfterThrowing(pointcut = "execution(* by.library.yavlash.repository.*.*(..))", throwing = "e")
-    public void logStatementAfterRepositoryException(JoinPoint joinPoint, Exception e) throws Exception {
+    public void logStatementAfterRepositoryException(JoinPoint joinPoint, Exception e) {
         String clazz = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();
-        log.error(message, clazz, methodName, e.getCause() != null ? e.getCause() : "NULL", e);
+        String arguments = fromArrayToString(joinPoint.getArgs());
+        log.error(message, e, methodName, arguments, clazz, e.getCause() != null ? e.getCause() : null, e);
+    }
+
+    private String fromArrayToString(Object[] args) {
+        String string = Arrays.toString(args);
+        return string.substring(1, string.length() - 1);
     }
 }
