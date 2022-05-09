@@ -25,7 +25,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     @Transactional
     public BookCopyDto findById(Long bookCopyId) throws ServiceException {
         return bookCopyRepository.findById(bookCopyId).map(bookCopyMapper::toDto)
-                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
+                .orElseThrow(() -> new ServiceException(String.format("BookCopy was not found. id = %d", bookCopyId)));
     }
 
     @Override
@@ -34,8 +34,8 @@ public class BookCopyServiceImpl implements BookCopyService {
         try {
             List<BookCopy> bookCopies = bookCopyRepository.findAll();
             return bookCopyMapper.toListDto(bookCopies);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "), exception);
+        } catch (Exception e) {
+            throw new ServiceException("BookCopies were not found.", e);
         }
     }
 
@@ -46,8 +46,8 @@ public class BookCopyServiceImpl implements BookCopyService {
             BookCopy bookCopy = bookCopyMapper.fromSaveDto(bookCopySaveDto);
             bookCopyRepository.save(bookCopy);
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "), exception);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("BookCopy was not saved. %s", bookCopySaveDto), e);
         }
     }
 
@@ -56,13 +56,13 @@ public class BookCopyServiceImpl implements BookCopyService {
     public boolean update(BookCopySaveDto bookCopySaveDto) throws ServiceException {
         BookCopy bookCopy = bookCopyRepository.findById(bookCopySaveDto.getId())
                 .orElseThrow(() -> new ServiceException(
-                        String.format("%s:{%s}", getClass().getSimpleName(), " was not updated and was not found.")
+                        String.format("BookCopy was not updated. BookCopy was not found. id = %d", bookCopySaveDto.getId())
                 ));
         try {
             settingUpdateFields(bookCopy, bookCopySaveDto);
             bookCopyRepository.flush();
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s:{%s}", getClass().getSimpleName(), "was not updated. "), exception);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("BookCopy was not updated. %s", bookCopySaveDto), e);
         }
         return true;
     }
@@ -90,14 +90,14 @@ public class BookCopyServiceImpl implements BookCopyService {
     public boolean softDelete(Long bookCopyId) throws ServiceException {
         BookCopy bookCopy = bookCopyRepository.findById(bookCopyId)
                 .orElseThrow(() -> new ServiceException(
-                        String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted and was not found.")
+                        String.format("BookCopy was not softly deleted. BookCopy was not found. id = %d", bookCopyId)
                 ));
         try {
             bookCopy.setDeleted(true);
             bookCopyRepository.flush();
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted."), exception);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("BookCopy was not softly deleted. id = %d", bookCopyId), e);
         }
     }
 }

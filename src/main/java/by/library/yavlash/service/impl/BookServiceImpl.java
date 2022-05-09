@@ -23,8 +23,8 @@ public class BookServiceImpl implements BookService {
             Book book = bookMapper.fromSaveDto(bookSaveDto);
             bookRepository.save(book);
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "), exception);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("Book was not saved. %s", bookSaveDto), e);
         }
     }
 
@@ -33,14 +33,14 @@ public class BookServiceImpl implements BookService {
     public boolean softDelete(Long bookId) throws ServiceException {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ServiceException(
-                        String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted and was not found.")
+                        String.format("Book was not softly deleted. Book was not found. id = %d", bookId)
                 ));
         try {
             book.setDeleted(true);
             bookRepository.flush();
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted."), exception);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("Book was not softly deleted. id = %d", bookId), e);
         }
     }
 }

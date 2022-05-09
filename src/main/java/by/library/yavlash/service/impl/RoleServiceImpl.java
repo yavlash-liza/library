@@ -24,8 +24,8 @@ public class RoleServiceImpl implements RoleService {
         try {
             List<Role> roles = roleRepository.findAll();
             return roleMapper.toListDto(roles);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "), exception);
+        } catch (Exception e) {
+            throw new ServiceException("Roles were not found.", e);
         }
     }
 }

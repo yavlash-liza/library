@@ -24,8 +24,8 @@ public class GenreServiceImpl implements GenreService {
         try {
             List<Genre> genres = genreRepository.findAll();
             return genreMapper.toDto(genres);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "), exception);
+        } catch (Exception e) {
+            throw new ServiceException("Genres were not found.", e);
         }
     }
 
@@ -36,8 +36,8 @@ public class GenreServiceImpl implements GenreService {
             Genre genre = genreMapper.fromSaveDto(genreDto);
             genreRepository.save(genre);
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "), exception);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("Genre was not saved. %s", genreDto), e);
         }
     }
 
@@ -46,14 +46,14 @@ public class GenreServiceImpl implements GenreService {
     public boolean softDelete(Long genreId) throws ServiceException {
         Genre genre = genreRepository.findById(genreId)
                 .orElseThrow(() -> new ServiceException(
-                        String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted and was not found.")
+                        String.format("Genre was not softly deleted. Genre was not found. id = %d", genreId)
                 ));
         try {
             genre.setDeleted(true);
             genreRepository.flush();
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted."), exception);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("Genre was not softly deleted. id = %d", genreId), e);
         }
     }
 }

@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto findById(Long userId) throws ServiceException {
         return userRepository.findById(userId).map(userMapper::toDto)
-                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
+                .orElseThrow(() -> new ServiceException(String.format("User was not found. id = %d", userId)));
     }
 
     @Override
@@ -35,8 +35,8 @@ public class UserServiceImpl implements UserService {
         try {
             List<User> users = userRepository.findAll();
             return userMapper.toListDto(users);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "), exception);
+        } catch (Exception e) {
+            throw new ServiceException("Users were not found.", e);
         }
     }
 
@@ -47,8 +47,8 @@ public class UserServiceImpl implements UserService {
             User user = userMapper.fromSaveDto(userSaveDto);
             userRepository.save(user);
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "), exception);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("User was not saved. %s", userSaveDto), e);
         }
     }
 
@@ -57,13 +57,13 @@ public class UserServiceImpl implements UserService {
     public boolean update(UserSaveDto userSaveDto) throws ServiceException {
         User user = userRepository.findById(userSaveDto.getId())
                 .orElseThrow(() -> new ServiceException(
-                        String.format("%s:{%s}", getClass().getSimpleName(), " was not updated and was not found.")
+                        String.format("User was not updated. User was not found. id = %d", userSaveDto.getId())
                 ));
         try {
             settingUpdateFields(user, userSaveDto);
             userRepository.flush();
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s:{%s}", getClass().getSimpleName(), "was not updated. "), exception);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("User was not updated. %s", userSaveDto), e);
         }
         return true;
     }
@@ -97,14 +97,14 @@ public class UserServiceImpl implements UserService {
     public boolean softDelete(Long userId) throws ServiceException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(
-                        String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted and was not found.")
+                        String.format("User was not softly deleted. User was not found. id = %d", userId)
                 ));
         try {
             user.setDeleted(true);
             userRepository.flush();
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted."), exception);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("User was not softly deleted. id = %d", userId), e);
         }
     }
 }

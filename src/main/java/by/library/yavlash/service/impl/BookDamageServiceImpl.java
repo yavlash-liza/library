@@ -20,7 +20,7 @@ public class BookDamageServiceImpl implements BookDamageService {
     @Transactional
     public BookDamageDto findById(Long bookDamageId) throws ServiceException {
         return bookDamageRepository.findById(bookDamageId).map(bookDamageMapper::toDto)
-                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
+                .orElseThrow(() -> new ServiceException(String.format("BookDamage was not found.  %s", bookDamageId)));
     }
 
     @Override
@@ -30,8 +30,8 @@ public class BookDamageServiceImpl implements BookDamageService {
             BookDamage bookDamage = bookDamageMapper.fromSaveDto(bookDamageDto);
             bookDamageRepository.save(bookDamage);
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "), exception);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("BookDamage was not saved. %s", bookDamageDto), e);
         }
     }
 
@@ -40,14 +40,14 @@ public class BookDamageServiceImpl implements BookDamageService {
     public boolean softDelete(Long bookDamageId) throws ServiceException {
         BookDamage bookDamage = bookDamageRepository.findById(bookDamageId)
                 .orElseThrow(() -> new ServiceException(
-                        String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted and was not found.")
+                        String.format("BookDamage was not softly deleted. BookDamage was not found. id = %d", bookDamageId)
                 ));
         try {
             bookDamage.setDeleted(true);
             bookDamageRepository.flush();
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted."), exception);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("BookDamage was not softly deleted. id = %d", bookDamageId), e);
         }
     }
 }

@@ -27,7 +27,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDto findById(Long orderId) throws ServiceException {
         return orderRepository.findById(orderId).map(orderMapper::toDto)
-                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
+                .orElseThrow(() -> new ServiceException(String.format("Order was not found. id = %d", orderId)));
     }
 
     @Override
@@ -36,8 +36,8 @@ public class OrderServiceImpl implements OrderService {
         try {
             List<Order> orders = orderRepository.findAll();
             return orderMapper.toListDto(orders);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "), exception);
+        } catch (Exception e) {
+            throw new ServiceException("Orders were not found.", e);
         }
     }
 
@@ -48,8 +48,8 @@ public class OrderServiceImpl implements OrderService {
             Order order = orderMapper.fromSaveDto(orderSaveDto);
             orderRepository.save(order);
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "), exception);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("Order was not saved. %s", orderSaveDto), e);
         }
     }
 
@@ -58,13 +58,13 @@ public class OrderServiceImpl implements OrderService {
     public boolean update(OrderSaveDto orderSaveDto) throws ServiceException {
         Order order = orderRepository.findById(orderSaveDto.getId())
                 .orElseThrow(() -> new ServiceException(
-                        String.format("%s:{%s}", getClass().getSimpleName(), " was not updated and was not found.")
+                        String.format("Order was not updated. Order was not found. id = %d", orderSaveDto.getId())
                 ));
         try {
             settingUpdateFields(order, orderSaveDto);
             orderRepository.flush();
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s:{%s}", getClass().getSimpleName(), "was not updated. "), exception);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("Order was not updated. %s", orderSaveDto), e);
         }
         return true;
     }
@@ -92,14 +92,14 @@ public class OrderServiceImpl implements OrderService {
     public boolean softDelete(Long orderId) throws ServiceException {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ServiceException(
-                        String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted and was not found.")
+                        String.format("Order was not softly deleted. Order was not found. id = %d", orderId)
                 ));
         try {
             order.setDeleted(true);
             orderRepository.flush();
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format(String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted."), exception));
+        } catch (Exception e) {
+            throw new ServiceException(String.format(String.format("Order was not softly deleted. id = %d", orderId), e));
         }
     }
 }

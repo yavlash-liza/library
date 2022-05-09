@@ -24,7 +24,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     public AuthorDto findById(Long authorId) throws ServiceException {
         return authorRepository.findById(authorId).map(authorMapper::toDto)
-                .orElseThrow(() -> new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), "was not found")));
+                .orElseThrow(() -> new ServiceException(String.format("Author was not found. id = %d", authorId)));
     }
 
     @Override
@@ -33,8 +33,8 @@ public class AuthorServiceImpl implements AuthorService {
         try {
             List<Author> authors = authorRepository.findAll();
             return authorMapper.toListDto(authors);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "), exception);
+        } catch (Exception e) {
+            throw new ServiceException("Authors were not found.", e);
         }
     }
 
@@ -45,8 +45,8 @@ public class AuthorServiceImpl implements AuthorService {
             Author author = authorMapper.fromSaveDto(authorSaveDto);
             authorRepository.save(author);
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " was not added "), exception);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("Author was not saved. %s", authorSaveDto), e);
         }
     }
 
@@ -55,14 +55,14 @@ public class AuthorServiceImpl implements AuthorService {
     public boolean softDelete(Long authorId) throws ServiceException {
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new ServiceException(
-                        String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted and was not found.")
+                        String.format("Author was not softly deleted. Author was not found. id = %d", authorId)
                 ));
         try {
             author.setDeleted(true);
             authorRepository.flush();
             return true;
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s:{%s}", getClass().getSimpleName(), " was not softly deleted."), exception);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("Author was not softly deleted. id = %d", authorId), e);
         }
     }
 }
