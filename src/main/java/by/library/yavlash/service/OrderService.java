@@ -12,5 +12,5 @@ public interface OrderService {
     List<OrderListDto> findAll() throws ServiceException;
     boolean add(OrderSaveDto orderSaveDto) throws ServiceException;
     boolean update(OrderSaveDto orderSaveDto) throws ServiceException;
-    boolean delete(Long orderId) throws ServiceException;
+    boolean softDelete(Long orderId) throws ServiceException;
 }

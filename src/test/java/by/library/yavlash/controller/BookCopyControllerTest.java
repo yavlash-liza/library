@@ -479,7 +479,7 @@ class BookCopyControllerTest {
         Long id = 3L;
 
         //when
-        when(bookCopyService.delete(id)).thenReturn(true);
+        when(bookCopyService.softDelete(id)).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/books/copies/3"))
                 .andExpect(jsonPath("$").value(true))
                 .andExpect(status().isOk())

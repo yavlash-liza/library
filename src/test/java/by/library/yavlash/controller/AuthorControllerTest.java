@@ -268,7 +268,7 @@ class AuthorControllerTest {
         Long id = 3L;
 
         //when
-        when(authorService.delete(id)).thenReturn(true);
+        when(authorService.softDelete(id)).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/authors/3"))
                 .andExpect(jsonPath("$").value(true))
                 .andExpect(status().isOk())

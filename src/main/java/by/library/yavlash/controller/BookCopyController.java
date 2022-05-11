@@ -58,6 +58,6 @@ public class BookCopyController {
     @PreAuthorize("hasRole({'admin'})")
     @DeleteMapping("/copies/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
-        return bookCopyService.delete(id);
+        return bookCopyService.softDelete(id);
     }
 }

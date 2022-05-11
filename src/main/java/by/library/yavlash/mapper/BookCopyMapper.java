@@ -31,4 +31,9 @@ public interface BookCopyMapper {
         return bookDamages.stream().map(BaseEntity::getId)
                 .collect(Collectors.toList());
     }
+
+    default Set<BookCopy> fromListLong(List<Long> bookCopiesId) {
+        return bookCopiesId.stream().map(id -> BookCopy.builder().id(id).build())
+                .collect(Collectors.toSet());
+    }
 }
