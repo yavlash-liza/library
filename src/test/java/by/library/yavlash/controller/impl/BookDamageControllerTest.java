@@ -1,18 +1,13 @@
-package by.library.yavlash.controller;
+package by.library.yavlash.controller.impl;
 
+import by.library.yavlash.controller.BaseControllerTest;
 import by.library.yavlash.dto.BookDamageDto;
-import by.library.yavlash.service.BookDamageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -20,16 +15,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc
-@SpringBootTest
-class BookDamageControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private BookDamageService bookDamageService;
-
+class BookDamageControllerTest extends BaseControllerTest {
     @Test
     @WithMockUser(username = "user", authorities = "admin")
     void givenAdmin_findById_shouldReturnHttpStatusOk() throws Exception {
