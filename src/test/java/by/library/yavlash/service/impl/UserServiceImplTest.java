@@ -87,10 +87,13 @@ class UserServiceImplTest {
     @Test
     void updateTest_shouldUpdateUser() throws ServiceException {
         //given
-        List<Long> roleList = new ArrayList<>() {{add(1L);}};
-        UserSaveDto expected = UserSaveDto.builder().id(4L).firstName("Sergei").lastName("Smirnov").roleId(roleList).build();
+        Long id = 3L;
+        User user = User.builder().id(id).build();
+        UserSaveDto expected = UserSaveDto.builder().id(id).firstName("Sergei").lastName("Smirnov").build();
 
         //when
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.save(user)).thenReturn(user);
         boolean actual = userService.update(expected);
 
         //then
@@ -106,7 +109,7 @@ class UserServiceImplTest {
         //when
         when(userRepository.findById(id)).thenReturn(Optional.of(expected));
         when(userRepository.save(expected)).thenReturn(expected);
-        boolean actual = userService.delete(id);
+        boolean actual = userService.softDelete(id);
 
         //then
         Assertions.assertTrue(actual);

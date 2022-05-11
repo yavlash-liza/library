@@ -129,7 +129,7 @@ class BookDamageControllerTest extends BaseControllerTest {
         Long id = 3L;
 
         //when
-        when(bookDamageService.delete(id)).thenReturn(true);
+        when(bookDamageService.softDelete(id)).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/damages/3"))
                 .andExpect(jsonPath("$").value(true))
                 .andExpect(status().isOk())

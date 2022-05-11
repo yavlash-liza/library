@@ -47,6 +47,6 @@ public class OrderController {
 
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
-        return orderService.delete(id);
+        return orderService.softDelete(id);
     }
 }

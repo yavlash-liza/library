@@ -1,12 +1,14 @@
 package by.library.yavlash.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
+@Jacksonized
 @Builder
-@Data
+@Value
 public class AuthorListDto {
-    private Long id;
-    private String firstName;
-    private String lastName;
+     Long id;
+     String firstName;
+     String lastName;
 }

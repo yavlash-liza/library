@@ -100,14 +100,19 @@ class OrderServiceImplTest {
     @Test
     void updateTest_shouldUpdateOrder() throws ServiceException {
         //given
+        Long id = 3L;
+        Order order = Order.builder()
+                .id(id)
+                .build();
         OrderSaveDto expected = OrderSaveDto.builder()
+                .id(id)
                 .price(13)
                 .userId(1L)
-                .bookCopiesId(new ArrayList<>() {{
-                    add(2L);
-                }}).build();
+                .build();
 
         //when
+        when(orderRepository.findById(id)).thenReturn(Optional.of(order));
+        when(orderRepository.save(order)).thenReturn(order);
         boolean actual = orderService.update(expected);
 
         //then
@@ -127,7 +132,7 @@ class OrderServiceImplTest {
         //when
         when(orderRepository.findById(id)).thenReturn(Optional.of(expected));
         when(orderRepository.save(expected)).thenReturn(expected);
-        boolean actual = orderService.delete(id);
+        boolean actual = orderService.softDelete(id);
 
         //then
         Assertions.assertTrue(actual);

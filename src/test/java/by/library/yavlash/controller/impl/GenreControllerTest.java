@@ -149,7 +149,7 @@ class GenreControllerTest extends BaseControllerTest {
         Long id = 3L;
 
         //when
-        when(genreService.delete(id)).thenReturn(true);
+        when(genreService.softDelete(id)).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/genres/3"))
                 .andExpect(jsonPath("$").value(true))
                 .andExpect(status().isOk())

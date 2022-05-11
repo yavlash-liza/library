@@ -111,9 +111,13 @@ class BookCopyServiceImplTest {
     @Test
     void updateTest_shouldUpdateBookCopy() throws ServiceException {
         //given
-        BookCopySaveDto expected = BookCopySaveDto.builder().id(4L).imagePath("image").build();
+        Long id = 4L;
+        BookCopy bookCopy = BookCopy.builder().id(id).build();
+        BookCopySaveDto expected = BookCopySaveDto.builder().id(id).imagePath("image").build();
 
         //when
+        when(bookCopyRepository.findById(id)).thenReturn(Optional.of(bookCopy));
+        when(bookCopyRepository.save(bookCopy)).thenReturn(bookCopy);
         boolean actual = bookCopyService.update(expected);
 
         //then
@@ -134,7 +138,7 @@ class BookCopyServiceImplTest {
         //when
         when(bookCopyRepository.findById(id)).thenReturn(Optional.of(expected));
         when(bookCopyRepository.save(expected)).thenReturn(expected);
-        boolean actual = bookCopyService.delete(id);
+        boolean actual = bookCopyService.softDelete(id);
 
         //then
         Assertions.assertTrue(actual);

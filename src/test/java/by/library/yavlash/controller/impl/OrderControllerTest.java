@@ -348,7 +348,7 @@ class OrderControllerTest extends BaseControllerTest {
         Long id = 3L;
 
         //when
-        when(orderService.delete(id)).thenReturn(true);
+        when(orderService.softDelete(id)).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/orders/3"))
                 .andExpect(jsonPath("$").value(true))
                 .andExpect(status().isOk())
@@ -365,7 +365,7 @@ class OrderControllerTest extends BaseControllerTest {
         Long id = 3L;
 
         //when
-        when(orderService.delete(id)).thenReturn(true);
+        when(orderService.softDelete(id)).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/orders/3"))
                 .andExpect(jsonPath("$").value(true))
                 .andExpect(status().isOk())

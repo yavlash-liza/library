@@ -1,20 +1,22 @@
 package by.library.yavlash.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
+@Jacksonized
 @Builder
+@Value
 public class UserSaveDto {
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private String passportNumber;
-    private String email;
-    private String address;
-    private LocalDate birthDate;
-    private List<Long> roleId;
+     Long id;
+     String firstName;
+     String lastName;
+     String passportNumber;
+     String email;
+     String address;
+     LocalDate birthDate;
+     List<Long> roleId;
 }
