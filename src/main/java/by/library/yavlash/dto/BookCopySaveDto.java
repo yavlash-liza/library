@@ -1,17 +1,19 @@
 package by.library.yavlash.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDate;
 
-@Data
+@Jacksonized
 @Builder
+@Value
 public class BookCopySaveDto {
-    private Long id;
-    private String status;
-    private LocalDate registrationDate;
-    private int pricePerDay;
-    private String imagePath;
-    private Long bookId;
+     Long id;
+     String status;
+     LocalDate registrationDate;
+     int pricePerDay;
+     String imagePath;
+     Long bookId;
 }

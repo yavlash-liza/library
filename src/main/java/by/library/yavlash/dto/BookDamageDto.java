@@ -1,15 +1,17 @@
 package by.library.yavlash.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
-@Data
+@Jacksonized
 @Builder
+@Value
 public class BookDamageDto {
-    private Long id;
-    private String imagePath;
-    private String damageDescription;
-    private Long userId;
-    private Long orderId;
-    private Long bookCopyId;
+     Long id;
+     String imagePath;
+     String damageDescription;
+     Long userId;
+     Long orderId;
+     Long bookCopyId;
 }

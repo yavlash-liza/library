@@ -1,13 +1,15 @@
 package by.library.yavlash.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
-@Data
+@Jacksonized
 @Builder
+@Value
 public class BookCopyListDto {
-    private Long id;
-    private String title;
-    private String imagePath;
-    private int pricePerDay;
+     Long id;
+     String title;
+     String imagePath;
+     int pricePerDay;
 }
