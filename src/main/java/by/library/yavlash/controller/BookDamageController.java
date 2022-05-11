@@ -35,6 +35,6 @@ public class BookDamageController {
     @PreAuthorize("hasAuthority('BOOK_DAMAGE_DELETE')")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
-        return bookDamageService.delete(id);
+        return bookDamageService.softDelete(id);
     }
 }

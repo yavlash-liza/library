@@ -5,5 +5,5 @@ import by.library.yavlash.exception.ServiceException;
 
 public interface BookService {
     boolean add(BookSaveDto bookSaveDto) throws ServiceException;
-    boolean delete(Long bookId) throws ServiceException;
+    boolean softDelete(Long bookId) throws ServiceException;
 }

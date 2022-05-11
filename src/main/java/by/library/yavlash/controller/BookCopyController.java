@@ -64,6 +64,6 @@ public class BookCopyController {
     @PreAuthorize("hasAuthority('BOOK_DELETE')")
     @DeleteMapping("/copies/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
-        return bookCopyService.delete(id);
+        return bookCopyService.softDelete(id);
     }
 }

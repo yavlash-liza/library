@@ -54,6 +54,6 @@ public class UserController {
     @PreAuthorize("hasAuthority('USER_DELETE')")
     @DeleteMapping("/{id}")
     public boolean deleteUser(@PathVariable Long id) throws ServiceException {
-        return userService.delete(id);
+        return userService.softDelete(id);
     }
 }

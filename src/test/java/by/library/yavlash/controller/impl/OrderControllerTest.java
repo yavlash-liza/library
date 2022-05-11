@@ -1,23 +1,18 @@
-package by.library.yavlash.controller;
+package by.library.yavlash.controller.impl;
 
+import by.library.yavlash.controller.BaseControllerTest;
 import by.library.yavlash.dto.BookCopyListDto;
 import by.library.yavlash.dto.OrderDto;
 import by.library.yavlash.dto.OrderListDto;
 import by.library.yavlash.dto.OrderSaveDto;
-import by.library.yavlash.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -29,16 +24,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc
-@SpringBootTest
-class OrderControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private OrderService orderService;
-
+class OrderControllerTest extends BaseControllerTest {
     @Test
     @WithMockUser(username = "user", authorities = "ORDER_READ")
     void findById_shouldReturnHttpStatusOk() throws Exception {
@@ -238,7 +224,7 @@ class OrderControllerTest {
         Long id = 3L;
 
         //when
-        when(orderService.delete(id)).thenReturn(true);
+        when(orderService.softDelete(id)).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/orders/3"))
                 .andExpect(jsonPath("$").value(true))
                 .andExpect(status().isOk())

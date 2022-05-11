@@ -8,6 +8,7 @@ import by.library.yavlash.repository.RoleRepository;
 import by.library.yavlash.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,12 +19,13 @@ public class RoleServiceImpl implements RoleService {
     private final RoleMapper roleMapper;
 
     @Override
+    @Transactional
     public List<RoleDto> findAll() throws ServiceException {
         try {
             List<Role> roles = roleRepository.findAll();
             return roleMapper.toListDto(roles);
-        } catch (Exception exception) {
-            throw new ServiceException(String.format("%s: {%s}", getClass().getSimpleName(), " were not found "));
+        } catch (Exception e) {
+            throw new ServiceException("Roles were not found.", e);
         }
     }
 }

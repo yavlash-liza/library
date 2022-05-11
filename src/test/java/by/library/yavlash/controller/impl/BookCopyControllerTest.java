@@ -1,26 +1,20 @@
-package by.library.yavlash.controller;
+package by.library.yavlash.controller.impl;
 
+import by.library.yavlash.controller.BaseControllerTest;
 import by.library.yavlash.dto.AuthorListDto;
 import by.library.yavlash.dto.BookCopyDto;
 import by.library.yavlash.dto.BookCopyListDto;
 import by.library.yavlash.dto.BookCopySaveDto;
 import by.library.yavlash.dto.BookSaveDto;
 import by.library.yavlash.dto.GenreDto;
-import by.library.yavlash.service.BookCopyService;
-import by.library.yavlash.service.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -32,19 +26,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc
-@SpringBootTest
-class BookCopyControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private BookCopyService bookCopyService;
-
-    @MockBean
-    private BookService bookService;
-
+class BookCopyControllerTest extends BaseControllerTest {
     @Test
     @WithMockUser(username = "user", authorities = "BOOK_READ")
     void findById_shouldReturnHttpStatusOk() throws Exception {
@@ -340,7 +322,7 @@ class BookCopyControllerTest {
         Long id = 3L;
 
         //when
-        when(bookCopyService.delete(id)).thenReturn(true);
+        when(bookCopyService.softDelete(id)).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/books/copies/3"))
                 .andExpect(jsonPath("$").value(true))
                 .andExpect(status().isOk())

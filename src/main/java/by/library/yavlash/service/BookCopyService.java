@@ -12,5 +12,5 @@ public interface BookCopyService {
     List<BookCopyListDto> findAll() throws ServiceException;
     boolean add(BookCopySaveDto bookCopySaveDto) throws ServiceException;
     boolean update(BookCopySaveDto bookCopySaveDto) throws ServiceException;
-    boolean delete(Long bookCopyId) throws ServiceException;
+    boolean softDelete(Long bookCopyId) throws ServiceException;
 }

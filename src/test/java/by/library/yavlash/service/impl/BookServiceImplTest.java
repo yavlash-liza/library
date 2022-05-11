@@ -59,7 +59,7 @@ class BookServiceImplTest {
         //when
         when(bookRepository.findById(id)).thenReturn(Optional.of(expected));
         when(bookRepository.save(expected)).thenReturn(expected);
-        boolean actual = bookService.delete(id);
+        boolean actual = bookService.softDelete(id);
 
         //then
         Assertions.assertTrue(actual);

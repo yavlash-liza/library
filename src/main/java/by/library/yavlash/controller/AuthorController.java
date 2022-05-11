@@ -44,6 +44,6 @@ public class AuthorController {
     @PreAuthorize("hasAuthority('AUTHOR_DELETE')")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
-        return authorService.delete(id);
+        return authorService.softDelete(id);
     }
 }
