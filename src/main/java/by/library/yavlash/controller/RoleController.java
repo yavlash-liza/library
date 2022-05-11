@@ -13,11 +13,11 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasRole({'admin'})")
 @RequestMapping("/roles")
 public class RoleController {
     private final RoleService roleService;
 
+    @PreAuthorize("hasAuthority('ROLE_READ')")
     @GetMapping
     public List<RoleDto> findAll() throws ServiceException {
         return roleService.findAll();

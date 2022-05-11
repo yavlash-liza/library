@@ -68,7 +68,7 @@ class GenreServiceImplTest {
         //when
         when(genreRepository.findById(id)).thenReturn(Optional.of(expected));
         when(genreRepository.save(expected)).thenReturn(expected);
-        boolean actual = genreService.delete(id);
+        boolean actual = genreService.softDelete(id);
 
         //then
         Assertions.assertTrue(actual);

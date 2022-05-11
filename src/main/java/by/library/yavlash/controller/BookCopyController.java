@@ -37,27 +37,33 @@ public class BookCopyController {
         return bookCopyService.findAll();
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority('BOOK_WRITE')")
     @PostMapping("/copies")
-    public boolean add(@RequestBody BookCopySaveDto bookCopySaveDto) throws ServiceException {
+    public boolean add(
+            @RequestBody BookCopySaveDto bookCopySaveDto
+    ) throws ServiceException {
         return bookCopyService.add(bookCopySaveDto);
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority('BOOK_WRITE')")
     @PostMapping
-    public boolean add(@RequestBody BookSaveDto order) throws ServiceException {
+    public boolean add(
+            @RequestBody BookSaveDto order
+    ) throws ServiceException {
         return bookService.add(order);
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority('BOOK_WRITE')")
     @PutMapping
-    public boolean update(@RequestBody BookCopySaveDto bookCopySaveDto) throws ServiceException {
+    public boolean update(
+            @RequestBody BookCopySaveDto bookCopySaveDto
+    ) throws ServiceException {
         return bookCopyService.update(bookCopySaveDto);
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority('BOOK_DELETE')")
     @DeleteMapping("/copies/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
-        return bookCopyService.delete(id);
+        return bookCopyService.softDelete(id);
     }
 }

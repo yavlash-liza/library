@@ -11,5 +11,5 @@ public interface AuthorService {
     AuthorDto findById(Long authorId) throws ServiceException;
     List<AuthorListDto> findAll() throws ServiceException;
     boolean add(AuthorSaveDto authorSaveDto) throws ServiceException;
-    boolean delete(Long authorId) throws ServiceException;
+    boolean softDelete(Long authorId) throws ServiceException;
 }

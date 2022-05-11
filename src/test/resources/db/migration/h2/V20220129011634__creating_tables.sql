@@ -23,6 +23,26 @@ CREATE TABLE IF NOT EXISTS roles
     CONSTRAINT role_name_unique UNIQUE (role_name)
 );
 
+CREATE TABLE IF NOT EXISTS role_authority
+(
+    id        BIGINT      NOT NULL AUTO_INCREMENT,
+    authority_name VARCHAR(64) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT authority_name_unique UNIQUE (authority_name)
+);
+
+CREATE TABLE IF NOT EXISTS role_authority_links
+(
+    role_id BIGINT NOT NULL,
+    authority_id BIGINT NOT NULL,
+    CONSTRAINT role_authority_link_role_fk
+        FOREIGN KEY (role_id)
+            REFERENCES roles (id),
+    CONSTRAINT role_authority_link_authority_fk
+        FOREIGN KEY (authority_id)
+            REFERENCES role_authority (id)
+);
+
 CREATE TABLE IF NOT EXISTS user_role_links
 (
     user_id BIGINT NOT NULL,

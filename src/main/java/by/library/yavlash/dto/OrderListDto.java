@@ -1,16 +1,18 @@
 package by.library.yavlash.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDate;
 
-@Data
+@Jacksonized
 @Builder
+@Value
 public class OrderListDto {
-    private Long id;
-    private String orderStatus;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private int price;
+     Long id;
+     String orderStatus;
+     LocalDate startDate;
+     LocalDate endDate;
+     int price;
 }

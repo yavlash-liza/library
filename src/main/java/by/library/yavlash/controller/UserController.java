@@ -24,32 +24,36 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @PreAuthorize("hasAnyRole('admin', 'user')")
+    @PreAuthorize("hasAuthority('USER_READ')")
     @GetMapping("/{id}")
     public UserDto findById(@PathVariable Long id) throws ServiceException {
         return userService.findById(id);
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority('USER_READ')")
     @GetMapping
     public List<UserListDto> findAll() throws ServiceException {
         return userService.findAll();
     }
 
     @PostMapping
-    public boolean add(@RequestBody UserSaveDto user) throws ServiceException {
+    public boolean add(
+            @RequestBody UserSaveDto user
+    ) throws ServiceException {
         return userService.add(user);
     }
 
-    @PreAuthorize("hasAnyRole('admin', 'user')")
+    @PreAuthorize("hasAuthority('USER_WRITE')")
     @PutMapping
-    public boolean update(@RequestBody UserSaveDto userSaveDto) throws ServiceException {
+    public boolean update(
+            @RequestBody UserSaveDto userSaveDto
+    ) throws ServiceException {
         return userService.update(userSaveDto);
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority('USER_DELETE')")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
-        return userService.delete(id);
+        return userService.softDelete(id);
     }
 }

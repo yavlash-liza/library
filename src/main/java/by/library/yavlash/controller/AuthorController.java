@@ -33,7 +33,7 @@ public class AuthorController {
         return authorService.findAll();
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority('AUTHOR_WRITE')")
     @PostMapping
     public boolean add(
             @RequestBody AuthorSaveDto authorSaveDto
@@ -41,9 +41,9 @@ public class AuthorController {
         return authorService.add(authorSaveDto);
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority('AUTHOR_DELETE')")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
-        return authorService.delete(id);
+        return authorService.softDelete(id);
     }
 }
