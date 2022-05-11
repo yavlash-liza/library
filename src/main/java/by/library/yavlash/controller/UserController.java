@@ -26,7 +26,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('USER_READ')")
     @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable Long id) throws ServiceException {
+    public UserDto findById(@PathVariable Long id) throws ServiceException {
         return userService.findById(id);
     }
 
@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @PostMapping
-    public boolean addUser(
+    public boolean add(
             @RequestBody UserSaveDto user
     ) throws ServiceException {
         return userService.add(user);
@@ -45,7 +45,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('USER_WRITE')")
     @PutMapping
-    public boolean updateUser(
+    public boolean update(
             @RequestBody UserSaveDto userSaveDto
     ) throws ServiceException {
         return userService.update(userSaveDto);
@@ -53,7 +53,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('USER_DELETE')")
     @DeleteMapping("/{id}")
-    public boolean deleteUser(@PathVariable Long id) throws ServiceException {
+    public boolean delete(@PathVariable Long id) throws ServiceException {
         return userService.softDelete(id);
     }
 }
