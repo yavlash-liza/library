@@ -1,11 +1,18 @@
 package by.library.yavlash.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import lombok.AllArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Data
 @NoArgsConstructor
@@ -13,11 +20,33 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @SuperBuilder
 @AllArgsConstructor
+@Entity
+@Table(name = "book_damage")
 public class BookDamage extends BaseEntity {
-    private Long id;
+    @Column(name = "image_path")
     private String imagePath;
+
+    @Column(name = "damage_description")
     private String damageDescription;
-    private Long userId;
-    private Long orderId;
-    private Long bookCopyId;
+
+    @Column(name = "deleted")
+    private boolean deleted;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_copy_id")
+    private BookCopy bookCopy;
 }

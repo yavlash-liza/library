@@ -1,23 +1,28 @@
 package by.library.yavlash.repository;
 
-import by.library.yavlash.entity.*;
-import by.library.yavlash.service.FlywayService;
-import org.h2.jdbcx.JdbcConnectionPool;
+import by.library.yavlash.entity.Author;
+import by.library.yavlash.entity.Book;
+import by.library.yavlash.entity.BookCopy;
+import by.library.yavlash.entity.BookDamage;
+import by.library.yavlash.entity.Genre;
+import by.library.yavlash.entity.Order;
+import by.library.yavlash.entity.Role;
+import by.library.yavlash.entity.User;
+import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-
-import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static by.library.yavlash.property.Property.*;
-
+@DataJpaTest
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 public abstract class BaseRepositoryTest {
-    private final DataSource dataSource;
-    private final FlywayService flywayService;
-
     private List<User> users;
     private List<Role> roles;
     private List<Order> orders;
@@ -27,9 +32,10 @@ public abstract class BaseRepositoryTest {
     private List<BookCopy> bookCopies;
     private List<Author> authors;
 
+    @Autowired
+    private Flyway flyway;
+
     public BaseRepositoryTest() {
-        dataSource = JdbcConnectionPool.create(H2_URL, H2_USER, H2_PASSWORD);
-        flywayService = new FlywayService(H2_URL, H2_USER, H2_PASSWORD, MIGRATION_LOCATION);
         fillUsers();
         fillRoles();
         fillOrders();
@@ -40,27 +46,23 @@ public abstract class BaseRepositoryTest {
         fillAuthors();
     }
 
-    public DataSource getDataSource() {
-        return dataSource;
-    }
-
     @BeforeEach
     public void migrate() {
-        flywayService.migrate();
+        flyway.migrate();
     }
 
     @AfterEach
     public void clean() {
-        flywayService.clean();
+        flyway.clean();
     }
 
     private void fillUsers() {
         users = new ArrayList<>() {{
-            add(User.builder().id(1L).firstName("vlad").lastName("kaliaha").passportNumber("1111").email("email1").address("address1").birthDate(LocalDate.of(2005, 6, 6)).build());
-            add(User.builder().id(2L).firstName("andrei").lastName("yurueu").passportNumber("2222").email("email2").address("address2").birthDate(LocalDate.of(2001, 6, 6)).build());
-            add(User.builder().id(3L).firstName("yaroslav").lastName("vasilevski").passportNumber("3333").email("email3").address("address3").birthDate(LocalDate.of(1998, 6, 6)).build());
-            add(User.builder().id(4L).firstName("anastasiya").lastName("yurkova").passportNumber("4444").email("email4").address("address4").birthDate(LocalDate.of(1999, 6, 6)).build());
-            add(User.builder().id(5L).firstName("alexander").lastName("kupriyanenko").passportNumber("5555").email("email5").address("address5").birthDate(LocalDate.of(1996, 6, 6)).build());
+            add(User.builder().id(1L).firstName("vlad").lastName("kaliaha").passportNumber("1111").email("email1@mail.com").password("$2a$12$puiOOWl2E7oexBqiw3WnL.dbvpef2.tmrhBtw6116hS.uP61poDk2").address("address1").birthDate(LocalDate.of(2005, 6, 6)).build());
+            add(User.builder().id(2L).firstName("andrei").lastName("yurueu").passportNumber("2222").email("email2@mail.com").password("$2a$12$puiOOWl2E7oexBqiw3WnL.dbvpef2.tmrhBtw6116hS.uP61poDk2").address("address2").birthDate(LocalDate.of(2001, 6, 6)).build());
+            add(User.builder().id(3L).firstName("yaroslav").lastName("vasilevski").passportNumber("3333").email("email3@mail.com").password("$2a$12$puiOOWl2E7oexBqiw3WnL.dbvpef2.tmrhBtw6116hS.uP61poDk2").address("address3").birthDate(LocalDate.of(1998, 6, 6)).build());
+            add(User.builder().id(4L).firstName("anastasiya").lastName("yurkova").passportNumber("4444").email("email4@mail.com").password("$2a$12$puiOOWl2E7oexBqiw3WnL.dbvpef2.tmrhBtw6116hS.uP61poDk2").address("address4").birthDate(LocalDate.of(1999, 6, 6)).build());
+            add(User.builder().id(5L).firstName("alexander").lastName("kupriyanenko").passportNumber("5555").email("email5@mail.com").password("$2a$12$puiOOWl2E7oexBqiw3WnL.dbvpef2.tmrhBtw6116hS.uP61poDk2").address("address5").birthDate(LocalDate.of(1996, 6, 6)).build());
         }};
     }
 
@@ -89,11 +91,11 @@ public abstract class BaseRepositoryTest {
 
     private void fillOrders() {
         orders = new ArrayList<>() {{
-            add(Order.builder().id(1L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(243).userId(1L).build());
-            add(Order.builder().id(2L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(21).userId(1L).build());
-            add(Order.builder().id(3L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(253).userId(1L).build());
-            add(Order.builder().id(4L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(273).userId(3L).build());
-            add(Order.builder().id(5L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(238).userId(4L).build());
+            add(Order.builder().id(1L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(243).user(User.builder().id(1L).build()).build());
+            add(Order.builder().id(2L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(21).user(User.builder().id(1L).build()).build());
+            add(Order.builder().id(3L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(253).user(User.builder().id(1L).build()).build());
+            add(Order.builder().id(4L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(273).user(User.builder().id(3L).build()).build());
+            add(Order.builder().id(5L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(238).user(User.builder().id(4L).build()).build());
         }};
     }
 
@@ -145,10 +147,10 @@ public abstract class BaseRepositoryTest {
 
     private void fillBookDamage() {
         bookDamage = new ArrayList<>() {{
-            add(BookDamage.builder().id(1L).imagePath("image path").damageDescription("damage1").userId(1L).orderId(1L).bookCopyId(3L).build());
-            add(BookDamage.builder().id(2L).imagePath("image path").damageDescription("damage2").userId(1L).orderId(1L).bookCopyId(2L).build());
-            add(BookDamage.builder().id(3L).imagePath("image path").damageDescription("damage3").userId(3L).orderId(4L).bookCopyId(1L).build());
-            add(BookDamage.builder().id(4L).imagePath("image path").damageDescription("damage4").userId(4L).orderId(5L).bookCopyId(5L).build());
+            add(BookDamage.builder().id(1L).imagePath("image path").damageDescription("damage1").user(User.builder().id(1L).build()).order(Order.builder().id(1L).build()).bookCopy(BookCopy.builder().id(3L).build()).build());
+            add(BookDamage.builder().id(2L).imagePath("image path").damageDescription("damage2").user(User.builder().id(1L).build()).order(Order.builder().id(1L).build()).bookCopy(BookCopy.builder().id(2L).build()).build());
+            add(BookDamage.builder().id(3L).imagePath("image path").damageDescription("damage3").user(User.builder().id(3L).build()).order(Order.builder().id(4L).build()).bookCopy(BookCopy.builder().id(1L).build()).build());
+            add(BookDamage.builder().id(4L).imagePath("image path").damageDescription("damage4").user(User.builder().id(4L).build()).order(Order.builder().id(5L).build()).bookCopy(BookCopy.builder().id(5L).build()).build());
         }};
     }
 
@@ -162,11 +164,11 @@ public abstract class BaseRepositoryTest {
 
     private void fillBookCopies() {
         bookCopies = new ArrayList<>() {{
-            add(BookCopy.builder().id(1L).status("AVAILABLE").registrationDate(LocalDate.of(2019, 3, 1)).price(1365).pricePerDay(150).bookId(1L).build());
-            add(BookCopy.builder().id(2L).status("AVAILABLE").registrationDate(LocalDate.of(2020, 6, 1)).price(1638).pricePerDay(210).bookId(2L).build());
-            add(BookCopy.builder().id(3L).status("AVAILABLE").registrationDate(LocalDate.of(2021, 8, 4)).price(2496).pricePerDay(225).bookId(2L).build());
-            add(BookCopy.builder().id(4L).status("AVAILABLE").registrationDate(LocalDate.of(2017, 10, 10)).price(937).pricePerDay(128).bookId(5L).build());
-            add(BookCopy.builder().id(5L).status("AVAILABLE").registrationDate(LocalDate.of(2020, 6, 2)).price(1007).pricePerDay(311).bookId(3L).build());
+            add(BookCopy.builder().id(1L).status("AVAILABLE").imagePath("image path").registrationDate(LocalDate.of(2019, 3, 1)).pricePerDay(150).book(Book.builder().id(1L).build()).build());
+            add(BookCopy.builder().id(2L).status("AVAILABLE").imagePath("image path").registrationDate(LocalDate.of(2020, 6, 1)).pricePerDay(210).book(Book.builder().id(2L).build()).build());
+            add(BookCopy.builder().id(3L).status("AVAILABLE").imagePath("image path").registrationDate(LocalDate.of(2021, 8, 4)).pricePerDay(225).book(Book.builder().id(2L).build()).build());
+            add(BookCopy.builder().id(4L).status("AVAILABLE").imagePath("image path").registrationDate(LocalDate.of(2017, 10, 10)).pricePerDay(128).book(Book.builder().id(5L).build()).build());
+            add(BookCopy.builder().id(5L).status("AVAILABLE").imagePath("image path").registrationDate(LocalDate.of(2020, 6, 2)).pricePerDay(311).book(Book.builder().id(3L).build()).build());
         }};
     }
 
@@ -195,5 +197,4 @@ public abstract class BaseRepositoryTest {
     public List<Author> findAuthorsForFindAll() {
         return authors;
     }
-
 }

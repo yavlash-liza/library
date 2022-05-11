@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:library;DB_CLOSE_DELAY=-1
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  flyway:
+    locations: classpath:db/migration/h2
+    baselineOnMigrate: true
+
+  jwt:
+    secret: zdtlD3JK56m6wTTgsNFhqzjqP
+    issuer: library.by
+    expiration: 604800000
