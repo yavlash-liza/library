@@ -26,13 +26,15 @@ public class GenreController {
         return genreService.findAll();
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority('GENRE_WRITE')")
     @PostMapping
-    public boolean add(@RequestBody GenreDto genreDto) throws ServiceException {
+    public boolean add(
+            @RequestBody GenreDto genreDto
+    ) throws ServiceException {
         return genreService.add(genreDto);
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority('GENRE_DELETE')")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
         return genreService.softDelete(id);

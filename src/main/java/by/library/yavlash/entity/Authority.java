@@ -10,6 +10,8 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.HashSet;
@@ -22,21 +24,18 @@ import java.util.Set;
 @SuperBuilder
 @AllArgsConstructor
 @Entity
-@Table(name = "roles")
-public class Role extends BaseEntity {
-    @Column(name = "role_name")
-    private String roleName;
-
-    @Column(name = "deleted")
-    private boolean deleted;
+@Table(name = "role_authority")
+public class Authority extends BaseEntity {
+    @Column(name = "authority_name")
+    private String authorityName;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-    private Set<User> users = new HashSet<>();
-
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-    private Set<Authority> authorities = new HashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "role_authority_links",
+            joinColumns = @JoinColumn(name = "authority_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 }

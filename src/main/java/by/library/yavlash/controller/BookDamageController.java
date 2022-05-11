@@ -24,13 +24,15 @@ public class BookDamageController {
         return bookDamageService.findById(id);
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority('BOOK_DAMAGE_WRITE')")
     @PostMapping
-    public boolean add(@RequestBody BookDamageDto bookDamageDto) throws ServiceException {
+    public boolean add(
+            @RequestBody BookDamageDto bookDamageDto
+    ) throws ServiceException {
         return bookDamageService.add(bookDamageDto);
     }
 
-    @PreAuthorize("hasRole({'admin'})")
+    @PreAuthorize("hasAuthority('BOOK_DAMAGE_DELETE')")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
         return bookDamageService.softDelete(id);

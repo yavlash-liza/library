@@ -17,8 +17,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class BookDamageControllerTest extends BaseControllerTest {
     @Test
-    @WithMockUser(username = "user", authorities = "admin")
-    void givenAdmin_findById_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "BOOK_DAMAGE_READ")
+    void findById_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
         BookDamageDto bookDamage = BookDamageDto.builder().id(id).imagePath("imagePath").damageDescription("broken").userId(1L).bookCopyId(1L).orderId(1L).build();
@@ -49,31 +49,8 @@ class BookDamageControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "user", authorities = "user")
-    void givenUser_findById_shouldReturnHttpStatusOk() throws Exception {
-        //given
-        Long id = 3L;
-        BookDamageDto bookDamage = BookDamageDto.builder().id(id).imagePath("imagePath").damageDescription("broken").userId(1L).bookCopyId(1L).orderId(1L).build();
-
-        //when
-        when(bookDamageService.findById(id)).thenReturn(bookDamage);
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/damages/3"))
-                .andExpect(jsonPath("$.imagePath").value("imagePath"))
-                .andExpect(jsonPath("$.damageDescription").value("broken"))
-                .andExpect(jsonPath("$.userId").value(1L))
-                .andExpect(jsonPath("$.orderId").value(1L))
-                .andExpect(jsonPath("$.bookCopyId").value(1L))
-                .andExpect(jsonPath("$.id").value(3))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        //then
-        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
-    }
-
-    @Test
-    @WithMockUser(username = "user", authorities = "admin")
-    void givenAdmin_add_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "BOOK_DAMAGE_WRITE")
+    void add_shouldReturnHttpStatusOk() throws Exception {
         //given
         BookDamageDto bookDamageDto = BookDamageDto.builder().imagePath("imagePath").damageDescription("broken").userId(1L).bookCopyId(1L).orderId(1L).build();
 
@@ -107,24 +84,8 @@ class BookDamageControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "user", authorities = "user")
-    void givenUser_add_shouldReturnHttpStatusForbidden() throws Exception {
-        //given
-        BookDamageDto bookDamageDto = BookDamageDto.builder().imagePath("imagePath").damageDescription("broken").userId(1L).bookCopyId(1L).orderId(1L).build();
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        //when && then
-        mockMvc.perform(MockMvcRequestBuilders.post("/damages")
-                        .content(mapper.writeValueAsString(bookDamageDto))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden())
-                .andReturn();
-    }
-
-    @Test
-    @WithMockUser(username = "user", authorities = "admin")
-    void givenAdmin_delete_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "BOOK_DAMAGE_DELETE")
+    void delete_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
 
@@ -145,15 +106,6 @@ class BookDamageControllerTest extends BaseControllerTest {
         //given && when & then
         mockMvc.perform(MockMvcRequestBuilders.delete("/damages/3"))
                 .andExpect(status().isUnauthorized())
-                .andReturn();
-    }
-
-    @Test
-    @WithMockUser(username = "user", authorities = "user")
-    void givenUser_delete_shouldReturnHttpStatusForbidden() throws Exception {
-        //given && when & then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/damages/3"))
-                .andExpect(status().isForbidden())
                 .andReturn();
     }
 }

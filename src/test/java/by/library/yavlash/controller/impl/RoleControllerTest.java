@@ -18,8 +18,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class RoleControllerTest extends BaseControllerTest {
     @Test
-    @WithMockUser(username = "user", authorities = "admin")
-    void givenAdmin_findAll_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "ROLE_READ")
+    void findAll_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<RoleDto> authors = new ArrayList<>() {{
             add(RoleDto.builder().id(1L).roleName("user").build());
@@ -47,15 +47,6 @@ class RoleControllerTest extends BaseControllerTest {
         //given && when & then
         mockMvc.perform(MockMvcRequestBuilders.get("/roles"))
                 .andExpect(status().isUnauthorized())
-                .andReturn();
-    }
-
-    @Test
-    @WithMockUser(username = "user", authorities = "user")
-    void givenUser_findAll_shouldReturnHttpStatusForbidden() throws Exception {
-        //given && when & then
-        mockMvc.perform(MockMvcRequestBuilders.get("/roles"))
-                .andExpect(status().isForbidden())
                 .andReturn();
     }
 }

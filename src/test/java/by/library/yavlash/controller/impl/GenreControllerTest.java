@@ -20,8 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class GenreControllerTest extends BaseControllerTest {
     @Test
-    @WithMockUser(username = "user", authorities = "admin")
-    void givenAdmin_findAll_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "GENRE_READ")
+    void findAll_shouldReturnHttpStatusOk() throws Exception {
         //given
         List<GenreDto> genres = new ArrayList<>() {{
             add(GenreDto.builder().id(1L).genreName("NOVEL").build());
@@ -68,32 +68,8 @@ class GenreControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "user", authorities = "user")
-    void givenUser_findAll_shouldReturnHttpStatusOk() throws Exception {
-        //given
-        List<GenreDto> genres = new ArrayList<>() {{
-            add(GenreDto.builder().id(1L).genreName("NOVEL").build());
-            add(GenreDto.builder().id(2L).genreName("ROMANCE").build());
-        }};
-
-        //when
-        when(genreService.findAll()).thenReturn(genres);
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/genres"))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].genreName").value("NOVEL"))
-                .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[1].genreName").value("ROMANCE"))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        //then
-        Assertions.assertEquals("application/json", mvcResult.getResponse().getContentType());
-    }
-
-    @Test
-    @WithMockUser(username = "user", authorities = "admin")
-    void givenAdmin_add_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "GENRE_WRITE")
+    void add_shouldReturnHttpStatusOk() throws Exception {
         //given
         GenreDto genreDto = GenreDto.builder().id(1L).genreName("NOVEL").build();
 
@@ -127,24 +103,8 @@ class GenreControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "user", authorities = "user")
-    void givenUser_add_shouldReturnHttpStatusForbidden() throws Exception {
-        //given
-        GenreDto genreDto = GenreDto.builder().id(1L).genreName("NOVEL").build();
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        //when
-        mockMvc.perform(MockMvcRequestBuilders.post("/genres")
-                        .content(mapper.writeValueAsString(genreDto))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden())
-                .andReturn();
-    }
-
-    @Test
-    @WithMockUser(username = "user", authorities = "admin")
-    void givenAdmin_delete_shouldReturnHttpStatusOk() throws Exception {
+    @WithMockUser(username = "user", authorities = "GENRE_DELETE")
+    void delete_shouldReturnHttpStatusOk() throws Exception {
         //given
         Long id = 3L;
 
@@ -165,15 +125,6 @@ class GenreControllerTest extends BaseControllerTest {
         //given && when & then
         mockMvc.perform(MockMvcRequestBuilders.delete("/genres/3"))
                 .andExpect(status().isUnauthorized())
-                .andReturn();
-    }
-
-    @Test
-    @WithMockUser(username = "user", authorities = "user")
-    void givenUser_delete_shouldReturnHttpStatusForbidden() throws Exception {
-        //given && when & then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/genres/3"))
-                .andExpect(status().isForbidden())
                 .andReturn();
     }
 }

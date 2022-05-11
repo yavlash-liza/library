@@ -20,31 +20,39 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('admin', 'user')")
 @RequestMapping("/orders")
 public class OrderController {
     private final OrderService orderService;
 
+    @PreAuthorize("hasAuthority('ORDER_READ')")
     @GetMapping("/{id}")
     public OrderDto findById(@PathVariable Long id) throws ServiceException {
         return orderService.findById(id);
     }
 
+    @PreAuthorize("hasAuthority('ORDER_READ')")
     @GetMapping
     public List<OrderListDto> findAll() throws ServiceException {
         return orderService.findAll();
     }
 
+    @PreAuthorize("hasAuthority('ORDER_WRITE')")
     @PostMapping
-    public boolean add(@RequestBody OrderSaveDto order) throws ServiceException {
+    public boolean add(
+            @RequestBody OrderSaveDto order
+    ) throws ServiceException {
         return orderService.add(order);
     }
 
+    @PreAuthorize("hasAuthority('ORDER_WRITE')")
     @PutMapping
-    public boolean update(@RequestBody OrderSaveDto orderSaveDto) throws ServiceException {
+    public boolean update(
+            @RequestBody OrderSaveDto orderSaveDto
+    ) throws ServiceException {
         return orderService.update(orderSaveDto);
     }
 
+    @PreAuthorize("hasAuthority('ORDER_DELETE')")
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable Long id) throws ServiceException {
         return orderService.softDelete(id);
