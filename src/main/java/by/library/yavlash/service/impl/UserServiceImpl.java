@@ -10,6 +10,8 @@ import by.library.yavlash.mapper.UserMapper;
 import by.library.yavlash.repository.UserRepository;
 import by.library.yavlash.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +37,32 @@ public class UserServiceImpl implements UserService {
         try {
             List<User> users = userRepository.findAll();
             return userMapper.toListDto(users);
+        } catch (Exception e) {
+            throw new ServiceException("Users were not found.", e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<UserListDto> findListUsers(int page, int size, boolean deleted) throws ServiceException {
+        try {
+            PageRequest pageReq = PageRequest.of(page, size);
+            Page<UserListDto> bookCopyListDtos = userRepository.findAllByDeleted(deleted, pageReq)
+                    .map(userMapper::toListDto);
+            return bookCopyListDtos.getContent();
+        } catch (Exception e) {
+            throw new ServiceException("Users were not found.", e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<UserListDto> findListUsersBySearch(int page, int size, boolean deleted, String search) throws ServiceException {
+        try {
+            PageRequest pageReq = PageRequest.of(page, size);
+            Page<UserListDto> bookCopyListDtos = userRepository.findAllByDeletedAndLastName(deleted, search, pageReq)
+                    .map(userMapper::toListDto);
+            return bookCopyListDtos.getContent();
         } catch (Exception e) {
             throw new ServiceException("Users were not found.", e);
         }

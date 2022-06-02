@@ -11,6 +11,8 @@ import by.library.yavlash.mapper.OrderMapper;
 import by.library.yavlash.repository.OrderRepository;
 import by.library.yavlash.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,19 @@ public class OrderServiceImpl implements OrderService {
         try {
             List<Order> orders = orderRepository.findAll();
             return orderMapper.toListDto(orders);
+        } catch (Exception e) {
+            throw new ServiceException("Orders were not found.", e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<OrderListDto> findListOrders(int page, int size, boolean deleted) throws ServiceException {
+        try {
+            PageRequest pageReq = PageRequest.of(page, size);
+            Page<OrderListDto> orderListDtos = orderRepository.findAllByDeleted(deleted, pageReq)
+                    .map(orderMapper::toListDto);
+            return orderListDtos.getContent();
         } catch (Exception e) {
             throw new ServiceException("Orders were not found.", e);
         }
