@@ -15,5 +15,4 @@ public interface BookCopyService {
     boolean add(BookCopySaveDto bookCopySaveDto) throws ServiceException;
     boolean update(BookCopySaveDto bookCopySaveDto) throws ServiceException;
     boolean softDelete(Long bookCopyId) throws ServiceException;
-
 }

@@ -6,6 +6,8 @@ import by.library.yavlash.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,12 +31,39 @@ class AuthorRepositoryTest extends BaseRepositoryTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllAuthor() {
+    void findAllTest_shouldReturnListOfAllAuthors() {
         //given
         List<Author> expected = findAuthorsForFindAll();
 
         //when
         List<Author> actual = authorRepository.findAll();
+
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void findAllByDeletedTest_shouldReturnListOfAllAuthors() {
+        //given
+        PageRequest pageReq = PageRequest.of(0, 10);
+        Page<Author> expected = findAuthorsForPage(pageReq);
+
+        //when
+        Page<Author> actual = authorRepository.findAllByDeleted(false, pageReq);
+
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void findAllByDeletedAndLastNameTest_shouldReturnListOfAllAuthors() {
+        //given
+        PageRequest pageReq = PageRequest.of(0, 1);
+        String search = "Tolstoy";
+        Page<Author> expected = findAuthorsPageByTitle(pageReq);
+
+        //when
+        Page<Author> actual = authorRepository.findAllByDeletedAndLastName(false, search, pageReq);
 
         //then
         Assertions.assertEquals(expected, actual);

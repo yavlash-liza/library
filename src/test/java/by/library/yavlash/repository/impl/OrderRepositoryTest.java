@@ -7,6 +7,8 @@ import by.library.yavlash.repository.OrderRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -36,6 +38,19 @@ class OrderRepositoryTest extends BaseRepositoryTest {
 
         //when
         List<Order> actual = orderRepository.findAll();
+
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void findAllByDeletedTest_shouldReturnListOfAllOrders() {
+        //given
+        PageRequest pageReq = PageRequest.of(0, 10);
+        Page<Order> expected = findOrdersForPage(pageReq);
+
+        //when
+        Page<Order> actual = orderRepository.findAllByDeleted(false, pageReq);
 
         //then
         Assertions.assertEquals(expected, actual);

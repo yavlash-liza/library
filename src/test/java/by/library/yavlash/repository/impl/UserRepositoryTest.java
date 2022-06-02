@@ -6,6 +6,8 @@ import by.library.yavlash.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,6 +37,33 @@ class UserRepositoryTest extends BaseRepositoryTest {
 
         //when
         List<User> actual = userRepository.findAll();
+
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void findAllByDeletedTest_shouldReturnListOfAllUsers() {
+        //given
+        PageRequest pageReq = PageRequest.of(0, 10);
+        Page<User> expected = findUsersForPage(pageReq);
+
+        //when
+        Page<User> actual = userRepository.findAllByDeleted(false, pageReq);
+
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void findAllByDeletedAndLastNameTest_shouldReturnListOfAllUsers() {
+        //given
+        PageRequest pageReq = PageRequest.of(0, 1);
+        String search = "vasilevski";
+        Page<User> expected = findUsersPageByLastName(pageReq);
+
+        //when
+        Page<User> actual = userRepository.findAllByDeletedAndLastName(false, search, pageReq);
 
         //then
         Assertions.assertEquals(expected, actual);

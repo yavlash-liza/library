@@ -13,6 +13,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +59,17 @@ public abstract class BaseRepositoryTest {
         flyway.clean();
     }
 
+    public Page<User> findUsersForPage(Pageable pageable) {
+        return new PageImpl<>(this.users, pageable, this.users.size());
+    }
+
+    public Page<User> findUsersPageByLastName(Pageable pageable) {
+        List<User> users = new ArrayList<>() {{
+            add(User.builder().id(3L).firstName("yaroslav").lastName("vasilevski").passportNumber("3333").email("email3@mail.com").password("$2a$12$puiOOWl2E7oexBqiw3WnL.dbvpef2.tmrhBtw6116hS.uP61poDk2").address("address3").birthDate(LocalDate.of(1998, 6, 6)).build());
+        }};
+        return new PageImpl<>(users, pageable, users.size());
+    }
+
     private void fillUsers() {
         users = new ArrayList<>() {{
             add(User.builder().id(1L).firstName("vlad").lastName("kaliaha").passportNumber("1111").email("email1@mail.com").password("$2a$12$puiOOWl2E7oexBqiw3WnL.dbvpef2.tmrhBtw6116hS.uP61poDk2").address("address1").birthDate(LocalDate.of(2005, 6, 6)).build());
@@ -97,6 +111,10 @@ public abstract class BaseRepositoryTest {
             add(Order.builder().id(4L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(273).user(User.builder().id(3L).build()).build());
             add(Order.builder().id(5L).orderStatus("NEW").startDate(LocalDate.of(1998, 6, 6)).endDate(LocalDate.of(1998, 6, 6)).price(238).user(User.builder().id(4L).build()).build());
         }};
+    }
+
+    public Page<Order> findOrdersForPage(Pageable pageable) {
+        return new PageImpl<>(this.orders, pageable, this.orders.size());
     }
 
     public Order findOrderForFindById() {
@@ -172,6 +190,17 @@ public abstract class BaseRepositoryTest {
         }};
     }
 
+    public Page<BookCopy> findBookCopiesForPage(Pageable pageable) {
+        return new PageImpl<>(this.bookCopies, pageable, this.bookCopies.size());
+    }
+
+    public Page<BookCopy> findBookCopiesPageByTitle(Pageable pageable) {
+        List<BookCopy> bookCopies = new ArrayList<>() {{
+            add(BookCopy.builder().id(5L).status("AVAILABLE").imagePath("image path").registrationDate(LocalDate.of(2020, 6, 2)).pricePerDay(311).book(Book.builder().id(3L).build()).build());
+        }};
+        return new PageImpl<>(bookCopies, pageable, bookCopies.size());
+    }
+
     public BookCopy findBookCopyForFindById() {
         return bookCopies.get(0);
     }
@@ -188,6 +217,17 @@ public abstract class BaseRepositoryTest {
             add(Author.builder().id(4L).firstName("Alexander").lastName("Pushkin").birthDate(LocalDate.of(1852, 2, 2)).imagePath("image path").build());
             add(Author.builder().id(5L).firstName("Fedor").lastName("Dostoevsky").birthDate(LocalDate.of(1845, 1, 1)).imagePath("image path").build());
         }};
+    }
+
+    public Page<Author> findAuthorsForPage(Pageable pageable) {
+        return new PageImpl<>(this.authors, pageable, this.authors.size());
+    }
+
+    public Page<Author> findAuthorsPageByTitle(Pageable pageable) {
+        List<Author> authors = new ArrayList<>() {{
+            add(Author.builder().id(1L).firstName("Lev").lastName("Tolstoy").birthDate(LocalDate.of(1879, 4, 4)).imagePath("image path").build());
+        }};
+        return new PageImpl<>(authors, pageable, authors.size());
     }
 
     public Author findAuthorForFindById() {
