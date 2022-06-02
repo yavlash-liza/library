@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -22,6 +23,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/orders")
 public class OrderController {
+    private static final boolean STATUS = false;
+    private static final String ITEMS_ON_PAGE = "3";
+    private static final String DEFAULT_PAGE = "0";
     private final OrderService orderService;
 
     @PreAuthorize("hasAuthority('ORDER_READ')")
@@ -34,6 +38,16 @@ public class OrderController {
     @GetMapping
     public List<OrderListDto> findAll() throws ServiceException {
         return orderService.findAll();
+    }
+
+    @PreAuthorize("hasAuthority('ORDER_READ')")
+    @GetMapping("/all")
+    public List<OrderListDto> findAllBookCopies(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = ITEMS_ON_PAGE) int size
+    ) throws ServiceException {
+        return orderService.findListOrders(page, size, STATUS);
     }
 
     @PreAuthorize("hasAuthority('ORDER_WRITE')")

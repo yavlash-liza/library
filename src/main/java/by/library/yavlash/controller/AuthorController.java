@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -21,6 +22,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/authors")
 public class AuthorController {
+    private static final boolean STATUS = false;
+    private static final String ITEMS_ON_PAGE = "3";
+    private static final String DEFAULT_PAGE = "0";
     private final AuthorService authorService;
 
     @GetMapping("/{id}")
@@ -31,6 +35,21 @@ public class AuthorController {
     @GetMapping
     public List<AuthorListDto> findAll() throws ServiceException {
         return authorService.findAll();
+    }
+
+    @GetMapping("/all")
+    public List<AuthorListDto> findAllAuthors(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = ITEMS_ON_PAGE) int size
+    ) throws ServiceException {
+        List<AuthorListDto> authorListDtos;
+        if (search == null) {
+            authorListDtos = authorService.findListAuthors(page, size, STATUS);
+        } else {
+            authorListDtos = authorService.findListAuthorsBySearch(page, size, STATUS, search);
+        }
+        return authorListDtos;
     }
 
     @PreAuthorize("hasAuthority('AUTHOR_WRITE')")
