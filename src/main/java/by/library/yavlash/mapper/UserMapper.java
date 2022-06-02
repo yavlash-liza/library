@@ -21,6 +21,8 @@ public interface UserMapper {
     @Mapping(target = "roles", source = "userSaveDto.roleId")
     User fromSaveDto(UserSaveDto userSaveDto);
 
+    UserListDto toListDto(User user);
+
     List<UserListDto> toListDto(List<User> user);
 
     default List<Long> toLongList(Set<Role> roles) {

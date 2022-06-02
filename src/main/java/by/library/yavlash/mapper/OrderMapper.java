@@ -25,6 +25,8 @@ public interface OrderMapper {
     @Mapping(target = "bookCopies", source = "orderSaveDto.bookCopiesId")
     Order fromSaveDto(OrderSaveDto orderSaveDto);
 
+    OrderListDto toListDto(Order order);
+
     List<OrderListDto> toListDto(List<Order> order);
 
     default List<Long> toLongList(Set<BookDamage> bookDamages) {
