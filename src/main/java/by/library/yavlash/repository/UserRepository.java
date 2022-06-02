@@ -1,6 +1,8 @@
 package by.library.yavlash.repository;
 
 import by.library.yavlash.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -12,4 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("from User u left join fetch u.roles r left join fetch r.authorities where u.email=:email")
     Optional<User> findByEmail(String email);
+
+    Page<User> findAllByDeleted(boolean deleted, Pageable pageable);
+    Page<User> findAllByDeletedAndLastName(boolean deleted, String search, Pageable pageable);
 }
