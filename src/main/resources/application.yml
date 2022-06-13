@@ -15,3 +15,16 @@ spring:
     secret: zdtlD3JK56m6wTTgsNFhqzjqP
     issuer: library.by
     expiration: 604800000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
