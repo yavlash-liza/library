@@ -9,6 +9,8 @@ import by.library.yavlash.mapper.AuthorMapper;
 import by.library.yavlash.repository.AuthorRepository;
 import by.library.yavlash.service.AuthorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorMapper authorMapper;
 
     @Override
+    @Cacheable("authors")
     @Transactional
     public AuthorDto findById(Long authorId) throws ServiceException {
         return authorRepository.findById(authorId).map(authorMapper::toDto)
@@ -28,6 +31,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @Cacheable("authors")
     @Transactional
     public List<AuthorListDto> findAll() throws ServiceException {
         try {
@@ -39,6 +43,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @Cacheable("authors")
     @Transactional
     public boolean add(AuthorSaveDto authorSaveDto) throws ServiceException {
         try {
@@ -51,6 +56,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @CacheEvict("authors")
     @Transactional
     public boolean softDelete(Long authorId) throws ServiceException {
         Author author = authorRepository.findById(authorId)

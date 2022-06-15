@@ -10,6 +10,8 @@ import by.library.yavlash.mapper.UserMapper;
 import by.library.yavlash.repository.UserRepository;
 import by.library.yavlash.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final RoleMapper roleMapper;
 
     @Override
+    @Cacheable("users")
     @Transactional
     public UserDto findById(Long userId) throws ServiceException {
         return userRepository.findById(userId).map(userMapper::toDto)
@@ -30,6 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable("users")
     @Transactional
     public List<UserListDto> findAll() throws ServiceException {
         try {
@@ -41,6 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable("users")
     @Transactional
     public boolean add(UserSaveDto userSaveDto) throws ServiceException {
         try {
@@ -53,6 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable("users")
     @Transactional
     public boolean update(UserSaveDto userSaveDto) throws ServiceException {
         User user = userRepository.findById(userSaveDto.getId())
@@ -93,6 +99,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict("users")
     @Transactional
     public boolean softDelete(Long userId) throws ServiceException {
         User user = userRepository.findById(userId)

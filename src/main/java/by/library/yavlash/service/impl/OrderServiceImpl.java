@@ -11,6 +11,8 @@ import by.library.yavlash.mapper.OrderMapper;
 import by.library.yavlash.repository.OrderRepository;
 import by.library.yavlash.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,7 @@ public class OrderServiceImpl implements OrderService {
     private final BookCopyMapper bookCopyMapper;
 
     @Override
+    @Cacheable("orders")
     @Transactional
     public OrderDto findById(Long orderId) throws ServiceException {
         return orderRepository.findById(orderId).map(orderMapper::toDto)
@@ -31,6 +34,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Cacheable("orders")
     @Transactional
     public List<OrderListDto> findAll() throws ServiceException {
         try {
@@ -42,6 +46,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Cacheable("orders")
     @Transactional
     public boolean add(OrderSaveDto orderSaveDto) throws ServiceException {
         try {
@@ -54,6 +59,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Cacheable("orders")
     @Transactional
     public boolean update(OrderSaveDto orderSaveDto) throws ServiceException {
         Order order = orderRepository.findById(orderSaveDto.getId())
@@ -88,6 +94,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @CacheEvict("orders")
     @Transactional
     public boolean softDelete(Long orderId) throws ServiceException {
         Order order = orderRepository.findById(orderId)

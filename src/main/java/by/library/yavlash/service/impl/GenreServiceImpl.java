@@ -7,6 +7,8 @@ import by.library.yavlash.mapper.GenreMapper;
 import by.library.yavlash.repository.GenreRepository;
 import by.library.yavlash.service.GenreService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,7 @@ public class GenreServiceImpl implements GenreService {
     private final GenreMapper genreMapper;
 
     @Override
+    @Cacheable("genres")
     @Transactional
     public List<GenreDto> findAll() throws ServiceException {
         try {
@@ -30,6 +33,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
+    @Cacheable("genres")
     @Transactional
     public boolean add(GenreDto genreDto) throws ServiceException {
         try {
@@ -42,6 +46,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
+    @CacheEvict("genres")
     @Transactional
     public boolean softDelete(Long genreId) throws ServiceException {
         Genre genre = genreRepository.findById(genreId)

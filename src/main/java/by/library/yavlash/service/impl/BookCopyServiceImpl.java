@@ -10,6 +10,8 @@ import by.library.yavlash.mapper.BookCopyMapper;
 import by.library.yavlash.repository.BookCopyRepository;
 import by.library.yavlash.service.BookCopyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     private final BookCopyMapper bookCopyMapper;
 
     @Override
+    @Cacheable("bookcopies")
     @Transactional
     public BookCopyDto findById(Long bookCopyId) throws ServiceException {
         return bookCopyRepository.findById(bookCopyId).map(bookCopyMapper::toDto)
@@ -29,6 +32,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
+    @Cacheable("bookcopies")
     @Transactional
     public List<BookCopyListDto> findAll() throws ServiceException {
         try {
@@ -40,6 +44,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
+    @Cacheable("bookcopies")
     @Transactional
     public boolean add(BookCopySaveDto bookCopySaveDto) throws ServiceException {
         try {
@@ -52,6 +57,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
+    @Cacheable("bookcopies")
     @Transactional
     public boolean update(BookCopySaveDto bookCopySaveDto) throws ServiceException {
         BookCopy bookCopy = bookCopyRepository.findById(bookCopySaveDto.getId())
@@ -86,6 +92,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
+    @CacheEvict("bookcopies")
     @Transactional
     public boolean softDelete(Long bookCopyId) throws ServiceException {
         BookCopy bookCopy = bookCopyRepository.findById(bookCopyId)

@@ -7,6 +7,8 @@ import by.library.yavlash.mapper.BookMapper;
 import by.library.yavlash.repository.BookRepository;
 import by.library.yavlash.service.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,7 @@ public class BookServiceImpl implements BookService {
     private final BookMapper bookMapper;
 
     @Override
+    @Cacheable("books")
     @Transactional
     public boolean add(BookSaveDto bookSaveDto) throws ServiceException {
         try {
@@ -29,6 +32,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @CacheEvict("books")
     @Transactional
     public boolean softDelete(Long bookId) throws ServiceException {
         Book book = bookRepository.findById(bookId)

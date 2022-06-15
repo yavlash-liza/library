@@ -7,6 +7,8 @@ import by.library.yavlash.mapper.BookDamageMapper;
 import by.library.yavlash.repository.BookDamageRepository;
 import by.library.yavlash.service.BookDamageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,7 @@ public class BookDamageServiceImpl implements BookDamageService {
     private final BookDamageMapper bookDamageMapper;
 
     @Override
+    @Cacheable("damages")
     @Transactional
     public BookDamageDto findById(Long bookDamageId) throws ServiceException {
         return bookDamageRepository.findById(bookDamageId).map(bookDamageMapper::toDto)
@@ -24,6 +27,7 @@ public class BookDamageServiceImpl implements BookDamageService {
     }
 
     @Override
+    @Cacheable("damages")
     @Transactional
     public boolean add(BookDamageDto bookDamageDto) throws ServiceException {
         try {
@@ -36,6 +40,7 @@ public class BookDamageServiceImpl implements BookDamageService {
     }
 
     @Override
+    @CacheEvict("damages")
     @Transactional
     public boolean softDelete(Long bookDamageId) throws ServiceException {
         BookDamage bookDamage = bookDamageRepository.findById(bookDamageId)
