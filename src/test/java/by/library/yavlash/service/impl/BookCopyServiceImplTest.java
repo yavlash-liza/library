@@ -10,7 +10,6 @@ import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Genre;
-import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.mapper.BookCopyMapper;
 import by.library.yavlash.repository.BookCopyRepository;
 import org.junit.jupiter.api.Assertions;
@@ -41,7 +40,7 @@ class BookCopyServiceImplTest {
     private BookCopyServiceImpl bookCopyService;
 
     @Test
-    void findByIdTest_shouldReturnTheFirstBookCopyInDB() throws ServiceException {
+    void findByIdTest_shouldReturnTheFirstBookCopyInDB() {
         //given
         Long id = 1L;
         Set<Book> books = new HashSet<>() {{add(Book.builder().id(id).build());}};
@@ -81,7 +80,7 @@ class BookCopyServiceImplTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllBookCopies() throws ServiceException {
+    void findAllTest_shouldReturnListOfAllBookCopies() {
         //given
         List<BookCopyListDto> expected = new ArrayList<>() {{
             add(BookCopyListDto.builder().id(1L).build());
@@ -100,7 +99,7 @@ class BookCopyServiceImplTest {
     }
 
     @Test
-    void addTest_shouldAddBookCopy() throws ServiceException {
+    void addTest_shouldAddBookCopy() {
         //given && when
         boolean actual = bookCopyService.add(BookCopySaveDto.builder().build());
 
@@ -109,7 +108,7 @@ class BookCopyServiceImplTest {
     }
 
     @Test
-    void updateTest_shouldUpdateBookCopy() throws ServiceException {
+    void updateTest_shouldUpdateBookCopy() {
         //given
         Long id = 4L;
         BookCopy bookCopy = BookCopy.builder().id(id).build();
@@ -125,7 +124,7 @@ class BookCopyServiceImplTest {
     }
 
     @Test
-    void deleteTest_shouldDeleteBookCopy() throws ServiceException {
+    void deleteTest_shouldDeleteBookCopy() {
         //given
         Long id = 3L;
         Book book = Book.builder().id(id)

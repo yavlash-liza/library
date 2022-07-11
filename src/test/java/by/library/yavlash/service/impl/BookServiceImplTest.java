@@ -2,7 +2,6 @@ package by.library.yavlash.service.impl;
 
 import by.library.yavlash.dto.BookSaveDto;
 import by.library.yavlash.entity.Book;
-import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.mapper.BookMapper;
 import by.library.yavlash.repository.BookRepository;
 import org.junit.jupiter.api.Assertions;
@@ -31,7 +30,7 @@ class BookServiceImplTest {
     private BookServiceImpl bookService;
 
     @Test
-    void addTest_shouldAddBook() throws ServiceException {
+    void addTest_shouldAddBook() {
         //given
         BookSaveDto bookSaveDto = BookSaveDto.builder()
                 .genresId(new ArrayList<>() {{
@@ -51,7 +50,7 @@ class BookServiceImplTest {
     }
 
     @Test
-    void deleteTest_shouldDeleteBook() throws ServiceException {
+    void deleteTest_shouldDeleteBook() {
         //given
         Long id = 3L;
         Book expected = Book.builder().id(id).genres(new HashSet<>()).authors(new HashSet<>()).bookCopies(new HashSet<>()).build();
