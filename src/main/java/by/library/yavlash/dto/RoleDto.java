@@ -1,12 +1,10 @@
 package by.library.yavlash.dto;
 
 import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import lombok.Data;
 
-@Jacksonized
 @Builder
-@Value
+@Data
 public class RoleDto {
      Long id;
      String roleName;
