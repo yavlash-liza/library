@@ -16,13 +16,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
+    private final static String ROLE_CACHE = "roles";
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
 
     @Override
-    @Cacheable("roles")
+    @Cacheable(value = ROLE_CACHE)
     @Transactional
-    public List<RoleDto> findAll() throws ServiceException {
+    public List<RoleDto> findAll() {
         try {
             List<Role> roles = roleRepository.findAll();
             return roleMapper.toListDto(roles);

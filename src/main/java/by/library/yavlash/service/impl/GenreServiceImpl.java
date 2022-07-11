@@ -17,13 +17,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class GenreServiceImpl implements GenreService {
+    private final static String GENRE_CACHE = "genres";
     private final GenreRepository genreRepository;
     private final GenreMapper genreMapper;
 
     @Override
-    @Cacheable("genres")
+    @Cacheable(value = GENRE_CACHE)
     @Transactional
-    public List<GenreDto> findAll() throws ServiceException {
+    public List<GenreDto> findAll() {
         try {
             List<Genre> genres = genreRepository.findAll();
             return genreMapper.toDto(genres);
@@ -33,9 +34,9 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    @Cacheable("genres")
+    @CacheEvict(value = GENRE_CACHE, key = "#genreDto.id")
     @Transactional
-    public boolean add(GenreDto genreDto) throws ServiceException {
+    public boolean add(GenreDto genreDto) {
         try {
             Genre genre = genreMapper.fromSaveDto(genreDto);
             genreRepository.save(genre);
@@ -46,9 +47,9 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    @CacheEvict("genres")
+    @CacheEvict(value = GENRE_CACHE, key = "#genreId")
     @Transactional
-    public boolean softDelete(Long genreId) throws ServiceException {
+    public boolean softDelete(Long genreId) {
         Genre genre = genreRepository.findById(genreId)
                 .orElseThrow(() -> new ServiceException(
                         String.format("Genre was not softly deleted. Genre was not found. id = %d", genreId)
