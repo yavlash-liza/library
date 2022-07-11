@@ -1,7 +1,6 @@
 package by.library.yavlash.controller;
 
 import by.library.yavlash.dto.RoleDto;
-import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +18,7 @@ public class RoleController {
 
     @PreAuthorize("hasAuthority('ROLE_READ')")
     @GetMapping
-    public List<RoleDto> findAll() throws ServiceException {
+    public List<RoleDto> findAll() {
         return roleService.findAll();
     }
 }

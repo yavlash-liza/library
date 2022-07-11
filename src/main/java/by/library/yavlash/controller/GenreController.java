@@ -1,7 +1,6 @@
 package by.library.yavlash.controller;
 
 import by.library.yavlash.dto.GenreDto;
-import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.service.GenreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,7 +21,7 @@ public class GenreController {
     private final GenreService genreService;
 
     @GetMapping
-    public List<GenreDto> findAll() throws ServiceException {
+    public List<GenreDto> findAll() {
         return genreService.findAll();
     }
 
@@ -30,13 +29,13 @@ public class GenreController {
     @PostMapping
     public boolean add(
             @RequestBody GenreDto genreDto
-    ) throws ServiceException {
+    ) {
         return genreService.add(genreDto);
     }
 
     @PreAuthorize("hasAuthority('GENRE_DELETE')")
     @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable Long id) throws ServiceException {
+    public boolean delete(@PathVariable Long id) {
         return genreService.softDelete(id);
     }
 }
