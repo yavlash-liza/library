@@ -19,7 +19,6 @@ import java.util.List;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
-
 @Component
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
