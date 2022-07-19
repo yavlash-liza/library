@@ -10,6 +10,8 @@ import by.library.yavlash.mapper.BookCopyMapper;
 import by.library.yavlash.repository.BookCopyRepository;
 import by.library.yavlash.service.BookCopyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,34 @@ public class BookCopyServiceImpl implements BookCopyService {
         try {
             List<BookCopy> bookCopies = bookCopyRepository.findAll();
             return bookCopyMapper.toListDto(bookCopies);
+        } catch (Exception e) {
+            throw new ServiceException("BookCopies were not found.", e);
+        }
+    }
+
+    @Override
+    @Cacheable(value = BOOK_COPY_CACHE, key = "{ #root.methodName, #page, #size,  #deleted }")
+    @Transactional
+    public List<BookCopyListDto> findListBookCopies(int page, int size, boolean deleted) {
+        try {
+            PageRequest pageReq = PageRequest.of(page, size);
+            Page<BookCopyListDto> bookCopyListDtos = bookCopyRepository.findAllByDeleted(deleted, pageReq)
+                    .map(bookCopyMapper::toListDto);
+            return bookCopyListDtos.getContent();
+        } catch (Exception e) {
+            throw new ServiceException("BookCopies were not found.", e);
+        }
+    }
+
+    @Override
+    @Cacheable(value = BOOK_COPY_CACHE, key = "{ #root.methodName, #page, #size,  #deleted, #title? }")
+    @Transactional
+    public List<BookCopyListDto> findListBookCopiesByTitle(int page, int size, boolean deleted, String title) {
+        try {
+            PageRequest pageReq = PageRequest.of(page, size);
+            Page<BookCopyListDto> bookCopyListDtos = bookCopyRepository.findAllByDeletedAndBook_Title(deleted, title, pageReq)
+                    .map(bookCopyMapper::toListDto);
+            return bookCopyListDtos.getContent();
         } catch (Exception e) {
             throw new ServiceException("BookCopies were not found.", e);
         }

@@ -9,6 +9,8 @@ import by.library.yavlash.mapper.AuthorMapper;
 import by.library.yavlash.repository.AuthorRepository;
 import by.library.yavlash.service.AuthorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,34 @@ public class AuthorServiceImpl implements AuthorService {
         try {
             List<Author> authors = authorRepository.findAll();
             return authorMapper.toListDto(authors);
+        } catch (Exception e) {
+            throw new ServiceException("Authors were not found.", e);
+        }
+    }
+
+    @Override
+    @Cacheable(value = AUTHOR_CACHE, key = "{ #root.methodName, #page, #size,  #deleted }")
+    @Transactional
+    public List<AuthorListDto> findListAuthors(int page, int size, boolean deleted) {
+        try {
+            PageRequest pageReq = PageRequest.of(page, size);
+            Page<AuthorListDto> authors = authorRepository.findAllByDeleted(deleted, pageReq)
+                    .map(authorMapper::toListDto);
+            return authors.getContent();
+        } catch (Exception e) {
+            throw new ServiceException("Authors were not found.", e);
+        }
+    }
+
+    @Override
+    @Cacheable(value = AUTHOR_CACHE, key = "{ #root.methodName, #page, #size,  #deleted, #search? }"
+    @Transactional
+    public List<AuthorListDto> findListAuthorsBySearch(int page, int size, boolean deleted, String search) {
+        try {
+            PageRequest pageReq = PageRequest.of(page, size);
+            Page<AuthorListDto> authors = authorRepository.findAllByDeletedAndLastName(deleted, search, pageReq)
+                    .map(authorMapper::toListDto);
+            return authors.getContent();
         } catch (Exception e) {
             throw new ServiceException("Authors were not found.", e);
         }

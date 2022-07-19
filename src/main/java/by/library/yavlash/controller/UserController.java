@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -21,6 +22,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
+    private static final boolean STATUS = false;
+    private static final String ITEMS_ON_PAGE = "3";
+    private static final String DEFAULT_PAGE = "0";
     private final UserService userService;
 
     @PreAuthorize("hasAuthority('USER_READ')")
@@ -33,6 +37,22 @@ public class UserController {
     @GetMapping
     public List<UserListDto> findAll() {
         return userService.findAll();
+    }
+
+    @PreAuthorize("hasAuthority('USER_READ')")
+    @GetMapping("/all")
+    public List<UserListDto> findAllAuthors(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = ITEMS_ON_PAGE) int size
+    ) throws ServiceException {
+        List<UserListDto> userListDtos;
+        if (search == null) {
+            userListDtos = userService.findListUsers(page, size, STATUS);
+        } else {
+            userListDtos = userService.findListUsersBySearch(page, size, STATUS, search);
+        }
+        return userListDtos;
     }
 
     @PostMapping

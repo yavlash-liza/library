@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -23,6 +24,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/books")
 public class BookCopyController {
+    private static final boolean STATUS = false;
+    private static final String ITEMS_ON_PAGE = "3";
+    private static final String DEFAULT_PAGE = "0";
     private final BookCopyService bookCopyService;
     private final BookService bookService;
 
@@ -34,6 +38,21 @@ public class BookCopyController {
     @GetMapping
     public List<BookCopyListDto> findAll() {
         return bookCopyService.findAll();
+    }
+
+    @GetMapping("/all")
+    public List<BookCopyListDto> findAllBookCopies(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = ITEMS_ON_PAGE) int size
+    ) throws ServiceException {
+        List<BookCopyListDto> bookCopyListDtos;
+        if (search == null) {
+            bookCopyListDtos = bookCopyService.findListBookCopies(page, size, STATUS);
+        } else {
+            bookCopyListDtos = bookCopyService.findListBookCopiesByTitle(page, size, STATUS, search);
+        }
+        return bookCopyListDtos;
     }
 
     @PreAuthorize("hasAuthority('BOOK_WRITE')")

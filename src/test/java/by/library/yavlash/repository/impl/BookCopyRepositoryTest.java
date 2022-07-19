@@ -7,6 +7,8 @@ import by.library.yavlash.repository.BookCopyRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,12 +32,39 @@ class BookCopyRepositoryTest extends BaseRepositoryTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllBookCopy() {
+    void findAllTest_shouldReturnListOfAllBookCopies() {
         //given
         List<BookCopy> expected = findBookCopiesForFindAll();
 
         //when
         List<BookCopy> actual = bookCopyRepository.findAll();
+
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void findAllByDeletedTest_shouldReturnListOfBookCopies() {
+        //given
+        PageRequest pageReq = PageRequest.of(0, 10);
+        Page<BookCopy> expected = findBookCopiesForPage(pageReq);
+
+        //when
+        Page<BookCopy> actual = bookCopyRepository.findAllByDeleted(false, pageReq);
+
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void findAllByDeletedAndTitleTest_shouldReturnListOfAllBookCopies() {
+        //given
+        PageRequest pageReq = PageRequest.of(0, 1);
+        String search = "Idiot";
+        Page<BookCopy> expected = findBookCopiesPageByTitle(pageReq);
+
+        //when
+        Page<BookCopy> actual = bookCopyRepository.findAllByDeletedAndBook_Title(false, search, pageReq);
 
         //then
         Assertions.assertEquals(expected, actual);

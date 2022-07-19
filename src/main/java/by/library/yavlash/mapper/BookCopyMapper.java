@@ -24,6 +24,9 @@ public interface BookCopyMapper {
     @Mapping(target = "book.id", source = "bookCopySaveDto.bookId")
     BookCopy fromSaveDto(BookCopySaveDto bookCopySaveDto);
 
+    @Mapping(target = "title", source = "bookCopy.book.title")
+    BookCopyListDto toListDto(BookCopy bookCopy);
+
     List<BookCopyListDto> toListDto(List<BookCopy> bookCopies);
 
     default List<Long> toLongList(Set<BookDamage> bookDamages) {

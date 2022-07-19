@@ -10,6 +10,8 @@ import by.library.yavlash.mapper.UserMapper;
 import by.library.yavlash.repository.UserRepository;
 import by.library.yavlash.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,34 @@ public class UserServiceImpl implements UserService {
         try {
             List<User> users = userRepository.findAll();
             return userMapper.toListDto(users);
+        } catch (Exception e) {
+            throw new ServiceException("Users were not found.", e);
+        }
+    }
+
+    @Override
+    @CacheEvict(value = USER_CACHE, key = "{ #root.methodName, #page, #size,  #deleted }")
+    @Transactional
+    public List<UserListDto> findListUsers(int page, int size, boolean deleted) {
+        try {
+            PageRequest pageReq = PageRequest.of(page, size);
+            Page<UserListDto> bookCopyListDtos = userRepository.findAllByDeleted(deleted, pageReq)
+                    .map(userMapper::toListDto);
+            return bookCopyListDtos.getContent();
+        } catch (Exception e) {
+            throw new ServiceException("Users were not found.", e);
+        }
+    }
+
+    @Override
+    @CacheEvict(value = USER_CACHE, key = "{ #root.methodName, #page, #size,  #deleted, #search? }")
+    @Transactional
+    public List<UserListDto> findListUsersBySearch(int page, int size, boolean deleted, String search) {
+        try {
+            PageRequest pageReq = PageRequest.of(page, size);
+            Page<UserListDto> bookCopyListDtos = userRepository.findAllByDeletedAndLastName(deleted, search, pageReq)
+                    .map(userMapper::toListDto);
+            return bookCopyListDtos.getContent();
         } catch (Exception e) {
             throw new ServiceException("Users were not found.", e);
         }

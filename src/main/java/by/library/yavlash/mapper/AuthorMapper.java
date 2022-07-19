@@ -14,6 +14,8 @@ public interface AuthorMapper {
     @Mapping(target = "books", source = "author.books")
     AuthorDto toDto(Author author);
 
+    AuthorListDto toListDto(Author author);
+
     List<AuthorListDto> toListDto(List<Author> author);
 
     Author fromSaveDto(AuthorSaveDto authorSaveDto);
