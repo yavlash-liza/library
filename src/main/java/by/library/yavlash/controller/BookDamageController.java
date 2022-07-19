@@ -1,7 +1,6 @@
 package by.library.yavlash.controller;
 
 import by.library.yavlash.dto.BookDamageDto;
-import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.service.BookDamageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +19,7 @@ public class BookDamageController {
     private final BookDamageService bookDamageService;
 
     @GetMapping("/{id}")
-    public BookDamageDto findById(@PathVariable Long id) throws ServiceException {
+    public BookDamageDto findById(@PathVariable Long id) {
         return bookDamageService.findById(id);
     }
 
@@ -28,13 +27,13 @@ public class BookDamageController {
     @PostMapping
     public boolean add(
             @RequestBody BookDamageDto bookDamageDto
-    ) throws ServiceException {
+    ) {
         return bookDamageService.add(bookDamageDto);
     }
 
     @PreAuthorize("hasAuthority('BOOK_DAMAGE_DELETE')")
     @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable Long id) throws ServiceException {
+    public boolean delete(@PathVariable Long id) {
         return bookDamageService.softDelete(id);
     }
 }

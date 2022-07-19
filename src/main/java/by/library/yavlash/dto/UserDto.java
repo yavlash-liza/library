@@ -1,15 +1,13 @@
 package by.library.yavlash.dto;
 
 import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Jacksonized
 @Builder
-@Value
+@Data
 public class UserDto {
      Long id;
      String firstName;

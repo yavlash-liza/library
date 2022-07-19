@@ -12,6 +12,8 @@ import by.library.yavlash.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,20 +22,23 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private final static String USER_CACHE = "users";
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
 
     @Override
+    @Cacheable(value = USER_CACHE, key = "#userId")
     @Transactional
-    public UserDto findById(Long userId) throws ServiceException {
+    public UserDto findById(Long userId) {
         return userRepository.findById(userId).map(userMapper::toDto)
                 .orElseThrow(() -> new ServiceException(String.format("User was not found. id = %d", userId)));
     }
 
     @Override
+    @Cacheable(value = USER_CACHE)
     @Transactional
-    public List<UserListDto> findAll() throws ServiceException {
+    public List<UserListDto> findAll() {
         try {
             List<User> users = userRepository.findAll();
             return userMapper.toListDto(users);
@@ -43,8 +48,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = USER_CACHE, key = "{ #root.methodName, #page, #size,  #deleted }")
     @Transactional
-    public List<UserListDto> findListUsers(int page, int size, boolean deleted) throws ServiceException {
+    public List<UserListDto> findListUsers(int page, int size, boolean deleted) {
         try {
             PageRequest pageReq = PageRequest.of(page, size);
             Page<UserListDto> bookCopyListDtos = userRepository.findAllByDeleted(deleted, pageReq)
@@ -56,8 +62,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = USER_CACHE, key = "{ #root.methodName, #page, #size,  #deleted, #search? }")
     @Transactional
-    public List<UserListDto> findListUsersBySearch(int page, int size, boolean deleted, String search) throws ServiceException {
+    public List<UserListDto> findListUsersBySearch(int page, int size, boolean deleted, String search) {
         try {
             PageRequest pageReq = PageRequest.of(page, size);
             Page<UserListDto> bookCopyListDtos = userRepository.findAllByDeletedAndLastName(deleted, search, pageReq)
@@ -69,8 +76,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = USER_CACHE, key = "#userSaveDto.id")
     @Transactional
-    public boolean add(UserSaveDto userSaveDto) throws ServiceException {
+    public boolean add(UserSaveDto userSaveDto) {
         try {
             User user = userMapper.fromSaveDto(userSaveDto);
             userRepository.save(user);
@@ -81,8 +89,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = USER_CACHE, key = "#userSaveDto.id")
     @Transactional
-    public boolean update(UserSaveDto userSaveDto) throws ServiceException {
+    public boolean update(UserSaveDto userSaveDto) {
         User user = userRepository.findById(userSaveDto.getId())
                 .orElseThrow(() -> new ServiceException(
                         String.format("User was not updated. User was not found. id = %d", userSaveDto.getId())
@@ -121,8 +130,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = USER_CACHE, key = "#userId")
     @Transactional
-    public boolean softDelete(Long userId) throws ServiceException {
+    public boolean softDelete(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(
                         String.format("User was not softly deleted. User was not found. id = %d", userId)

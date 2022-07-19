@@ -2,7 +2,6 @@ package by.library.yavlash.service.impl;
 
 import by.library.yavlash.dto.GenreDto;
 import by.library.yavlash.entity.Genre;
-import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.mapper.GenreMapper;
 import by.library.yavlash.repository.GenreRepository;
 import org.junit.jupiter.api.Assertions;
@@ -32,7 +31,7 @@ class GenreServiceImplTest {
     private GenreServiceImpl genreService;
 
     @Test
-    void findAllTest_shouldReturnListOfAllGenres() throws ServiceException {
+    void findAllTest_shouldReturnListOfAllGenres() {
         //given
         List<GenreDto> expected = new ArrayList<>() {{
             add(GenreDto.builder().id(1L).build());
@@ -51,7 +50,7 @@ class GenreServiceImplTest {
     }
 
     @Test
-    void addTest_shouldAddGenre() throws ServiceException {
+    void addTest_shouldAddGenre() {
         //given && when
         boolean actual = genreService.add(GenreDto.builder().genreName("fantasy").build());
 
@@ -60,7 +59,7 @@ class GenreServiceImplTest {
     }
 
     @Test
-    void deleteTest_shouldDeleteGenre() throws ServiceException {
+    void deleteTest_shouldDeleteGenre() {
         //given
         Long id = 3L;
         Genre expected = Genre.builder().id(id).books(new HashSet<>()).build();

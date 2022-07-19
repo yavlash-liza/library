@@ -1,6 +1,6 @@
 package by.library.yavlash.exception;
 
-public class ServiceException extends Exception {
+public class ServiceException extends RuntimeException {
     public ServiceException() {
     }
 

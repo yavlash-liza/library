@@ -13,6 +13,8 @@ import by.library.yavlash.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,20 +23,23 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
+    private final static String ORDER_CACHE = "orders";
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final BookCopyMapper bookCopyMapper;
 
     @Override
+    @Cacheable(value = ORDER_CACHE, key = "#orderId")
     @Transactional
-    public OrderDto findById(Long orderId) throws ServiceException {
+    public OrderDto findById(Long orderId) {
         return orderRepository.findById(orderId).map(orderMapper::toDto)
                 .orElseThrow(() -> new ServiceException(String.format("Order was not found. id = %d", orderId)));
     }
 
     @Override
+    @Cacheable(value = ORDER_CACHE)
     @Transactional
-    public List<OrderListDto> findAll() throws ServiceException {
+    public List<OrderListDto> findAll() {
         try {
             List<Order> orders = orderRepository.findAll();
             return orderMapper.toListDto(orders);
@@ -44,8 +49,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Cacheable(value = ORDER_CACHE, key = "{ #root.methodName, #page, #size,  #deleted }")
     @Transactional
-    public List<OrderListDto> findListOrders(int page, int size, boolean deleted) throws ServiceException {
+    public List<OrderListDto> findListOrders(int page, int size, boolean deleted) {
         try {
             PageRequest pageReq = PageRequest.of(page, size);
             Page<OrderListDto> orderListDtos = orderRepository.findAllByDeleted(deleted, pageReq)
@@ -57,8 +63,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @CacheEvict(value = ORDER_CACHE, key = "#orderSaveDto.id")
     @Transactional
-    public boolean add(OrderSaveDto orderSaveDto) throws ServiceException {
+    public boolean add(OrderSaveDto orderSaveDto) {
         try {
             Order order = orderMapper.fromSaveDto(orderSaveDto);
             orderRepository.save(order);
@@ -69,8 +76,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @CacheEvict(value = ORDER_CACHE, key = "#orderSaveDto.id")
     @Transactional
-    public boolean update(OrderSaveDto orderSaveDto) throws ServiceException {
+    public boolean update(OrderSaveDto orderSaveDto) {
         Order order = orderRepository.findById(orderSaveDto.getId())
                 .orElseThrow(() -> new ServiceException(
                         String.format("Order was not updated. Order was not found. id = %d", orderSaveDto.getId())
@@ -103,8 +111,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @CacheEvict(value = ORDER_CACHE, key = "#orderId")
     @Transactional
-    public boolean softDelete(Long orderId) throws ServiceException {
+    public boolean softDelete(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ServiceException(
                         String.format("Order was not softly deleted. Order was not found. id = %d", orderId)

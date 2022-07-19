@@ -3,7 +3,6 @@ package by.library.yavlash.mapper;
 import by.library.yavlash.dto.UserDto;
 import by.library.yavlash.dto.UserListDto;
 import by.library.yavlash.dto.UserSaveDto;
-import by.library.yavlash.entity.BaseEntity;
 import by.library.yavlash.entity.Role;
 import by.library.yavlash.entity.User;
 import org.mapstruct.Mapper;
@@ -26,7 +25,7 @@ public interface UserMapper {
     List<UserListDto> toListDto(List<User> user);
 
     default List<Long> toLongList(Set<Role> roles) {
-        return roles.stream().map(BaseEntity::getId)
+        return roles.stream().map(Role::getId)
                 .collect(Collectors.toList());
     }
 

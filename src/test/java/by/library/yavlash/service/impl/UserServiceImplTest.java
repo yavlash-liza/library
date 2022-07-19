@@ -7,7 +7,6 @@ import by.library.yavlash.dto.UserSaveDto;
 import by.library.yavlash.entity.Order;
 import by.library.yavlash.entity.Role;
 import by.library.yavlash.entity.User;
-import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.mapper.UserMapper;
 import by.library.yavlash.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -38,7 +37,7 @@ class UserServiceImplTest {
     private UserServiceImpl userService;
 
     @Test
-    void findByIdTest_shouldReturnTheFirstUserInDB() throws ServiceException {
+    void findByIdTest_shouldReturnTheFirstUserInDB() {
         //given
         Long id = 1L;
         UserDto expected = UserDto.builder().id(id)
@@ -57,7 +56,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllUsers() throws ServiceException {
+    void findAllTest_shouldReturnListOfAllUsers() {
         //given
         List<UserListDto> expected = new ArrayList<>() {{
             add(UserListDto.builder().id(1L).build());
@@ -76,7 +75,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void addTest_shouldAddUser() throws ServiceException {
+    void addTest_shouldAddUser() {
         //given && when
         boolean actual = userService.add(UserSaveDto.builder().roleId(new ArrayList<>() {{add(1L);}}).build());
 
@@ -85,7 +84,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateTest_shouldUpdateUser() throws ServiceException {
+    void updateTest_shouldUpdateUser() {
         //given
         Long id = 3L;
         User user = User.builder().id(id).build();
@@ -101,7 +100,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteTest_shouldDeleteUser() throws ServiceException {
+    void deleteTest_shouldDeleteUser() {
         //given
         Long id = 3L;
         User expected = User.builder().id(id).orders(new HashSet<>()).bookDamages(new HashSet<>()).build();

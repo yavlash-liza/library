@@ -3,7 +3,6 @@ package by.library.yavlash.mapper;
 import by.library.yavlash.dto.OrderDto;
 import by.library.yavlash.dto.OrderListDto;
 import by.library.yavlash.dto.OrderSaveDto;
-import by.library.yavlash.entity.BaseEntity;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Order;
@@ -30,7 +29,7 @@ public interface OrderMapper {
     List<OrderListDto> toListDto(List<Order> order);
 
     default List<Long> toLongList(Set<BookDamage> bookDamages) {
-        return bookDamages.stream().map(BaseEntity::getId)
+        return bookDamages.stream().map(BookDamage::getId)
                 .collect(Collectors.toList());
     }
 

@@ -9,7 +9,6 @@ import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Order;
 import by.library.yavlash.entity.User;
-import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.mapper.OrderMapper;
 import by.library.yavlash.repository.OrderRepository;
 import org.junit.jupiter.api.Assertions;
@@ -40,7 +39,7 @@ class OrderServiceImplTest {
     private OrderServiceImpl orderService;
 
     @Test
-    void findByIdTest_shouldReturnTheFirstOrderInDB() throws ServiceException {
+    void findByIdTest_shouldReturnTheFirstOrderInDB() {
         Long id = 1L;
         Set<BookCopy> bookCopies = new HashSet<>() {{add(BookCopy.builder().id(2L).book(Book.builder().id(1L).build()).build());}};
         Set<BookDamage> bookDamages = new HashSet<>() {{add(BookDamage.builder().id(2L).build());}};
@@ -62,7 +61,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void findAllTest_shouldFindAllOrders() throws ServiceException {
+    void findAllTest_shouldFindAllOrders() {
         //given
         List<OrderListDto> expected = new ArrayList<>() {{
             add(OrderListDto.builder().id(1L).build());
@@ -81,7 +80,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void addTest_shouldAddOrder() throws ServiceException {
+    void addTest_shouldAddOrder() {
         //given
         OrderSaveDto orderSaveDto = OrderSaveDto.builder()
                 .price(13)
@@ -98,7 +97,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void updateTest_shouldUpdateOrder() throws ServiceException {
+    void updateTest_shouldUpdateOrder() {
         //given
         Long id = 3L;
         Order order = Order.builder()
@@ -120,7 +119,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void deleteTest_shouldDeleteOrder() throws ServiceException {
+    void deleteTest_shouldDeleteOrder() {
         //given
         Long id = 3L;
         Order expected = Order.builder()
