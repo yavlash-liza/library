@@ -7,7 +7,6 @@ import by.library.yavlash.dto.BookCopyListDto;
 import by.library.yavlash.entity.Author;
 import by.library.yavlash.entity.Book;
 import by.library.yavlash.entity.BookCopy;
-import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.mapper.AuthorMapper;
 import by.library.yavlash.repository.AuthorRepository;
 import org.junit.jupiter.api.Assertions;
@@ -38,7 +37,7 @@ class AuthorServiceImplTest {
     private AuthorServiceImpl authorService;
 
     @Test
-    void findByIdTest_shouldReturnTheFirstAuthorInDB() throws ServiceException {
+    void findByIdTest_shouldReturnTheFirstAuthorInDB() {
         //given
         Long id = 1L;
 
@@ -63,7 +62,7 @@ class AuthorServiceImplTest {
     }
 
     @Test
-    void findAllTest_shouldReturnListOfAllAuthors() throws ServiceException {
+    void findAllTest_shouldReturnListOfAllAuthors() {
         //given
         List<AuthorListDto> expected = new ArrayList<>() {{
             add(AuthorListDto.builder().id(1L).build());
@@ -82,7 +81,7 @@ class AuthorServiceImplTest {
     }
 
     @Test
-    void addTest_shouldAddAuthor() throws ServiceException {
+    void addTest_shouldAddAuthor() {
         //given && when
         boolean actual = authorService.add(AuthorSaveDto.builder().firstName("Liza").build());
 
@@ -91,7 +90,7 @@ class AuthorServiceImplTest {
     }
 
     @Test
-    void deleteTest_shouldDeleteAuthor() throws ServiceException {
+    void deleteTest_shouldDeleteAuthor() {
         //given
         Long id = 3L;
         Author expected = Author.builder().id(id).firstName("Liza").books(new HashSet<>()).build();

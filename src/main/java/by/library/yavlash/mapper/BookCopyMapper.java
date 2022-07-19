@@ -3,7 +3,6 @@ package by.library.yavlash.mapper;
 import by.library.yavlash.dto.BookCopyDto;
 import by.library.yavlash.dto.BookCopyListDto;
 import by.library.yavlash.dto.BookCopySaveDto;
-import by.library.yavlash.entity.BaseEntity;
 import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.BookDamage;
 import org.mapstruct.Mapper;
@@ -28,7 +27,7 @@ public interface BookCopyMapper {
     List<BookCopyListDto> toListDto(List<BookCopy> bookCopies);
 
     default List<Long> toLongList(Set<BookDamage> bookDamages) {
-        return bookDamages.stream().map(BaseEntity::getId)
+        return bookDamages.stream().map(BookDamage::getId)
                 .collect(Collectors.toList());
     }
 

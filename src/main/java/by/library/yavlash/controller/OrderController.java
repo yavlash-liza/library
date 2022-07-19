@@ -3,7 +3,6 @@ package by.library.yavlash.controller;
 import by.library.yavlash.dto.OrderDto;
 import by.library.yavlash.dto.OrderListDto;
 import by.library.yavlash.dto.OrderSaveDto;
-import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,13 +25,13 @@ public class OrderController {
 
     @PreAuthorize("hasAuthority('ORDER_READ')")
     @GetMapping("/{id}")
-    public OrderDto findById(@PathVariable Long id) throws ServiceException {
+    public OrderDto findById(@PathVariable Long id) {
         return orderService.findById(id);
     }
 
     @PreAuthorize("hasAuthority('ORDER_READ')")
     @GetMapping
-    public List<OrderListDto> findAll() throws ServiceException {
+    public List<OrderListDto> findAll() {
         return orderService.findAll();
     }
 
@@ -40,7 +39,7 @@ public class OrderController {
     @PostMapping
     public boolean add(
             @RequestBody OrderSaveDto order
-    ) throws ServiceException {
+    ) {
         return orderService.add(order);
     }
 
@@ -48,13 +47,13 @@ public class OrderController {
     @PutMapping
     public boolean update(
             @RequestBody OrderSaveDto orderSaveDto
-    ) throws ServiceException {
+    ) {
         return orderService.update(orderSaveDto);
     }
 
     @PreAuthorize("hasAuthority('ORDER_DELETE')")
     @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable Long id) throws ServiceException {
+    public boolean delete(@PathVariable Long id) {
         return orderService.softDelete(id);
     }
 }

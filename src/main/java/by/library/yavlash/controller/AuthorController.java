@@ -3,7 +3,6 @@ package by.library.yavlash.controller;
 import by.library.yavlash.dto.AuthorDto;
 import by.library.yavlash.dto.AuthorListDto;
 import by.library.yavlash.dto.AuthorSaveDto;
-import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.service.AuthorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,12 +23,12 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @GetMapping("/{id}")
-    public AuthorDto findById(@PathVariable Long id) throws ServiceException {
+    public AuthorDto findById(@PathVariable Long id) {
         return authorService.findById(id);
     }
 
     @GetMapping
-    public List<AuthorListDto> findAll() throws ServiceException {
+    public List<AuthorListDto> findAll() {
         return authorService.findAll();
     }
 
@@ -37,13 +36,13 @@ public class AuthorController {
     @PostMapping
     public boolean add(
             @RequestBody AuthorSaveDto authorSaveDto
-    ) throws ServiceException {
+    ) {
         return authorService.add(authorSaveDto);
     }
 
     @PreAuthorize("hasAuthority('AUTHOR_DELETE')")
     @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable Long id) throws ServiceException {
+    public boolean delete(@PathVariable Long id) {
         return authorService.softDelete(id);
     }
 }

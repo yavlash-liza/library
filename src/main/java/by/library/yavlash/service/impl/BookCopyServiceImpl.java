@@ -10,6 +10,8 @@ import by.library.yavlash.mapper.BookCopyMapper;
 import by.library.yavlash.repository.BookCopyRepository;
 import by.library.yavlash.service.BookCopyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,19 +20,22 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BookCopyServiceImpl implements BookCopyService {
+    private final static String BOOK_COPY_CACHE = "bookCopies";
     private final BookCopyRepository bookCopyRepository;
     private final BookCopyMapper bookCopyMapper;
 
     @Override
+    @Cacheable(value = BOOK_COPY_CACHE, key = "#bookCopyId")
     @Transactional
-    public BookCopyDto findById(Long bookCopyId) throws ServiceException {
+    public BookCopyDto findById(Long bookCopyId) {
         return bookCopyRepository.findById(bookCopyId).map(bookCopyMapper::toDto)
                 .orElseThrow(() -> new ServiceException(String.format("BookCopy was not found. id = %d", bookCopyId)));
     }
 
     @Override
+    @Cacheable(value = BOOK_COPY_CACHE)
     @Transactional
-    public List<BookCopyListDto> findAll() throws ServiceException {
+    public List<BookCopyListDto> findAll() {
         try {
             List<BookCopy> bookCopies = bookCopyRepository.findAll();
             return bookCopyMapper.toListDto(bookCopies);
@@ -40,8 +45,9 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
+    @CacheEvict(value = BOOK_COPY_CACHE, key = "#bookCopySaveDto.id")
     @Transactional
-    public boolean add(BookCopySaveDto bookCopySaveDto) throws ServiceException {
+    public boolean add(BookCopySaveDto bookCopySaveDto) {
         try {
             BookCopy bookCopy = bookCopyMapper.fromSaveDto(bookCopySaveDto);
             bookCopyRepository.save(bookCopy);
@@ -52,8 +58,9 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
+    @CacheEvict(value = BOOK_COPY_CACHE, key = "#bookCopySaveDto.id")
     @Transactional
-    public boolean update(BookCopySaveDto bookCopySaveDto) throws ServiceException {
+    public boolean update(BookCopySaveDto bookCopySaveDto) {
         BookCopy bookCopy = bookCopyRepository.findById(bookCopySaveDto.getId())
                 .orElseThrow(() -> new ServiceException(
                         String.format("BookCopy was not updated. BookCopy was not found. id = %d", bookCopySaveDto.getId())
@@ -86,8 +93,9 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
+    @CacheEvict(value = BOOK_COPY_CACHE, key = "#bookCopyId")
     @Transactional
-    public boolean softDelete(Long bookCopyId) throws ServiceException {
+    public boolean softDelete(Long bookCopyId) {
         BookCopy bookCopy = bookCopyRepository.findById(bookCopyId)
                 .orElseThrow(() -> new ServiceException(
                         String.format("BookCopy was not softly deleted. BookCopy was not found. id = %d", bookCopyId)

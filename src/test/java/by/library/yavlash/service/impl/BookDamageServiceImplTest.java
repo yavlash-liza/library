@@ -5,7 +5,6 @@ import by.library.yavlash.entity.BookCopy;
 import by.library.yavlash.entity.BookDamage;
 import by.library.yavlash.entity.Order;
 import by.library.yavlash.entity.User;
-import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.mapper.BookDamageMapper;
 import by.library.yavlash.repository.BookDamageRepository;
 import org.junit.jupiter.api.Assertions;
@@ -32,7 +31,7 @@ class BookDamageServiceImplTest {
     private BookDamageServiceImpl bookDamageService;
 
     @Test
-    void findByIdTest_shouldReturnTheFirstBookDamageInDB() throws ServiceException {
+    void findByIdTest_shouldReturnTheFirstBookDamageInDB() {
         //given
         Long id = 1L;
         BookDamage bookDamage = BookDamage.builder()
@@ -52,7 +51,7 @@ class BookDamageServiceImplTest {
     }
 
     @Test
-    void addTest_shouldAddBookDamage() throws ServiceException {
+    void addTest_shouldAddBookDamage() {
         //given && when
         boolean actual = bookDamageService.add(BookDamageDto.builder().bookCopyId(1L).orderId(1L).userId(1L).build());
 
@@ -61,7 +60,7 @@ class BookDamageServiceImplTest {
     }
 
     @Test
-    void deleteTest_shouldDeleteBookDamage() throws ServiceException {
+    void deleteTest_shouldDeleteBookDamage() {
         //given
         Long id = 3L;
         BookDamage expected = BookDamage.builder()

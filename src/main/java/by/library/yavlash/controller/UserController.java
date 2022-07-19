@@ -3,7 +3,6 @@ package by.library.yavlash.controller;
 import by.library.yavlash.dto.UserDto;
 import by.library.yavlash.dto.UserListDto;
 import by.library.yavlash.dto.UserSaveDto;
-import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,20 +25,20 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('USER_READ')")
     @GetMapping("/{id}")
-    public UserDto findById(@PathVariable Long id) throws ServiceException {
+    public UserDto findById(@PathVariable Long id) {
         return userService.findById(id);
     }
 
     @PreAuthorize("hasAuthority('USER_READ')")
     @GetMapping
-    public List<UserListDto> findAll() throws ServiceException {
+    public List<UserListDto> findAll() {
         return userService.findAll();
     }
 
     @PostMapping
     public boolean add(
             @RequestBody UserSaveDto user
-    ) throws ServiceException {
+    ) {
         return userService.add(user);
     }
 
@@ -47,13 +46,13 @@ public class UserController {
     @PutMapping
     public boolean update(
             @RequestBody UserSaveDto userSaveDto
-    ) throws ServiceException {
+    ) {
         return userService.update(userSaveDto);
     }
 
     @PreAuthorize("hasAuthority('USER_DELETE')")
     @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable Long id) throws ServiceException {
+    public boolean delete(@PathVariable Long id) {
         return userService.softDelete(id);
     }
 }

@@ -7,25 +7,30 @@ import by.library.yavlash.mapper.BookDamageMapper;
 import by.library.yavlash.repository.BookDamageRepository;
 import by.library.yavlash.service.BookDamageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class BookDamageServiceImpl implements BookDamageService {
+    private final static String DAMAGE_CACHE = "damages";
     private final BookDamageRepository bookDamageRepository;
     private final BookDamageMapper bookDamageMapper;
 
     @Override
+    @Cacheable(value = DAMAGE_CACHE, key = "#bookDamageId")
     @Transactional
-    public BookDamageDto findById(Long bookDamageId) throws ServiceException {
+    public BookDamageDto findById(Long bookDamageId) {
         return bookDamageRepository.findById(bookDamageId).map(bookDamageMapper::toDto)
                 .orElseThrow(() -> new ServiceException(String.format("BookDamage was not found.  %s", bookDamageId)));
     }
 
     @Override
+    @CacheEvict(value = DAMAGE_CACHE, key = "#bookDamageDto.id")
     @Transactional
-    public boolean add(BookDamageDto bookDamageDto) throws ServiceException {
+    public boolean add(BookDamageDto bookDamageDto) {
         try {
             BookDamage bookDamage = bookDamageMapper.fromSaveDto(bookDamageDto);
             bookDamageRepository.save(bookDamage);
@@ -36,8 +41,9 @@ public class BookDamageServiceImpl implements BookDamageService {
     }
 
     @Override
+    @CacheEvict(value = DAMAGE_CACHE, key = "#bookDamageId")
     @Transactional
-    public boolean softDelete(Long bookDamageId) throws ServiceException {
+    public boolean softDelete(Long bookDamageId) {
         BookDamage bookDamage = bookDamageRepository.findById(bookDamageId)
                 .orElseThrow(() -> new ServiceException(
                         String.format("BookDamage was not softly deleted. BookDamage was not found. id = %d", bookDamageId)

@@ -7,6 +7,8 @@ import by.library.yavlash.mapper.GenreMapper;
 import by.library.yavlash.repository.GenreRepository;
 import by.library.yavlash.service.GenreService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,12 +17,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class GenreServiceImpl implements GenreService {
+    private final static String GENRE_CACHE = "genres";
     private final GenreRepository genreRepository;
     private final GenreMapper genreMapper;
 
     @Override
+    @Cacheable(value = GENRE_CACHE)
     @Transactional
-    public List<GenreDto> findAll() throws ServiceException {
+    public List<GenreDto> findAll() {
         try {
             List<Genre> genres = genreRepository.findAll();
             return genreMapper.toDto(genres);
@@ -30,8 +34,9 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
+    @CacheEvict(value = GENRE_CACHE, key = "#genreDto.id")
     @Transactional
-    public boolean add(GenreDto genreDto) throws ServiceException {
+    public boolean add(GenreDto genreDto) {
         try {
             Genre genre = genreMapper.fromSaveDto(genreDto);
             genreRepository.save(genre);
@@ -42,8 +47,9 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
+    @CacheEvict(value = GENRE_CACHE, key = "#genreId")
     @Transactional
-    public boolean softDelete(Long genreId) throws ServiceException {
+    public boolean softDelete(Long genreId) {
         Genre genre = genreRepository.findById(genreId)
                 .orElseThrow(() -> new ServiceException(
                         String.format("Genre was not softly deleted. Genre was not found. id = %d", genreId)

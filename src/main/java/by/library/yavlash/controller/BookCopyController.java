@@ -4,7 +4,6 @@ import by.library.yavlash.dto.BookCopyDto;
 import by.library.yavlash.dto.BookCopyListDto;
 import by.library.yavlash.dto.BookCopySaveDto;
 import by.library.yavlash.dto.BookSaveDto;
-import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.service.BookCopyService;
 import by.library.yavlash.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -28,12 +27,12 @@ public class BookCopyController {
     private final BookService bookService;
 
     @GetMapping("/{id}")
-    public BookCopyDto findById(@PathVariable Long id) throws ServiceException {
+    public BookCopyDto findById(@PathVariable Long id) {
         return bookCopyService.findById(id);
     }
 
     @GetMapping
-    public List<BookCopyListDto> findAll() throws ServiceException {
+    public List<BookCopyListDto> findAll() {
         return bookCopyService.findAll();
     }
 
@@ -41,7 +40,7 @@ public class BookCopyController {
     @PostMapping("/copies")
     public boolean add(
             @RequestBody BookCopySaveDto bookCopySaveDto
-    ) throws ServiceException {
+    ) {
         return bookCopyService.add(bookCopySaveDto);
     }
 
@@ -49,7 +48,7 @@ public class BookCopyController {
     @PostMapping
     public boolean add(
             @RequestBody BookSaveDto order
-    ) throws ServiceException {
+    ) {
         return bookService.add(order);
     }
 
@@ -57,13 +56,13 @@ public class BookCopyController {
     @PutMapping
     public boolean update(
             @RequestBody BookCopySaveDto bookCopySaveDto
-    ) throws ServiceException {
+    ) {
         return bookCopyService.update(bookCopySaveDto);
     }
 
     @PreAuthorize("hasAuthority('BOOK_DELETE')")
     @DeleteMapping("/copies/{id}")
-    public boolean delete(@PathVariable Long id) throws ServiceException {
+    public boolean delete(@PathVariable Long id) {
         return bookCopyService.softDelete(id);
     }
 }

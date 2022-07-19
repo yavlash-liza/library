@@ -1,6 +1,5 @@
 package by.library.yavlash.security;
 
-
 import lombok.Data;
 
 @Data

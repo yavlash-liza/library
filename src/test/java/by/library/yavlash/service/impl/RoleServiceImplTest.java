@@ -2,7 +2,6 @@ package by.library.yavlash.service.impl;
 
 import by.library.yavlash.dto.RoleDto;
 import by.library.yavlash.entity.Role;
-import by.library.yavlash.exception.ServiceException;
 import by.library.yavlash.mapper.RoleMapper;
 import by.library.yavlash.repository.RoleRepository;
 import org.junit.jupiter.api.Assertions;
@@ -30,7 +29,7 @@ class RoleServiceImplTest {
     private RoleServiceImpl roleService;
 
     @Test
-    void findAllTest_shouldReturnListOfAllRoles() throws ServiceException {
+    void findAllTest_shouldReturnListOfAllRoles() {
         //given
         List<RoleDto> expected = new ArrayList<>() {{
             add(RoleDto.builder().id(1L).build());
